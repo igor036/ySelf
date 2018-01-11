@@ -22,4 +22,4 @@ The project was developed with the intention of studying opencv !
 
 ![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/dog.png "Dog.")
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/dogAndGlasses.pngg "Dog + Glasses.")
+![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/dogAndGlasses.png "Dog + Glasses.")
