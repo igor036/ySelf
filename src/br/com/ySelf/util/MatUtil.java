@@ -18,6 +18,8 @@ import org.opencv.core.Size;
 public abstract class MatUtil extends JFrame {
 
     public static final String DOG_PNG = "img\\dog.png";
+    public static final String GLASSES_1 = "img\\glasses\\glasses_1.png";
+    public static final String GLASSES_2 = "img\\glasses\\glasses_2.png";
 
     public static void show(Mat img, String title) {
 
@@ -57,7 +59,7 @@ public abstract class MatUtil extends JFrame {
         return bfImg;
     }
     
-    public static void merge(Mat img, String png) {
+    public static void dog(Mat img, String png) {
 
         if (!new File(png).exists()) {
             System.err.println("Error png photo not found!");
@@ -92,6 +94,43 @@ public abstract class MatUtil extends JFrame {
 
             face.put(0, 0, bufferImg);
         }
+    }
+    
+    
+    public static void glasses(Mat img, String png) {
+
+        if (!new File(png).exists()) {
+            System.err.println("Error png photo not found!");
+            System.exit(1);
+        }
+
+        Rect[] eyes = Detection.rectOfEye(img);
+        Mat sub = readImg(png);
+
+
+        for (Rect rect : eyes) { 
+            
+            Mat face = img.submat(rect);
+            Imgproc.resize(sub, sub, face.size());
+
+            byte[] bufferImg = toByteArray(face);
+            byte[] bufferSub = toByteArray(sub);
+
+            for (int i = 0; i < bufferSub.length; i++) {
+
+                if (bufferSub[i] != 0 && bufferSub[i] != 255) {
+                    bufferImg[i] = bufferSub[i];
+                }
+            }
+
+            face.put(0, 0, bufferImg);
+        }
+    }
+    
+    public static void resize(Mat img) {
+        
+        Size size = new Size(img.width()-100,img.height()-100);
+        Imgproc.resize(img, img, size);
     }
     
     public static void inversor(Mat img){

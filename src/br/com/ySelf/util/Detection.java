@@ -10,26 +10,42 @@ import org.opencv.core.Point;
 
 public abstract class Detection {
 
+    //var's
     private static CascadeClassifier face_cascade;
-    private static boolean isStarted = false;
+    private static CascadeClassifier eye_cascade;
+    private static boolean faceIsStarted = false;
+    private static boolean eyeIsStarted  = false;
     private static boolean showDetection = false;
     
-    private static void start() {
+    //const's
+    private static final int ADJUSTMENT_X_WIDTH_GLASSES = 20;
+    
+    private static void face_start() {
 
         face_cascade = new CascadeClassifier("xml\\haarcascade_frontalface_alt.xml");
-
         if (!face_cascade.load("xml\\haarcascade_frontalface_alt.xml")) {
             System.out.println("error loading xml face cascade!");
             System.exit(1);
         }
 
-        isStarted = true;
+        faceIsStarted = true;
+    }
+    
+    private static void eye_start() {
+    
+        eye_cascade = new CascadeClassifier("xml\\haarcascade_eye.xml");
+        if (!eye_cascade.load("xml\\haarcascade_eye.xml")) {
+            System.out.println("error loading xml eye cascade!");
+            System.exit(1);
+        }
+
+        eyeIsStarted = true;
     }
 
     public static Rect[] rectOfFace(Mat img) {
 
-        if (!isStarted) {
-            start();
+        if (!faceIsStarted) {
+            face_start();
         }
 
         MatOfRect matOfFaces = new MatOfRect();
@@ -51,6 +67,47 @@ public abstract class Detection {
         }
         
         return faces;
+    }
+    
+    public static Rect[] rectOfEye(Mat img){
+        
+        Rect[] faces = rectOfFace(img);
+        Rect[] eyes = new Rect[faces.length];
+        
+        for (int i = 0; i < faces.length; i++) {
+            
+            Mat mf = img.submat(faces[i]);
+            Rect[] eyesOfFace = eyesOfFace(img);
+            
+            if (eyesOfFace.length > 1) { 
+                
+                Point a = new Point(faces[i].x + ADJUSTMENT_X_WIDTH_GLASSES, eyesOfFace[1].y);
+                Point b = new Point(faces[i].x + faces[i].width - ADJUSTMENT_X_WIDTH_GLASSES ,eyesOfFace[1].y + eyesOfFace[1].width);
+                
+                if (showDetection)
+                    Imgproc.rectangle(img, a, b, new Scalar(0, 0, 255));
+                
+                eyes[i] = new Rect(a, b);
+            }
+        }
+        
+        return eyes;
+    }
+    
+    private static Rect[] eyesOfFace(Mat img){
+    
+        if (!eyeIsStarted) {
+            eye_start();
+        }
+        
+        MatOfRect matOfEyes = new MatOfRect();
+        Mat processImg = preProcess(img);
+
+        eye_cascade.detectMultiScale(img, matOfEyes);
+
+        Rect[] eyes = matOfEyes.toArray();
+        
+        return eyes;
     }
 
     private static Mat preProcess(Mat img) {

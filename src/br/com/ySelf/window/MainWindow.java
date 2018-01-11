@@ -33,6 +33,8 @@ public class MainWindow extends javax.swing.JFrame {
         ctrlY = new javax.swing.JMenuItem();
         btMasks = new javax.swing.JMenu();
         dogMask = new javax.swing.JMenuItem();
+        glasses1Mask = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         filter = new javax.swing.JMenu();
         gray = new javax.swing.JMenuItem();
         blur = new javax.swing.JMenuItem();
@@ -81,6 +83,26 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         btMasks.add(dogMask);
+
+        glasses1Mask.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, java.awt.event.InputEvent.CTRL_MASK));
+        glasses1Mask.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\glasses_1.png")); // NOI18N
+        glasses1Mask.setText("Óculos 1");
+        glasses1Mask.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                glasses1MaskActionPerformed(evt);
+            }
+        });
+        btMasks.add(glasses1Mask);
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem1.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\glasses_2.png")); // NOI18N
+        jMenuItem1.setText("Óculos 2");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        btMasks.add(jMenuItem1);
 
         jMenuBar1.add(btMasks);
 
@@ -139,7 +161,6 @@ public class MainWindow extends javax.swing.JFrame {
             
             String photoPath = fileChooser.getSelectedFile().getAbsolutePath();
             img = MatUtil.readImg(photoPath);
-                     
             MatUtil.show(img, lbPhoto);
             
             previous.clear();
@@ -153,7 +174,7 @@ public class MainWindow extends javax.swing.JFrame {
         
         Mat newImg = MatUtil.copy(img);
         
-        MatUtil.merge(newImg, MatUtil.DOG_PNG);
+        MatUtil.dog(newImg, MatUtil.DOG_PNG);
         MatUtil.show(newImg, lbPhoto);
         
         previous.push(img);
@@ -175,7 +196,7 @@ public class MainWindow extends javax.swing.JFrame {
             img = next.pop();
             MatUtil.show(img, lbPhoto);
         } else
-            JOptionPane.showConfirmDialog(null, "Não há mais oque refazer!");
+            JOptionPane.showMessageDialog(null, "Não há mais oque refazer!");
     }//GEN-LAST:event_ctrlYActionPerformed
 
     private void grayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_grayActionPerformed
@@ -215,6 +236,40 @@ public class MainWindow extends javax.swing.JFrame {
         
     }//GEN-LAST:event_inversorActionPerformed
 
+    private void glasses1MaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_glasses1MaskActionPerformed
+        
+        try{
+            
+            Mat newImg = MatUtil.copy(img);
+        
+            MatUtil.glasses(newImg, MatUtil.GLASSES_1);
+            MatUtil.show(newImg, lbPhoto);
+
+            previous.push(img);
+            img = newImg;
+            
+        } catch(Exception ex){
+            JOptionPane.showMessageDialog(null, "Combinação de efeitos inválida!");
+        }
+    }//GEN-LAST:event_glasses1MaskActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        
+        try {
+            
+            Mat newImg = MatUtil.copy(img);
+        
+            MatUtil.glasses(newImg, MatUtil.GLASSES_2);
+            MatUtil.show(newImg, lbPhoto);
+
+            previous.push(img);
+            img = newImg;
+            
+        } catch(Exception ex){
+            JOptionPane.showMessageDialog(null, "Combinação de efeitos inválida!");
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -224,9 +279,11 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem ctrlZ;
     private javax.swing.JMenuItem dogMask;
     private javax.swing.JMenu filter;
+    private javax.swing.JMenuItem glasses1Mask;
     private javax.swing.JMenuItem gray;
     private javax.swing.JMenuItem inversor;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JLabel lbPhoto;
     private javax.swing.JMenu options;
     private javax.swing.JMenu photoSelection;
