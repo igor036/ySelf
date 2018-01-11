@@ -14,16 +14,16 @@ The project was developed with the intention of studying opencv !
   <img width="460" height="300" src="screenshot/mainWindow.png">
 </p>
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/mainWindow.png "Main window.")
+![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/mainWindow.png?raw=true "Main window.")
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/filters.png "Filters.")
+![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/filters.png?raw=true "Filters.")
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/options.png "Options.")
+![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/options.png?raw=true "Options.")
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/masks.png "Masks.")
+![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/masks.png?raw=true "Masks.")
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/glasses1.png "Glasses.")
+![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/glasses1.png?raw=true "Glasses.")
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/dog.png "Dog.")
+![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/dog.png?raw=true "Dog.")
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/dogAndGlasses.png "Dog + Glasses.")
+![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/dogAndGlasses.png?raw=true "Dog + Glasses.")
