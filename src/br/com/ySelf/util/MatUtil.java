@@ -127,6 +127,32 @@ public abstract class MatUtil extends JFrame {
         }
     }
     
+    public static void glitchWave(Mat img, int waveLength ,EColor color){
+           
+        Mat sub = copy(img);
+        final int darkLevel = 80;
+        
+        for (int x = 0; x < sub.rows(); x++) {
+            for(int y = 0; y < sub.cols(); y++) {
+                
+                double[] pixel1 = img.get(x, y);
+                
+                //rgb wave
+                if (x - waveLength >= 0) {
+                    
+                    double[] pixel2 = sub.get(x-waveLength, y-waveLength);
+                    pixel1[color.colorValue()] = pixel2[color.colorValue()];
+                }
+                
+                //to darken
+                for (int rgb = 0; rgb < 3; rgb++)
+                    pixel1[rgb] -= darkLevel;
+                
+                img.put(x, y, pixel1);
+            }
+        }
+    }
+    
     public static void resize(Mat img) {
         
         Size size = new Size(img.width()-100,img.height()-100);

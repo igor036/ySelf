@@ -1,5 +1,6 @@
 package br.com.ySelf.window;
 
+import br.com.ySelf.util.EColor;
 import br.com.ySelf.util.MatUtil;
 import java.util.Stack;
 import javax.swing.JFileChooser;
@@ -12,12 +13,20 @@ public class MainWindow extends javax.swing.JFrame {
     private Mat img;
     private Stack<Mat> previous;
     private Stack<Mat> next;
+    private int waveLength;
+    private EColor color; 
     
     public MainWindow() {
+        
         this.setLocationRelativeTo(null); 
         previous = new Stack<>();
         next = new Stack<>();
+        
         initComponents();
+        
+        GlitchWave.setLocationRelativeTo(null);
+        GlitchWave.setSize(400, 200);
+  
     }
 
 
@@ -25,7 +34,14 @@ public class MainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lbPhoto = new javax.swing.JLabel();
+        GlitchWave = new javax.swing.JDialog();
+        blue = new javax.swing.JRadioButton();
+        Red = new javax.swing.JRadioButton();
+        yellow = new javax.swing.JRadioButton();
+        okButton = new javax.swing.JButton();
+        txtxLength = new javax.swing.JTextField();
+        lb = new javax.swing.JLabel();
+        lPhoto = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         photoSelection = new javax.swing.JMenu();
         options = new javax.swing.JMenu();
@@ -39,8 +55,65 @@ public class MainWindow extends javax.swing.JFrame {
         gray = new javax.swing.JMenuItem();
         blur = new javax.swing.JMenuItem();
         inversor = new javax.swing.JMenuItem();
+        glitchButton = new javax.swing.JMenu();
+        glitchWave = new javax.swing.JMenuItem();
+
+        blue.setText("Blue");
+
+        Red.setText("Red");
+
+        yellow.setText("Yellow");
+
+        okButton.setText("Okay");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
+            }
+        });
+
+        lb.setText("Tamanho:");
+
+        javax.swing.GroupLayout GlitchWaveLayout = new javax.swing.GroupLayout(GlitchWave.getContentPane());
+        GlitchWave.getContentPane().setLayout(GlitchWaveLayout);
+        GlitchWaveLayout.setHorizontalGroup(
+            GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(GlitchWaveLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(GlitchWaveLayout.createSequentialGroup()
+                        .addComponent(yellow)
+                        .addGap(35, 35, 35)
+                        .addComponent(blue)
+                        .addGap(25, 25, 25))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, GlitchWaveLayout.createSequentialGroup()
+                        .addComponent(lb)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtxLength, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addGroup(GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Red)
+                    .addComponent(okButton))
+                .addContainerGap(38, Short.MAX_VALUE))
+        );
+        GlitchWaveLayout.setVerticalGroup(
+            GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(GlitchWaveLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(yellow)
+                    .addComponent(blue)
+                    .addComponent(Red))
+                .addGap(18, 18, 18)
+                .addGroup(GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtxLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(okButton)
+                    .addComponent(lb))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        lPhoto.setText(" ");
 
         photoSelection.setText("Selecionar Foto");
         photoSelection.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -137,17 +210,34 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenuBar1.add(filter);
 
+        glitchButton.setText("Glitch");
+
+        glitchWave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.SHIFT_MASK));
+        glitchWave.setText("Wave");
+        glitchWave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                glitchWaveActionPerformed(evt);
+            }
+        });
+        glitchButton.add(glitchWave);
+
+        jMenuBar1.add(glitchButton);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lbPhoto, javax.swing.GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(lPhoto)
+                .addGap(0, 559, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lbPhoto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(lPhoto)
+                .addGap(0, 376, Short.MAX_VALUE))
         );
 
         pack();
@@ -161,12 +251,13 @@ public class MainWindow extends javax.swing.JFrame {
             
             String photoPath = fileChooser.getSelectedFile().getAbsolutePath();
             img = MatUtil.readImg(photoPath);
-            MatUtil.show(img, lbPhoto);
+            
+            MatUtil.show(img, lPhoto);
             
             previous.clear();
             next.clear();
             
-            lbPhoto.setText("");
+            lPhoto.setText("");
         }
     }//GEN-LAST:event_photoSelectionMouseClicked
 
@@ -175,7 +266,7 @@ public class MainWindow extends javax.swing.JFrame {
         Mat newImg = MatUtil.copy(img);
         
         MatUtil.dog(newImg, MatUtil.DOG_PNG);
-        MatUtil.show(newImg, lbPhoto);
+        MatUtil.show(newImg, lPhoto);
         
         previous.push(img);
         img = newImg;
@@ -185,7 +276,7 @@ public class MainWindow extends javax.swing.JFrame {
         if(!previous.isEmpty()){
             next.push(img);
             img = previous.pop();
-            MatUtil.show(img, lbPhoto);
+            MatUtil.show(img, lPhoto);
         } else 
             JOptionPane.showMessageDialog(null, "Não há mais oque desfazer!");
     }//GEN-LAST:event_ctrlZActionPerformed
@@ -194,7 +285,7 @@ public class MainWindow extends javax.swing.JFrame {
         if (!next.isEmpty()){
             previous.push(img);
             img = next.pop();
-            MatUtil.show(img, lbPhoto);
+            MatUtil.show(img, lPhoto);
         } else
             JOptionPane.showMessageDialog(null, "Não há mais oque refazer!");
     }//GEN-LAST:event_ctrlYActionPerformed
@@ -204,7 +295,7 @@ public class MainWindow extends javax.swing.JFrame {
         Mat newImg = MatUtil.copy(img);
         
         MatUtil.grayScale(newImg);
-        MatUtil.show(newImg, lbPhoto);
+        MatUtil.show(newImg, lPhoto);
         
         previous.push(img);
         img = newImg;
@@ -217,7 +308,7 @@ public class MainWindow extends javax.swing.JFrame {
         Mat newImg = MatUtil.copy(img);
         
         MatUtil.blur(newImg,blurLevel);
-        MatUtil.show(newImg, lbPhoto);
+        MatUtil.show(newImg, lPhoto);
         
         previous.push(img);
         img = newImg;
@@ -229,7 +320,7 @@ public class MainWindow extends javax.swing.JFrame {
         Mat newImg = MatUtil.copy(img);
         
         MatUtil.inversor(newImg);
-        MatUtil.show(newImg, lbPhoto);
+        MatUtil.show(newImg, lPhoto);
         
         previous.push(img);
         img = newImg;
@@ -243,7 +334,7 @@ public class MainWindow extends javax.swing.JFrame {
             Mat newImg = MatUtil.copy(img);
         
             MatUtil.glasses(newImg, MatUtil.GLASSES_1);
-            MatUtil.show(newImg, lbPhoto);
+            MatUtil.show(newImg, lPhoto);
 
             previous.push(img);
             img = newImg;
@@ -260,7 +351,7 @@ public class MainWindow extends javax.swing.JFrame {
             Mat newImg = MatUtil.copy(img);
         
             MatUtil.glasses(newImg, MatUtil.GLASSES_2);
-            MatUtil.show(newImg, lbPhoto);
+            MatUtil.show(newImg, lPhoto);
 
             previous.push(img);
             img = newImg;
@@ -270,9 +361,49 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void glitchWaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_glitchWaveActionPerformed
+        
+        
+        GlitchWave.setModal(true);
+        GlitchWave.setVisible(true);
+        
+        Mat newImg = MatUtil.copy(img);
+        
+        MatUtil.glitchWave(newImg, waveLength, color);
+        MatUtil.show(newImg, lPhoto);
+
+        previous.push(img);
+        img = newImg;
+        
+    }//GEN-LAST:event_glitchWaveActionPerformed
+
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+
+        try {
+
+            waveLength = Integer.parseInt(txtxLength.getText());
+
+            if (yellow.isValid())
+                color = EColor.YELLOW;
+            else if (blue.isValid())
+                color = EColor.BLUE;
+            else
+                color = EColor.RED;
+            
+            
+            GlitchWave.dispose();
+
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(null, "Erro no preenchimento!");
+        }
+    }//GEN-LAST:event_okButtonActionPerformed
+
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JDialog GlitchWave;
+    private javax.swing.JRadioButton Red;
+    private javax.swing.JRadioButton blue;
     private javax.swing.JMenuItem blur;
     private javax.swing.JMenu btMasks;
     private javax.swing.JMenuItem ctrlY;
@@ -280,12 +411,18 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem dogMask;
     private javax.swing.JMenu filter;
     private javax.swing.JMenuItem glasses1Mask;
+    private javax.swing.JMenu glitchButton;
+    private javax.swing.JMenuItem glitchWave;
     private javax.swing.JMenuItem gray;
     private javax.swing.JMenuItem inversor;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JLabel lbPhoto;
+    private javax.swing.JLabel lPhoto;
+    private javax.swing.JLabel lb;
+    private javax.swing.JButton okButton;
     private javax.swing.JMenu options;
     private javax.swing.JMenu photoSelection;
+    private javax.swing.JTextField txtxLength;
+    private javax.swing.JRadioButton yellow;
     // End of variables declaration//GEN-END:variables
 }
