@@ -10,6 +10,10 @@ The project was developed with the intention of studying opencv !
 
 * **Igor Joaquim dos Santos Lima** - [github](https://github.com/igor036)
 
+<p align="center">
+  <img width="460" height="300" src="https://github.com/igor036/ySelf/tree/master/screenshot/mainWindow.png">
+</p>
+
 ![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/mainWindow.png "Main window.")
 
 ![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/filters.png "Filters.")
