@@ -14,16 +14,26 @@ The project was developed with the intention of studying opencv !
   <img width="460" height="300" src="screenshot/mainWindow.png">
 </p>
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/mainWindow.png?raw=true "Main window.")
+<p align="center">
+  <img width="460" height="300" src="screenshot/filters.png">
+</p>
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/filters.png?raw=true "Filters.")
+<p align="center">
+  <img width="460" height="300" src="screenshot/options.png">
+</p>
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/options.png?raw=true "Options.")
+<p align="center">
+  <img width="460" height="300" src="screenshot/masks.png">
+</p>
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/masks.png?raw=true "Masks.")
+<p align="center">
+  <img width="460" height="300" src="screenshot/glasses1.png">
+</p>
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/glasses1.png?raw=true "Glasses.")
+<p align="center">
+  <img width="460" height="300" src="screenshot/dog.png">
+</p>
 
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/dog.png?raw=true "Dog.")
-
-![alt text](https://github.com/igor036/ySelf/tree/master/screenshot/dogAndGlasses.png?raw=true "Dog + Glasses.")
+<p align="center">
+  <img width="460" height="300" src="screenshot/dogAndGlasses.png">
+</p>
