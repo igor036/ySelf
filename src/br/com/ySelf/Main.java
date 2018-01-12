@@ -1,3 +1,9 @@
+/*
+Authors: Igor Joaquim dos Santos Lima
+GitHub: https://github.com/igor036
+*/
+
+
 package br.com.ySelf;
 
 import org.opencv.core.Core;

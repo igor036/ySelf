@@ -1,3 +1,8 @@
+/*
+Authors: Igor Joaquim dos Santos Lima
+GitHub: https://github.com/igor036
+*/
+
 package br.com.ySelf.util;
 
 import java.awt.image.BufferedImage;
@@ -17,10 +22,32 @@ import org.opencv.core.Size;
 
 public abstract class MatUtil extends JFrame {
 
+    /* URL IMAGES
+     *-------------------------------------------------------->
+     */
+    
+    //dog
     public static final String DOG_PNG = "img\\dog.png";
+    
+    //glasses
     public static final String GLASSES_1 = "img\\glasses\\glasses_1.png";
     public static final String GLASSES_2 = "img\\glasses\\glasses_2.png";
 
+    //vhs
+    public static final String VHS_1 = "img\\VHS\\1.jpg";
+    public static final String VHS_2 = "img\\VHS\\2.jpg";
+    public static final String VHS_3 = "img\\VHS\\3.jpg";
+    public static final String VHS_4 = "img\\VHS\\4.jpg";
+    
+    //vhs date
+    public static final String VHS_DATE_1 = "img\\VHS\\vhs_date1.png";
+    public static final String VHS_DATE_2 = "img\\VHS\\vhs_date2.jpg";
+    
+    /*-------------------------------------------------------->
+     *END URL IMAGES
+     */
+    
+    
     public static void show(Mat img, String title) {
 
         JLabel lbImg = new JLabel("");
@@ -61,10 +88,8 @@ public abstract class MatUtil extends JFrame {
     
     public static void dog(Mat img, String png) {
 
-        if (!new File(png).exists()) {
-            System.err.println("Error png photo not found!");
-            System.exit(1);
-        }
+        if (!fileExist(png))
+            throw new RuntimeException("Mascara DOG não encontrada!");
 
         Rect[] faces = Detection.rectOfFace(img);
         Mat sub = readImg(png);
@@ -99,10 +124,8 @@ public abstract class MatUtil extends JFrame {
     
     public static void glasses(Mat img, String png) {
 
-        if (!new File(png).exists()) {
-            System.err.println("Error png photo not found!");
-            System.exit(1);
-        }
+        if (!fileExist(png))
+            throw new RuntimeException("Mascara GLASSES não encontrada!");
 
         Rect[] eyes = Detection.rectOfEye(img);
         Mat sub = readImg(png);
@@ -130,27 +153,70 @@ public abstract class MatUtil extends JFrame {
     public static void glitchWave(Mat img, int waveLength ,EColor color){
            
         Mat sub = copy(img);
-        final int darkLevel = 80;
         
         for (int x = 0; x < sub.rows(); x++) {
             for(int y = 0; y < sub.cols(); y++) {
                 
                 double[] pixel1 = img.get(x, y);
                 
-                //rgb wave
-                if (x - waveLength >= 0) {
-                    
-                    double[] pixel2 = sub.get(x-waveLength, y-waveLength);
-                    pixel1[color.colorValue()] = pixel2[color.colorValue()];
-                }
+                int xWave = x - waveLength >= 0 ? x-waveLength : waveLength-x;
+                int yWave = y - waveLength >= 0 ? y-waveLength : waveLength-y;
                 
-                //to darken
-                for (int rgb = 0; rgb < 3; rgb++)
-                    pixel1[rgb] -= darkLevel;
+                double[] pixel2 = sub.get(xWave, yWave);
+                pixel1[color.colorValue()] = pixel2[color.colorValue()];
                 
                 img.put(x, y, pixel1);
             }
         }
+    }
+    
+    private static void sumMat(Mat img, Mat mask){
+        
+        Imgproc.resize(mask, mask, img.size());
+        
+        for (int x = 0; x < img.rows(); x++) {
+            for(int y = 0; y < img.cols(); y++) {
+                
+                double[] pixel1 = img.get(x, y);
+                double[] pixel2 = mask.get(x, y);
+                
+                for (int rgb = 0; rgb < 3; rgb ++)
+                    pixel1[rgb] += pixel2[rgb];
+                
+                img.put(x, y, pixel1);
+            }
+        }
+    }
+    
+    public static void darken(Mat img, int darkLevel) {
+        
+        for (int x = 0; x < img.rows(); x++) {
+            for(int y = 0; y < img.cols(); y++) {
+                
+                double[] pixel = img.get(x, y);
+                
+                for (int rgb = 0; rgb < 3; rgb++)
+                    pixel[rgb] -= darkLevel;
+                
+                img.put(x, y, pixel);
+            }    
+        }
+    }
+    
+    public static void vhs(Mat img, String VHS){
+        
+        if (!fileExist(VHS))
+            throw new RuntimeException("Mascara VHS não encontrada!");
+        
+        Mat vhs = readImg(VHS);
+        sumMat(img, vhs);
+    }
+    
+    public static void morphology(Mat img,int morph_size) {
+             
+        Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(morph_size, morph_size));
+        Imgproc.morphologyEx(img, img, Imgproc.MORPH_OPEN, element);
+        
     }
     
     public static void resize(Mat img) {
@@ -200,4 +266,8 @@ public abstract class MatUtil extends JFrame {
 
         return buffer;
     }
+    
+    private static boolean fileExist(String url){
+        return new File(url).exists();
+    } 
 }
