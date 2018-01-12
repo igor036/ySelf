@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import org.opencv.core.Core;
 
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Rect;
@@ -201,6 +202,26 @@ public abstract class MatUtil extends JFrame {
                 img.put(x, y, pixel);
             }    
         }
+    }
+    
+    public static void widget(Mat img, Mat widget, Point point){
+        
+        for (int x = (int)point.x; x < img.rows(); x++) {
+            for(int y = (int)point.y; y < img.cols(); y++) {
+                
+                double[] pixel1 = img.get(x, y);
+                double[] pixel2 = widget.get(x-(int)point.x, y-(int)point.y);
+
+                
+                if (pixel2 != null)
+                    for (int rgb = 0; rgb < 3; rgb++)
+                        pixel1[rgb] = pixel2[rgb];
+                else
+                    break;
+                
+                img.put(x, y, pixel1);
+            }
+         }
     }
     
     public static void vhs(Mat img, String VHS){

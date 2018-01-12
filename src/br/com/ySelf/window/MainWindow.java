@@ -8,13 +8,17 @@ package br.com.ySelf.window;
 
 import br.com.ySelf.util.EColor;
 import br.com.ySelf.util.MatUtil;
-import java.util.ArrayList;
 import java.util.List;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Stack;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+
 
 
 public class MainWindow extends javax.swing.JFrame {
@@ -23,17 +27,28 @@ public class MainWindow extends javax.swing.JFrame {
     private Stack<Mat> previous;
     private Stack<Mat> next;
     private int waveLength;
-    private EColor color; 
+    private EColor color;
    
-
+    //widget
+    private boolean addingWidget = false;
+    private Mat widget;
+    private final List<String> WIDGET_EXTENSION;
+    
     
     public MainWindow() {
         
+        this.WIDGET_EXTENSION = new ArrayList<>();
         this.setLocationRelativeTo(null); 
+        
         previous = new Stack<>();
         next = new Stack<>();
         
+        WIDGET_EXTENSION.add("JPG");
+        WIDGET_EXTENSION.add("JPEG");
+        WIDGET_EXTENSION.add("PNG");
+                
         initComponents();
+        addMouseListeners();
         
         GlitchWave.setLocationRelativeTo(null);
         GlitchWave.setSize(400, 200);
@@ -73,6 +88,7 @@ public class MainWindow extends javax.swing.JFrame {
         options = new javax.swing.JMenu();
         ctrlZ = new javax.swing.JMenuItem();
         ctrlY = new javax.swing.JMenuItem();
+        widgetBt = new javax.swing.JMenuItem();
         btMasks = new javax.swing.JMenu();
         dogMask = new javax.swing.JMenuItem();
         glasses1Mask = new javax.swing.JMenuItem();
@@ -171,9 +187,9 @@ public class MainWindow extends javax.swing.JFrame {
 
         vhs_4_icon.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\4.jpg")); // NOI18N
 
-        vhs_1_icon4.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\vhs_date2.jpg")); // NOI18N
+        vhs_1_icon4.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\vhs_date1.png")); // NOI18N
 
-        vhs_1_icon5.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\vhs_date1.png")); // NOI18N
+        vhs_1_icon5.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\vhs_date2.jpg")); // NOI18N
 
         btnVhs.setText("Aplicar");
         btnVhs.addActionListener(new java.awt.event.ActionListener() {
@@ -218,7 +234,7 @@ public class MainWindow extends javax.swing.JFrame {
                         .addComponent(vhs_date_1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(vhs_1_icon4)))
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addContainerGap(65, Short.MAX_VALUE))
         );
         GlitchVHSLayout.setVerticalGroup(
             GlitchVHSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -283,6 +299,15 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         options.add(ctrlY);
+
+        widgetBt.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
+        widgetBt.setText("Widget");
+        widgetBt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                widgetBtActionPerformed(evt);
+            }
+        });
+        options.add(widgetBt);
 
         jMenuBar1.add(options);
 
@@ -611,9 +636,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVhsActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        
-        
-        
+           
         try {
         
             GlitchVHS.setModal(true);
@@ -640,12 +663,67 @@ public class MainWindow extends javax.swing.JFrame {
             previous.push(img);
             img = newImg;
             
-        }catch(Exception ex){
+        } catch(Exception ex){
             JOptionPane.showMessageDialog(null, "Tente novamente!");
             System.out.println("ERRO: "+ex.getMessage());
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void widgetBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_widgetBtActionPerformed
+        
+        JFileChooser fileChooser = new JFileChooser();
+
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            
+            String photoPath = fileChooser.getSelectedFile().getAbsolutePath();
+
+            if (WIDGET_EXTENSION.contains(photoPath.substring(photoPath.lastIndexOf(".")+1).toUpperCase())) {    
+                
+                JOptionPane.showMessageDialog(null, "Click na área aonde irá adicionar o widget!");
+                widget = MatUtil.readImg(photoPath);
+                addingWidget = true;
+                
+            } else 
+                JOptionPane.showMessageDialog(null, "O arquivo selecionado não é válido!");
+        }
+        
+    }//GEN-LAST:event_widgetBtActionPerformed
+    
+    
+    private void addMouseListeners(){
+        
+        lPhoto.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                
+                if (addingWidget){
+                
+                    Mat newImg = MatUtil.copy(img);
+                    MatUtil.widget(newImg, widget, new Point(e.getX(), e.getY()));
+                    MatUtil.show(newImg, lPhoto);
+
+                    previous.push(img);
+                    img = newImg;
+
+                    widget = null;
+                    addingWidget = false;
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
+        
+    }
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -690,6 +768,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel vhs_4_icon;
     private javax.swing.JRadioButton vhs_date_1;
     private javax.swing.JRadioButton vhs_date_2;
+    private javax.swing.JMenuItem widgetBt;
     private javax.swing.JRadioButton yellow;
     // End of variables declaration//GEN-END:variables
 }
