@@ -15,18 +15,6 @@ The project was developed with the intention of studying opencv !
 </p>
 
 <p align="center">
-  <img width="460" height="300" src="screenshot/filters.png">
-</p>
-
-<p align="center">
-  <img width="460" height="300" src="screenshot/options.png">
-</p>
-
-<p align="center">
-  <img width="460" height="300" src="screenshot/masks.png">
-</p>
-
-<p align="center">
   <img width="460" height="300" src="screenshot/glasses1.png">
 </p>
 
@@ -36,4 +24,8 @@ The project was developed with the intention of studying opencv !
 
 <p align="center">
   <img width="460" height="300" src="screenshot/dogAndGlasses.png">
+</p>
+
+<p align="center">
+  <img width="460" height="300" src="screenshot/glitchwave.png">
 </p>
