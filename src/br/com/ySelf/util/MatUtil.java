@@ -108,20 +108,10 @@ public abstract class MatUtil extends JFrame {
             Mat face = img.submat(fr);
             Imgproc.resize(sub, sub, face.size());
 
-            byte[] bufferImg = toByteArray(face);
-            byte[] bufferSub = toByteArray(sub);
-
-            for (int i = 0; i < bufferSub.length; i++) {
-
-                if (bufferSub[i] != 0 && bufferSub[i] != 255) {
-                    bufferImg[i] = bufferSub[i];
-                }
-            }
-
-            face.put(0, 0, bufferImg);
+            overlay(face, sub);
+         
         }
     }
-    
     
     public static void glasses(Mat img, String png) {
 
@@ -136,18 +126,40 @@ public abstract class MatUtil extends JFrame {
             
             Mat face = img.submat(rect);
             Imgproc.resize(sub, sub, face.size());
-
-            byte[] bufferImg = toByteArray(face);
-            byte[] bufferSub = toByteArray(sub);
-
-            for (int i = 0; i < bufferSub.length; i++) {
-
-                if (bufferSub[i] != 0 && bufferSub[i] != 255) {
-                    bufferImg[i] = bufferSub[i];
-                }
+            overlay(face, sub);
+  
+        }
+    }
+    
+    public static void widget(Mat img, Mat widget,int wx,int wy){
+        
+        final int width = wx+widget.width() > img.width() ? img.width(): wx+widget.width();
+        final int heigth = wy+widget.height() > img.height() ?  img.height() : wy+widget.height();
+        
+        Point a = new Point(wx, wy);
+        Point b = new Point(width,heigth);
+        
+        Mat widgetRegion = img.submat(new Rect(a, b));
+       
+        overlay(widgetRegion, widget);
+    }
+    
+    private static void overlay(Mat img, Mat widget){
+        
+        for (int x = 0; x < widget.rows(); x++) {
+            for (int y = 0; y < widget.cols(); y++){
+                
+                double[] pixel1  = img.get(x, y);
+                double[] pixel2  = widget.get(x, y);
+                
+                double alpha = pixel2[3] / 255f;
+                
+                for(int i = 0; i < 3; i ++)  
+                    pixel1[i] = pixel2[i] * alpha + pixel1[i] * (1 -alpha);
+                
+                
+                img.put(x, y, pixel1);
             }
-
-            face.put(0, 0, bufferImg);
         }
     }
     
@@ -204,26 +216,6 @@ public abstract class MatUtil extends JFrame {
         }
     }
     
-    public static void widget(Mat img, Mat widget, Point point){
-        
-        for (int x = (int)point.x; x < img.rows(); x++) {
-            for(int y = (int)point.y; y < img.cols(); y++) {
-                
-                double[] pixel1 = img.get(x, y);
-                double[] pixel2 = widget.get(x-(int)point.x, y-(int)point.y);
-
-                
-                if (pixel2 != null)
-                    for (int rgb = 0; rgb < 3; rgb++)
-                        pixel1[rgb] = pixel2[rgb];
-                else
-                    break;
-                
-                img.put(x, y, pixel1);
-            }
-         }
-    }
-    
     public static void vhs(Mat img, String VHS){
         
         if (!fileExist(VHS))
@@ -270,14 +262,6 @@ public abstract class MatUtil extends JFrame {
         Imgproc.GaussianBlur(mat, mat, new Size(size, size), Core.BORDER_DEFAULT);
     }
     
-    public static void grayScale(Mat img){
-        Imgproc.cvtColor(img, img, Imgproc.COLOR_RGB2GRAY);
-    }
-    
-    public static Mat readImg(String url) {
-        return Imgcodecs.imread(url);
-    }
-    
     public static byte[] toByteArray(Mat mat) {
 
         int size = (int) (mat.total() * mat.channels());
@@ -288,7 +272,19 @@ public abstract class MatUtil extends JFrame {
         return buffer;
     }
     
-    private static boolean fileExist(String url){
+    public static void grayScale(Mat img){
+        Imgproc.cvtColor(img, img, Imgproc.COLOR_RGB2GRAY);
+    }
+    
+    public static Mat readImg(String url) {
+        return Imgcodecs.imread(url,Imgcodecs.IMREAD_UNCHANGED);
+    }
+    
+    private static boolean fileExist(String url) {
         return new File(url).exists();
-    } 
+    }
+    
+    public static void save(String path, Mat img){
+        Imgcodecs.imwrite(path, img);
+    }
 }

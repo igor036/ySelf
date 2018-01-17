@@ -8,17 +8,19 @@ package br.com.ySelf.window;
 
 import br.com.ySelf.util.EColor;
 import br.com.ySelf.util.MatUtil;
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
 import java.util.List;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Stack;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
-
 
 
 public class MainWindow extends javax.swing.JFrame {
@@ -30,29 +32,29 @@ public class MainWindow extends javax.swing.JFrame {
     private EColor color;
    
     //widget
+    private String widgetPath;
     private boolean addingWidget = false;
-    private Mat widget;
     private final List<String> WIDGET_EXTENSION;
-    
+    private final List<JLabel> WIDGETS;
     
     public MainWindow() {
         
-        this.WIDGET_EXTENSION = new ArrayList<>();
-        this.setLocationRelativeTo(null); 
+        initComponents();
+        addMouseListeners();
         
+        setResizable(false);
+        GlitchWave.setLocationRelativeTo(null);
+        GlitchWave.setSize(400, 200);
+        GlitchVHS.setSize(500, 200);
+        
+        WIDGET_EXTENSION = new ArrayList<>();
+        WIDGETS = new ArrayList<>();
         previous = new Stack<>();
         next = new Stack<>();
         
         WIDGET_EXTENSION.add("JPG");
         WIDGET_EXTENSION.add("JPEG");
         WIDGET_EXTENSION.add("PNG");
-                
-        initComponents();
-        addMouseListeners();
-        
-        GlitchWave.setLocationRelativeTo(null);
-        GlitchWave.setSize(400, 200);
-        GlitchVHS.setSize(500, 200);
     }
 
     @SuppressWarnings("unchecked")
@@ -82,13 +84,15 @@ public class MainWindow extends javax.swing.JFrame {
         vhs_1_icon5 = new javax.swing.JLabel();
         btnVhs = new javax.swing.JButton();
         vhs = new javax.swing.ButtonGroup();
+        panel = new javax.swing.JPanel();
         lPhoto = new javax.swing.JLabel();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        menuBar = new javax.swing.JMenuBar();
         photoSelection = new javax.swing.JMenu();
         options = new javax.swing.JMenu();
         ctrlZ = new javax.swing.JMenuItem();
         ctrlY = new javax.swing.JMenuItem();
         widgetBt = new javax.swing.JMenuItem();
+        save = new javax.swing.JMenuItem();
         btMasks = new javax.swing.JMenu();
         dogMask = new javax.swing.JMenuItem();
         glasses1Mask = new javax.swing.JMenuItem();
@@ -270,7 +274,22 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        lPhoto.setText(" ");
+        lPhoto.setText("Selecione uma imagem  ...");
+
+        javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
+        panel.setLayout(panelLayout);
+        panelLayout.setHorizontalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLayout.createSequentialGroup()
+                .addComponent(lPhoto)
+                .addGap(0, 438, Short.MAX_VALUE))
+        );
+        panelLayout.setVerticalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLayout.createSequentialGroup()
+                .addComponent(lPhoto)
+                .addGap(0, 376, Short.MAX_VALUE))
+        );
 
         photoSelection.setText("Selecionar Foto");
         photoSelection.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -278,7 +297,7 @@ public class MainWindow extends javax.swing.JFrame {
                 photoSelectionMouseClicked(evt);
             }
         });
-        jMenuBar1.add(photoSelection);
+        menuBar.add(photoSelection);
 
         options.setText("Opções");
 
@@ -309,7 +328,16 @@ public class MainWindow extends javax.swing.JFrame {
         });
         options.add(widgetBt);
 
-        jMenuBar1.add(options);
+        save.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        save.setText("Salvar");
+        save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveActionPerformed(evt);
+            }
+        });
+        options.add(save);
+
+        menuBar.add(options);
 
         btMasks.setText("Mascaras");
 
@@ -343,7 +371,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         btMasks.add(jMenuItem1);
 
-        jMenuBar1.add(btMasks);
+        menuBar.add(btMasks);
 
         filter.setText("Filtros");
 
@@ -392,7 +420,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         filter.add(darken);
 
-        jMenuBar1.add(filter);
+        menuBar.add(filter);
 
         glitchButton.setText("Glitch");
 
@@ -414,23 +442,19 @@ public class MainWindow extends javax.swing.JFrame {
         });
         glitchButton.add(jMenuItem2);
 
-        jMenuBar1.add(glitchButton);
+        menuBar.add(glitchButton);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(lPhoto)
-                .addGap(0, 559, Short.MAX_VALUE))
+            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(lPhoto)
-                .addGap(0, 376, Short.MAX_VALUE))
+            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -451,6 +475,8 @@ public class MainWindow extends javax.swing.JFrame {
             next.clear();
             
             lPhoto.setText("");
+            
+            this.setSize(img.width(), img.height());
         }
     }//GEN-LAST:event_photoSelectionMouseClicked
 
@@ -675,55 +701,102 @@ public class MainWindow extends javax.swing.JFrame {
 
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             
-            String photoPath = fileChooser.getSelectedFile().getAbsolutePath();
+            widgetPath = fileChooser.getSelectedFile().getAbsolutePath();
 
-            if (WIDGET_EXTENSION.contains(photoPath.substring(photoPath.lastIndexOf(".")+1).toUpperCase())) {    
+            if (WIDGET_EXTENSION.contains(widgetPath.substring(widgetPath.lastIndexOf(".")+1).toUpperCase())) {    
                 
-                JOptionPane.showMessageDialog(null, "Click na área aonde irá adicionar o widget!");
-                widget = MatUtil.readImg(photoPath);
-                addingWidget = true;
                 
+                Mat widget = MatUtil.readImg(widgetPath);
+                JLabel widgetLabel = new JLabel(new ImageIcon(widgetPath));
+                widgetLabel.setBounds(this.getX()/2, this.getY()/2, widget.cols(), widget.rows());
+
+                panel.setLayout(null);
+                panel.add(widgetLabel);
+                panel.setComponentZOrder(widgetLabel, 0);
+                
+                for (int i = 1; i < WIDGETS.size(); i++)
+                    panel.setComponentZOrder(WIDGETS.get(i), i);
+                
+                panel.setComponentZOrder(lPhoto, WIDGETS.size()+1);
+                panel.repaint();
+                panel.revalidate();
+                
+                WIDGETS.add(widgetLabel);
+                
+
             } else 
                 JOptionPane.showMessageDialog(null, "O arquivo selecionado não é válido!");
         }
         
     }//GEN-LAST:event_widgetBtActionPerformed
-    
-    
-    private void addMouseListeners(){
+
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         
-        lPhoto.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
+        if (img != null) {
+            
+            try {
                 
-                if (addingWidget){
-                
+                JFileChooser fileChooser = new JFileChooser();
+
+                if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    
                     Mat newImg = MatUtil.copy(img);
-                    MatUtil.widget(newImg, widget, new Point(e.getX(), e.getY()));
+                    
+                    for (JLabel widget : WIDGETS) {
+                        MatUtil.widget(newImg, MatUtil.readImg(widget.getIcon().toString()), widget.getX() ,widget.getY());
+                        panel.remove(widget);
+                    }
+                    
                     MatUtil.show(newImg, lPhoto);
 
                     previous.push(img);
                     img = newImg;
-
-                    widget = null;
-                    addingWidget = false;
+                    
+                    MatUtil.save(fileChooser.getSelectedFile().getAbsolutePath(), img);
+                    JOptionPane.showMessageDialog(null, "Salvo!");
                 }
+                
+            } catch(Exception ex) {
+                JOptionPane.showMessageDialog(null, "Erro ao salvar, tente colocar o caminho com o nome do arquivo!");
+                System.out.println(ex.getMessage());
             }
-
+            
+        }
+    }//GEN-LAST:event_saveActionPerformed
+    
+    
+    private void addMouseListeners() {
+        
+        MainWindow mw = this;
+        this.addMouseMotionListener(new MouseAdapter() {
+            
             @Override
-            public void mousePressed(MouseEvent e) {}
-
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-
-            @Override
-            public void mouseExited(MouseEvent e) {}
+            public void mouseDragged(MouseEvent e) {
+                updateWidgetLocation(e.getPoint());
+            }
         });
         
+        this.addMouseListener(new MouseAdapter() {
+            
+            @Override
+            public void mouseClicked(MouseEvent e){
+                updateWidgetLocation(e.getPoint());
+            }
+            
+        });
     }
+    
+    private void updateWidgetLocation(Point p){
+        if (!WIDGETS.isEmpty()) {
+            
+            p.setLocation(p.x+2, p.y-47);
+            
+            JLabel widgetLabel = WIDGETS.get(WIDGETS.size()-1);
+            widgetLabel.setLocation(p);
+            widgetLabel.repaint();
+        }
+    }
+
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -745,15 +818,17 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem glitchWave;
     private javax.swing.JMenuItem gray;
     private javax.swing.JMenuItem inversor;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JLabel lPhoto;
     private javax.swing.JLabel lb;
+    private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem morphology;
     private javax.swing.JButton okButton;
     private javax.swing.JMenu options;
+    private javax.swing.JPanel panel;
     private javax.swing.JMenu photoSelection;
+    private javax.swing.JMenuItem save;
     private javax.swing.JTextField txtxLength;
     private javax.swing.ButtonGroup vhs;
     private javax.swing.JRadioButton vhs_1;
