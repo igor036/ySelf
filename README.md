@@ -31,5 +31,5 @@ The project was developed with the intention of studying opencv !
 </p>
 
 <p align="center">
-  <img src="screenshot/vhs.png">
+  <img src="screenshot/vhs.jpg">
 </p>
