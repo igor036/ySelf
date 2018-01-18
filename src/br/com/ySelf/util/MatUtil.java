@@ -19,7 +19,6 @@ import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 
 public abstract class MatUtil extends JFrame {
@@ -111,13 +110,15 @@ public abstract class MatUtil extends JFrame {
             double sloopOfFace = Detection.sloopOfFace(img.submat(fr));
             rotate(sub, sloopOfFace);
             
+           
             fr.x += sloopOfFace;
+            
             
             Mat face = img.submat(fr);
             Imgproc.resize(sub, sub, face.size());
             
             overlay(face, sub);
-         
+
         }
     }
     
@@ -141,9 +142,9 @@ public abstract class MatUtil extends JFrame {
 
 
         for (Rect rect : eyes) { 
-            
+            /*
             double sloopOfFace = Detection.sloopOfFace(img.submat(rect));
-            rotate(sub, sloopOfFace);
+            rotate(sub, sloopOfFace);*/
             
             Mat face = img.submat(rect);
             Imgproc.resize(sub, sub, face.size());
@@ -174,7 +175,7 @@ public abstract class MatUtil extends JFrame {
                 double[] pixel2  = widget.get(x, y);
                 
                 double alpha = pixel2[3] / 255f;
-                
+                    
                 for(int i = 0; i < 3; i ++)  
                     pixel1[i] = pixel2[i] * alpha + pixel1[i] * (1 -alpha);
                 
