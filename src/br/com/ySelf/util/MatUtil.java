@@ -19,6 +19,7 @@ import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 
 public abstract class MatUtil extends JFrame {
@@ -96,21 +97,38 @@ public abstract class MatUtil extends JFrame {
         Mat sub = readImg(png);
 
         for (Rect fr : faces) { 
-
+            
+            
             fr.x -= 5;
             fr.y += 5;
             fr.width += 15;
-            fr.height += 70;
+            fr.height += 70;                                                         
 
+            
             if (img.width() - fr.width < 400) 
                 fr.y -= 20;
             
+            double sloopOfFace = Detection.sloopOfFace(img.submat(fr));
+            rotate(sub, sloopOfFace);
+            
+            fr.x += sloopOfFace;
+            
             Mat face = img.submat(fr);
             Imgproc.resize(sub, sub, face.size());
-
+            
             overlay(face, sub);
          
         }
+    }
+    
+    public static void rotate(Mat img,double angle) {
+        
+        Point center = new Point(img.cols()/2, img.rows()/2);
+        Mat rot_mat = Imgproc.getRotationMatrix2D(center, angle, 1);
+        Mat rotated = new Mat();
+        
+        Imgproc.warpAffine(img, img, rot_mat, img.size(), Imgproc.INTER_CUBIC);
+        
     }
     
     public static void glasses(Mat img, String png) {
@@ -123,6 +141,9 @@ public abstract class MatUtil extends JFrame {
 
 
         for (Rect rect : eyes) { 
+            
+            double sloopOfFace = Detection.sloopOfFace(img.submat(rect));
+            rotate(sub, sloopOfFace);
             
             Mat face = img.submat(rect);
             Imgproc.resize(sub, sub, face.size());
@@ -183,7 +204,8 @@ public abstract class MatUtil extends JFrame {
         }
     }
     
-    private static void sumMat(Mat img, Mat mask){
+    
+    public static void sumMat(Mat img, Mat mask){
         
         Imgproc.resize(mask, mask, img.size());
         
@@ -253,14 +275,6 @@ public abstract class MatUtil extends JFrame {
         img.copyTo(imgCopy);
         return imgCopy;
     }
-
-    public static void blur(Mat mat, int size) {
-        
-        if (size % 3 != 0)
-            size += 3;
-        
-        Imgproc.GaussianBlur(mat, mat, new Size(size, size), Core.BORDER_DEFAULT);
-    }
     
     public static byte[] toByteArray(Mat mat) {
 
@@ -271,6 +285,15 @@ public abstract class MatUtil extends JFrame {
 
         return buffer;
     }
+    
+    public static void blur(Mat mat, int size) {
+        
+        if (size % 3 != 0)
+            size += 3;
+        
+        Imgproc.GaussianBlur(mat, mat, new Size(size, size), Core.BORDER_DEFAULT);
+    }
+    
     
     public static void grayScale(Mat img){
         Imgproc.cvtColor(img, img, Imgproc.COLOR_RGB2GRAY);

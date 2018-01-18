@@ -8,14 +8,12 @@ package br.com.ySelf.window;
 
 import br.com.ySelf.util.EColor;
 import br.com.ySelf.util.MatUtil;
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.util.List;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Stack;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -106,6 +104,7 @@ public class MainWindow extends javax.swing.JFrame {
         glitchButton = new javax.swing.JMenu();
         glitchWave = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
 
         colors.add(blue);
         blue.setText("Blue");
@@ -442,6 +441,14 @@ public class MainWindow extends javax.swing.JFrame {
         });
         glitchButton.add(jMenuItem2);
 
+        jMenuItem3.setText("Somar");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        glitchButton.add(jMenuItem3);
+
         menuBar.add(glitchButton);
 
         setJMenuBar(menuBar);
@@ -763,6 +770,25 @@ public class MainWindow extends javax.swing.JFrame {
             
         }
     }//GEN-LAST:event_saveActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        
+        
+        JFileChooser fileChooser = new JFileChooser();
+        
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
+            
+             Mat newImg = MatUtil.copy(img);
+             
+             MatUtil.sumMat(newImg, MatUtil.readImg(fileChooser.getSelectedFile().getAbsolutePath()));
+             MatUtil.show(newImg, lPhoto);
+             
+             previous.push(img);
+             img = newImg;
+                    
+        }
+        
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
     
     
     private void addMouseListeners() {
@@ -820,6 +846,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem inversor;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JLabel lPhoto;
     private javax.swing.JLabel lb;
     private javax.swing.JMenuBar menuBar;

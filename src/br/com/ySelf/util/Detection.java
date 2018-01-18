@@ -6,6 +6,7 @@ GitHub: https://github.com/igor036
 
 package br.com.ySelf.util;
 
+import org.opencv.core.Core;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
@@ -100,6 +101,7 @@ public abstract class Detection {
         return eyes;
     }
     
+    
     private static Rect[] eyesOfFace(Mat img){
     
         if (!eyeIsStarted) {
@@ -124,5 +126,18 @@ public abstract class Detection {
         Imgproc.equalizeHist(processImg, processImg);
 
         return processImg;
+    }
+    
+    public static int sloopOfFace(Mat img) {
+        
+        Rect[] eyes = eyesOfFace(img);
+        
+        if (eyes.length <= 1)
+            return 0;
+        
+        if (eyes[0].x < eyes[1].x)
+            return eyes[0].y - eyes[1].y;
+        
+        return eyes[1].y - eyes[0].y;
     }
 }
