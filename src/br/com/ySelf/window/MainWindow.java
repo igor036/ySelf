@@ -929,7 +929,6 @@ public class MainWindow extends javax.swing.JFrame {
     
     private void addMouseListeners() {
         
-        MainWindow mw = this;
         panel.addMouseMotionListener(new MouseAdapter() {
             
             @Override
@@ -986,9 +985,11 @@ public class MainWindow extends javax.swing.JFrame {
     }
     
     private void setRegionSize(int width, int height) {
-        width -= REGION.getX();
-        height -= REGION.getY();
-        REGION.setBounds(REGION.getX(), REGION.getY(), REGION.getX() + (width-40), REGION.getX() + (height-40));
+        
+        width  -= REGION.getX() *2;
+        height -= REGION.getY() *2;
+        
+        REGION.setBounds(REGION.getX(), REGION.getY(), REGION.getX() + width, REGION.getX() + height);
     }
     
     private void removeRegion(){
