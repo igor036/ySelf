@@ -10,6 +10,7 @@ import java.awt.image.DataBufferByte;
 import java.io.File;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import org.opencv.core.Core;
@@ -19,6 +20,7 @@ import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 
 public abstract class MatUtil extends JFrame {
@@ -174,10 +176,20 @@ public abstract class MatUtil extends JFrame {
                 double[] pixel1  = img.get(x, y);
                 double[] pixel2  = widget.get(x, y);
                 
-                double alpha = pixel2[3] / 255f;
+                //PNG WITH OPACITY
+                if (pixel2.length == 4) {
                     
-                for(int i = 0; i < 3; i ++)  
-                    pixel1[i] = pixel2[i] * alpha + pixel1[i] * (1 -alpha);
+                    double alpha = pixel2[3] / 255f;
+                    
+                    for(int i = 0; i < 3; i ++)  
+                        pixel1[i] = pixel2[i] * alpha + pixel1[i] * (1 -alpha);
+                    
+                } 
+                
+               //PHOTO WITHOUT OPACITY
+                else 
+                    for(int i = 0; i < 3; i ++)  
+                        pixel1[i] = pixel2[i];
                 
                 
                 img.put(x, y, pixel1);
@@ -204,6 +216,31 @@ public abstract class MatUtil extends JFrame {
             }
         }
     }
+    
+    
+    public static void glitchWave(Mat img, int waveLength ,EColor color, Rect region) {
+           
+        Mat subRegion = img.submat(region);
+        Mat sub = copy(subRegion);
+        
+        for (int x = 0; x < sub.rows(); x++) {
+            for(int y = 0; y < sub.cols(); y++) {
+                
+                double[] pixel1 = subRegion.get(x, y);
+                
+                int xWave = x - waveLength >= 0 ? x-waveLength : waveLength-x;
+                int yWave = y - waveLength >= 0 ? y-waveLength : waveLength-y;
+                
+                double[] pixel2 = sub.get(xWave, yWave);
+                pixel1[color.colorValue()] = pixel2[color.colorValue()];
+                
+                subRegion.put(x, y, pixel1);
+            }
+        }
+    }
+    
+    
+    
     
     
     public static void sumMat(Mat img, Mat mask){
@@ -239,6 +276,23 @@ public abstract class MatUtil extends JFrame {
         }
     }
     
+    public static void darken(Mat img, int darkLevel, Rect region) {
+        
+        Mat sub = img.submat(region);
+        
+        for (int x = 0; x < sub.rows(); x++) {
+            for(int y = 0; y < sub.cols(); y++) {
+                
+                double[] pixel = sub.get(x, y);
+                
+                for (int rgb = 0; rgb < 3; rgb++)
+                    pixel[rgb] -= darkLevel;
+                
+                sub.put(x, y, pixel);
+            }    
+        }
+    }
+    
     public static void vhs(Mat img, String VHS){
         
         if (!fileExist(VHS))
@@ -252,6 +306,13 @@ public abstract class MatUtil extends JFrame {
              
         Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(morph_size, morph_size));
         Imgproc.morphologyEx(img, img, Imgproc.MORPH_OPEN, element);
+        
+    }
+    
+    public static void morphology(Mat img,int morph_size, Rect region) {
+             
+        Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(morph_size, morph_size));
+        Imgproc.morphologyEx(img.submat(region), img.submat(region), Imgproc.MORPH_OPEN, element);
         
     }
     
@@ -269,6 +330,17 @@ public abstract class MatUtil extends JFrame {
             buffer[i] *= -1;
         
         img.put(0,0, buffer);
+    }
+    
+    public static void inversor(Mat img,Rect region){
+        
+        Mat sub = img.submat(region);
+        byte[] buffer = toByteArray(sub);
+        
+        for (int i = 0; i < buffer.length; i++)
+            buffer[i] *= -1;
+        
+        sub.put(0,0, buffer);
     }
     
     public static Mat copy(Mat img){
@@ -295,10 +367,32 @@ public abstract class MatUtil extends JFrame {
         Imgproc.GaussianBlur(mat, mat, new Size(size, size), Core.BORDER_DEFAULT);
     }
     
+    public static void blur(Mat mat, int size, Rect region) {
+        
+        if (size % 3 != 0)
+            size += 3;
+        
+        Imgproc.GaussianBlur(mat.submat(region), mat.submat(region), new Size(size, size), Core.BORDER_DEFAULT);
+    }
+    
     
     public static void grayScale(Mat img){
         Imgproc.cvtColor(img, img, Imgproc.COLOR_RGB2GRAY);
     }
+    
+    public static void delete(Mat img, Rect region){
+        img.submat(region).setTo(new Scalar(0, 0, 0));
+    }
+    
+     public static void grayScale(Mat img,Rect region){
+        
+        Mat sub = img.submat(region);
+        Imgproc.cvtColor(sub, sub, Imgproc.COLOR_RGB2GRAY);
+        Imgproc.cvtColor(sub,sub,Imgproc.COLOR_GRAY2BGR);
+        
+        sub.copyTo(img.submat(region));
+     }
+    
     
     public static Mat readImg(String url) {
         return Imgcodecs.imread(url,Imgcodecs.IMREAD_UNCHANGED);
@@ -308,7 +402,22 @@ public abstract class MatUtil extends JFrame {
         return new File(url).exists();
     }
     
-    public static void save(String path, Mat img){
+    public static Mat cut(Mat img,Rect region) {
+        return img.submat(region);
+    }
+    
+    public static void save(String path, Mat img) {
         Imgcodecs.imwrite(path, img);
+    }
+    
+    public static Rect getRect(JComponent c){
+    
+        int x = c.getX();
+        int y = c.getY();
+        
+        int width  =  c.getWidth();
+        int height =  c.getHeight();
+        
+        return new Rect(x, y, width, height);
     }
 }

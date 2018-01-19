@@ -8,12 +8,16 @@ package br.com.ySelf.window;
 
 import br.com.ySelf.util.EColor;
 import br.com.ySelf.util.MatUtil;
+import java.awt.Color;
+
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.util.List;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Stack;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -23,17 +27,26 @@ import org.opencv.core.Mat;
 
 public class MainWindow extends javax.swing.JFrame {
 
-    private Mat img;
-    private Stack<Mat> previous;
-    private Stack<Mat> next;
+    //control of photo
+    private Mat img;              //actually
+    private Stack<Mat> previous; //ctrl+z 
+    private Stack<Mat> next;    //control + y
+    
+    //glitch wave
     private int waveLength;
     private EColor color;
    
     //widget
     private String widgetPath;
-    private boolean addingWidget = false;
     private final List<String> WIDGET_EXTENSION;
     private final List<JLabel> WIDGETS;
+    
+    //select region
+    private final JLabel REGION;
+    
+    //control variables of listeners
+    private boolean addingWidget = false;
+    private boolean selectRegion = false;
     
     public MainWindow() {
         
@@ -49,6 +62,7 @@ public class MainWindow extends javax.swing.JFrame {
         WIDGETS = new ArrayList<>();
         previous = new Stack<>();
         next = new Stack<>();
+        REGION = new JLabel();
         
         WIDGET_EXTENSION.add("JPG");
         WIDGET_EXTENSION.add("JPEG");
@@ -90,6 +104,9 @@ public class MainWindow extends javax.swing.JFrame {
         ctrlZ = new javax.swing.JMenuItem();
         ctrlY = new javax.swing.JMenuItem();
         widgetBt = new javax.swing.JMenuItem();
+        select = new javax.swing.JMenuItem();
+        delete = new javax.swing.JMenuItem();
+        cut = new javax.swing.JMenuItem();
         save = new javax.swing.JMenuItem();
         btMasks = new javax.swing.JMenu();
         dogMask = new javax.swing.JMenuItem();
@@ -272,6 +289,11 @@ public class MainWindow extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         lPhoto.setText("Selecione uma imagem  ...");
 
@@ -326,6 +348,33 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         options.add(widgetBt);
+
+        select.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        select.setText("Selecionar");
+        select.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectActionPerformed(evt);
+            }
+        });
+        options.add(select);
+
+        delete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+        delete.setText("Deletar");
+        delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteActionPerformed(evt);
+            }
+        });
+        options.add(delete);
+
+        cut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        cut.setText("Cortar");
+        cut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cutActionPerformed(evt);
+            }
+        });
+        options.add(cut);
 
         save.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         save.setText("Salvar");
@@ -441,6 +490,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         glitchButton.add(jMenuItem2);
 
+        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem3.setText("Somar");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -520,7 +570,14 @@ public class MainWindow extends javax.swing.JFrame {
         
         Mat newImg = MatUtil.copy(img);
         
-        MatUtil.grayScale(newImg);
+        if (selectRegion) {
+            
+            MatUtil.grayScale(newImg,MatUtil.getRect(REGION));
+            removeRegion();
+       
+        } else
+            MatUtil.grayScale(newImg);
+        
         MatUtil.show(newImg, lPhoto);
         
         previous.push(img);
@@ -533,7 +590,14 @@ public class MainWindow extends javax.swing.JFrame {
         
         Mat newImg = MatUtil.copy(img);
         
-        MatUtil.blur(newImg,blurLevel);
+        if (selectRegion) {
+            
+            MatUtil.blur(newImg,blurLevel,MatUtil.getRect(REGION));
+            removeRegion();
+            
+        } else
+            MatUtil.blur(newImg,blurLevel);
+        
         MatUtil.show(newImg, lPhoto);
         
         previous.push(img);
@@ -545,7 +609,11 @@ public class MainWindow extends javax.swing.JFrame {
        
         Mat newImg = MatUtil.copy(img);
         
-        MatUtil.inversor(newImg);
+        if (selectRegion) {
+            MatUtil.inversor(newImg,MatUtil.getRect(REGION));
+            removeRegion();
+        } else
+            MatUtil.inversor(newImg);
         MatUtil.show(newImg, lPhoto);
         
         previous.push(img);
@@ -595,7 +663,12 @@ public class MainWindow extends javax.swing.JFrame {
         
         Mat newImg = MatUtil.copy(img);
         
-        MatUtil.glitchWave(newImg, waveLength, color);
+        if (selectRegion){
+            MatUtil.glitchWave(newImg, waveLength, color,MatUtil.getRect(REGION));
+            removeRegion();
+        } else
+            MatUtil.glitchWave(newImg, waveLength, color);
+        
         MatUtil.show(newImg, lPhoto);
 
         previous.push(img);
@@ -633,7 +706,11 @@ public class MainWindow extends javax.swing.JFrame {
             
             Mat newImg = MatUtil.copy(img);
         
-            MatUtil.morphology(newImg, morph_size);
+            if (selectRegion){
+                MatUtil.morphology(newImg, morph_size,MatUtil.getRect(REGION));
+                removeRegion();
+            } else
+                MatUtil.morphology(newImg, morph_size);
             MatUtil.show(newImg, lPhoto);
 
             previous.push(img);
@@ -652,8 +729,12 @@ public class MainWindow extends javax.swing.JFrame {
             int darkLevel = Integer.parseInt(JOptionPane.showInputDialog(null,"Nível"));
             
             Mat newImg = MatUtil.copy(img);
-        
-            MatUtil.darken(newImg, darkLevel);
+            
+            if (selectRegion){
+                MatUtil.darken(newImg, darkLevel,MatUtil.getRect(REGION));
+                removeRegion();
+            } else
+                MatUtil.darken(newImg, darkLevel);
             MatUtil.show(newImg, lPhoto);
 
             previous.push(img);
@@ -730,7 +811,8 @@ public class MainWindow extends javax.swing.JFrame {
                 
                 WIDGETS.add(widgetLabel);
                 
-
+                addingWidget = true;
+                
             } else 
                 JOptionPane.showMessageDialog(null, "O arquivo selecionado não é válido!");
         }
@@ -761,6 +843,10 @@ public class MainWindow extends javax.swing.JFrame {
                     
                     MatUtil.save(fileChooser.getSelectedFile().getAbsolutePath(), img);
                     JOptionPane.showMessageDialog(null, "Salvo!");
+                    
+                    WIDGETS.clear();
+                    
+                    addingWidget = false;
                 }
                 
             } catch(Exception ex) {
@@ -789,30 +875,87 @@ public class MainWindow extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void selectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectActionPerformed
+        selectRegion = true;
+    }//GEN-LAST:event_selectActionPerformed
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        
+        if (evt.getKeyCode() == KeyEvent.VK_ESCAPE){
+            
+            if (selectRegion)
+                removeRegion();
+            else if (addingWidget)
+                removeWidget();
+            
+        }
+    }//GEN-LAST:event_formKeyPressed
+
+    private void cutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cutActionPerformed
+        
+        if (!selectRegion)
+            JOptionPane.showMessageDialog(null, "Selecione uma área primeiro!");
+        else {
+
+            Mat newImg =MatUtil.cut(img, MatUtil.getRect(REGION));
+            MatUtil.show(newImg, lPhoto);
+            
+            previous.push(img);
+            img = newImg;
+            
+            removeRegion();
+        }
+    }//GEN-LAST:event_cutActionPerformed
+
+    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
+        
+        if (!selectRegion)
+            JOptionPane.showMessageDialog(null, "Selecione uma área primeiro!");
+        else {
+
+            Mat newImg = MatUtil.copy(img);
+            MatUtil.delete(newImg, MatUtil.getRect(REGION));
+            MatUtil.show(newImg, lPhoto);
+            
+            previous.push(img);
+            img = newImg;
+            
+            removeRegion();
+        }
+        
+    }//GEN-LAST:event_deleteActionPerformed
     
     
     private void addMouseListeners() {
         
         MainWindow mw = this;
-        this.addMouseMotionListener(new MouseAdapter() {
+        panel.addMouseMotionListener(new MouseAdapter() {
             
             @Override
             public void mouseDragged(MouseEvent e) {
-                updateWidgetLocation(e.getPoint());
+                if (addingWidget)
+                    updateWidgetLocation(e.getPoint());
+                else if (selectRegion)
+                    setRegionSize(e.getX(), e.getY());
             }
         });
         
-        this.addMouseListener(new MouseAdapter() {
+        panel.addMouseListener(new MouseAdapter() {
             
             @Override
-            public void mouseClicked(MouseEvent e){
-                updateWidgetLocation(e.getPoint());
+            public void mouseClicked(MouseEvent e) {
+                
+                if (addingWidget)
+                    updateWidgetLocation(e.getPoint());
+                else if (selectRegion)
+                    addRegion(e.getPoint());
             }
-            
         });
     }
     
-    private void updateWidgetLocation(Point p){
+    private void updateWidgetLocation(Point p) {
+        
         if (!WIDGETS.isEmpty()) {
             
             p.setLocation(p.x+2, p.y-47);
@@ -822,7 +965,55 @@ public class MainWindow extends javax.swing.JFrame {
             widgetLabel.repaint();
         }
     }
+    
+    private void addRegion(Point p){
+        
+        REGION.setLocation(p);
+        REGION.setSize(20, 20);
+        REGION.setBorder(BorderFactory.createLineBorder(Color.cyan));
+        
+        panel.setLayout(null);
+        panel.add(REGION);
+        panel.setComponentZOrder(REGION, 0);
+        
+        for (int i = 1; i < WIDGETS.size(); i++)
+            panel.setComponentZOrder(WIDGETS.get(i), i);
 
+        panel.setComponentZOrder(lPhoto, WIDGETS.size()+1);
+        panel.repaint();
+        panel.revalidate();
+        
+    }
+    
+    private void setRegionSize(int width, int height) {
+        width -= REGION.getX();
+        height -= REGION.getY();
+        REGION.setBounds(REGION.getX(), REGION.getY(), REGION.getX() + (width-40), REGION.getX() + (height-40));
+    }
+    
+    private void removeRegion(){
+        
+        panel.setLayout(null);
+        panel.remove(REGION);
+        panel.repaint();
+        panel.revalidate();
+        selectRegion = false;
+    }
+    
+    private void removeWidget(){
+        
+        if(!WIDGETS.isEmpty()) {
+        
+            JLabel widget = WIDGETS.get(WIDGETS.size()-1);
+            WIDGETS.remove(WIDGETS.size()-1);
+            
+            panel.setLayout(null);
+            panel.remove(widget);
+            panel.repaint();
+            panel.revalidate();
+        }
+        
+    }
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -836,7 +1027,9 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.ButtonGroup colors;
     private javax.swing.JMenuItem ctrlY;
     private javax.swing.JMenuItem ctrlZ;
+    private javax.swing.JMenuItem cut;
     private javax.swing.JMenuItem darken;
+    private javax.swing.JMenuItem delete;
     private javax.swing.JMenuItem dogMask;
     private javax.swing.JMenu filter;
     private javax.swing.JMenuItem glasses1Mask;
@@ -856,6 +1049,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel panel;
     private javax.swing.JMenu photoSelection;
     private javax.swing.JMenuItem save;
+    private javax.swing.JMenuItem select;
     private javax.swing.JTextField txtxLength;
     private javax.swing.ButtonGroup vhs;
     private javax.swing.JRadioButton vhs_1;

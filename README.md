@@ -33,3 +33,19 @@ The project was developed with the intention of studying opencv !
 <p align="center">
   <img src="screenshot/vhs.jpg">
 </p>
+
+<p align="center">
+  <img src="screenshot/selectRegion.png">
+</p>
+
+<p align="center">
+  <img src="screenshot/dakenInRegion.png">
+</p>
+
+<p align="center">
+  <img src="screenshot/grayScaleInRegion.png">
+</p>
+
+<p align="center">
+  <img src="screenshot/waveInRegion.png">
+</p>
