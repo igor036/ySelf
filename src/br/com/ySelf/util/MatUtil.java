@@ -30,7 +30,6 @@ public abstract class MatUtil extends JFrame {
      */
     
     //dog
-    public static final String DOG_PNG = "img\\dog.png";
     public static final String DOG_SNOUT = "img\\Dog\\dog_snout.png";
     public static final String DOG_LEFT_EAR = "img\\Dog\\dog_left_ear.png";
     public static final String DOG_RIGHT_EAR = "img\\Dog\\dog_right_ear.png";
@@ -115,7 +114,7 @@ public abstract class MatUtil extends JFrame {
             //resize
             Imgproc.resize(dog_left_ear, dog_left_ear, size);
             Imgproc.resize(dog_right_ear, dog_right_ear, size);
-            Imgproc.resize(dog_snout, dog_snout, new Size(width * 0.80, height * 0.80));
+            Imgproc.resize(dog_snout, dog_snout, new Size(width * 0.85, height * 0.85));
             
             //rotation
             rotate(dog_left_ear, sloopOfFace);
@@ -135,16 +134,12 @@ public abstract class MatUtil extends JFrame {
             overlay(region_right_ear, dog_right_ear);
             
             //snout
-            if (fr.width >= 220)
-                x = fr.x + (fr.width/2)  - Math.abs(sloopOfFace) * (int)Math.round(fr.width * 0.04);
-            else
-                x = fr.x + (fr.width/2)  - Math.abs(sloopOfFace) * (int)Math.round(fr.width * 0.02);
-            
+            Rect noses = Detection.rectOfNose(img.submat(fr));
+            x = fr.x + noses.x;
             y = fr.y + (fr.height/2) - Math.abs(sloopOfFace);
             
             Mat region_snout = img.submat( new Rect(x, y, width, height));
             overlay(region_snout, dog_snout);
-            
         }
     }
     

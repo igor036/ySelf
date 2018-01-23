@@ -13,18 +13,32 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Point;
+import org.opencv.core.Size;
 
 public abstract class Detection {
 
     //var's
     private static CascadeClassifier face_cascade;
     private static CascadeClassifier eye_cascade;
-    private static boolean faceIsStarted    = false;
-    private static boolean eyeIsStarted     = false;
-    private static boolean showDetection    = false;
+    private static CascadeClassifier nose_cascade;
+    private static boolean faceIsStarted     = false;
+    private static boolean eyeIsStarted      = false;
+    private static boolean noseIsStarted     = false;
+    private static boolean showDetection     = false;
     
     //const's
     private static final int ADJUSTMENT_X_WIDTH_GLASSES = 20;
+    
+    private static void nose_start() {
+
+        nose_cascade = new CascadeClassifier("xml\\haarcascade_nose.xml");
+        if (!nose_cascade.load("xml\\haarcascade_nose.xml")) {
+            System.out.println("error loading xml nose cascade!");
+            System.exit(1);
+        }
+
+        noseIsStarted = true;
+    }
     
     private static void face_start() {
 
@@ -100,7 +114,6 @@ public abstract class Detection {
         return eyes;
     }
     
-    
     private static Rect[] eyesOfFace(Mat img){
     
         if (!eyeIsStarted) {
@@ -109,6 +122,8 @@ public abstract class Detection {
         
         MatOfRect matOfEyes = new MatOfRect();
         Mat processImg = preProcess(img);
+        
+        Imgproc.resize(processImg, processImg, new Size(22, 15));
 
         eye_cascade.detectMultiScale(img, matOfEyes);
 
@@ -117,6 +132,24 @@ public abstract class Detection {
         return eyes;
     }
     
+    public static Rect rectOfNose(Mat img){
+        
+        if(!noseIsStarted)
+            nose_start();
+        
+        MatOfRect matOfNoses = new MatOfRect();
+        Mat processImg = preProcess(img);
+
+        nose_cascade.detectMultiScale(img, matOfNoses);
+        
+        
+        Rect[] noses = matOfNoses.toArray();
+        
+        if (noses.length > 1 && noses[1].x < noses[0].x)
+            return noses[1];
+        
+        return noses[0];
+    }
 
     private static Mat preProcess(Mat img) {
 
