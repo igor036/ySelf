@@ -114,7 +114,7 @@ public abstract class Detection {
         return eyes;
     }
     
-    private static Rect[] eyesOfFace(Mat img){
+    public static Rect[] eyesOfFace(Mat img){
     
         if (!eyeIsStarted) {
             eye_start();
@@ -144,7 +144,7 @@ public abstract class Detection {
         
         
         Rect[] noses = matOfNoses.toArray();
-        
+        System.out.println(noses.length);
         if (noses.length > 1 && noses[1].x < noses[0].x)
             return noses[1];
         

@@ -129,14 +129,24 @@ public abstract class MatUtil extends JFrame {
             //right ear
             x +=  fr.width - (fr.width * 0.35);
             y += Math.abs(sloopOfFace);
+            x += sloopOfFace;
             
             Mat region_right_ear = img.submat( new Rect(x, y, width, height));
             overlay(region_right_ear, dog_right_ear);
             
             //snout
-            Rect noses = Detection.rectOfNose(img.submat(fr));
-            x = fr.x + noses.x;
+            
+            Rect[] eyesOfFace = Detection.eyesOfFace(img.submat(fr));
+            
+            if (eyesOfFace.length == 0 || eyesOfFace[0].x < eyesOfFace[1].x) 
+                x = fr.x + eyesOfFace[0].x + eyesOfFace[0].width;
+            else 
+                x = fr.x + eyesOfFace[1].x + eyesOfFace[1].width;
+            
+            
+            x -= fr.width * 0.06;
             y = fr.y + (fr.height/2) - Math.abs(sloopOfFace);
+            x += sloopOfFace;
             
             Mat region_snout = img.submat( new Rect(x, y, width, height));
             overlay(region_snout, dog_snout);
