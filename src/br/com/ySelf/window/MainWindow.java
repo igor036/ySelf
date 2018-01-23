@@ -30,7 +30,7 @@ public class MainWindow extends javax.swing.JFrame {
     //control of photo
     private Mat img;              //actually
     private Stack<Mat> previous; //ctrl+z 
-    private Stack<Mat> next;    //control + y
+    private Stack<Mat> next;     //ctrl+y
     
     //glitch wave
     private int waveLength;
@@ -41,12 +41,14 @@ public class MainWindow extends javax.swing.JFrame {
     private final List<String> WIDGET_EXTENSION;
     private final List<JLabel> WIDGETS;
     
-    //select region
-    private final JLabel REGION;
+    //outer's
+    private final JLabel REGION; //select region
+    private Mat copyRegion;           //copy region
     
     //control variables of listeners
     private boolean addingWidget = false;
     private boolean selectRegion = false;
+    private boolean copying      = false;
     
     public MainWindow() {
         
@@ -98,15 +100,16 @@ public class MainWindow extends javax.swing.JFrame {
         vhs = new javax.swing.ButtonGroup();
         panel = new javax.swing.JPanel();
         lPhoto = new javax.swing.JLabel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         menuBar = new javax.swing.JMenuBar();
         photoSelection = new javax.swing.JMenu();
         options = new javax.swing.JMenu();
         ctrlZ = new javax.swing.JMenuItem();
         ctrlY = new javax.swing.JMenuItem();
         widgetBt = new javax.swing.JMenuItem();
-        select = new javax.swing.JMenuItem();
-        delete = new javax.swing.JMenuItem();
+        copy = new javax.swing.JMenuItem();
         cut = new javax.swing.JMenuItem();
+        delete = new javax.swing.JMenuItem();
         save = new javax.swing.JMenuItem();
         btMasks = new javax.swing.JMenu();
         dogMask = new javax.swing.JMenuItem();
@@ -122,6 +125,8 @@ public class MainWindow extends javax.swing.JFrame {
         glitchWave = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        tools = new javax.swing.JMenu();
+        select = new javax.swing.JMenuItem();
 
         colors.add(blue);
         blue.setText("Blue");
@@ -349,23 +354,14 @@ public class MainWindow extends javax.swing.JFrame {
         });
         options.add(widgetBt);
 
-        select.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        select.setText("Selecionar");
-        select.addActionListener(new java.awt.event.ActionListener() {
+        copy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
+        copy.setText("Copiar");
+        copy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                selectActionPerformed(evt);
+                copyActionPerformed(evt);
             }
         });
-        options.add(select);
-
-        delete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
-        delete.setText("Deletar");
-        delete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteActionPerformed(evt);
-            }
-        });
-        options.add(delete);
+        options.add(copy);
 
         cut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         cut.setText("Cortar");
@@ -375,6 +371,15 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         options.add(cut);
+
+        delete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+        delete.setText("Deletar");
+        delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteActionPerformed(evt);
+            }
+        });
+        options.add(delete);
 
         save.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         save.setText("Salvar");
@@ -389,7 +394,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         btMasks.setText("Mascaras");
 
-        dogMask.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
+        dogMask.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, java.awt.event.InputEvent.CTRL_MASK));
         dogMask.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\dog-icon.png")); // NOI18N
         dogMask.setText("Cachorro");
         dogMask.addActionListener(new java.awt.event.ActionListener() {
@@ -501,6 +506,19 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuBar.add(glitchButton);
 
+        tools.setText("Ferramentas");
+
+        select.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        select.setText("Selecionar");
+        select.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectActionPerformed(evt);
+            }
+        });
+        tools.add(select);
+
+        menuBar.add(tools);
+
         setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -525,7 +543,6 @@ public class MainWindow extends javax.swing.JFrame {
             
             String photoPath = fileChooser.getSelectedFile().getAbsolutePath();
             img = MatUtil.readImg(photoPath);
-            
             MatUtil.show(img, lPhoto);
             
             previous.clear();
@@ -541,7 +558,7 @@ public class MainWindow extends javax.swing.JFrame {
         
         Mat newImg = MatUtil.copy(img);
         
-        MatUtil.dog(newImg, MatUtil.DOG_PNG);
+        MatUtil.dog(newImg);
         MatUtil.show(newImg, lPhoto);
         
         previous.push(img);
@@ -549,19 +566,25 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_dogMaskActionPerformed
 
     private void ctrlZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlZActionPerformed
+        
         if(!previous.isEmpty()){
+            
             next.push(img);
             img = previous.pop();
             MatUtil.show(img, lPhoto);
+            
         } else 
             JOptionPane.showMessageDialog(null, "Não há mais oque desfazer!");
     }//GEN-LAST:event_ctrlZActionPerformed
 
     private void ctrlYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlYActionPerformed
-        if (!next.isEmpty()){
+        
+        if (!next.isEmpty()) {
+            
             previous.push(img);
             img = next.pop();
             MatUtil.show(img, lPhoto);
+        
         } else
             JOptionPane.showMessageDialog(null, "Não há mais oque refazer!");
     }//GEN-LAST:event_ctrlYActionPerformed
@@ -785,6 +808,8 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void widgetBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_widgetBtActionPerformed
         
+        disableListeners();
+        
         JFileChooser fileChooser = new JFileChooser();
 
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -888,7 +913,8 @@ public class MainWindow extends javax.swing.JFrame {
                 removeRegion();
             else if (addingWidget)
                 removeWidget();
-            
+            else if (copying) 
+                disablePasteMode();
         }
     }//GEN-LAST:event_formKeyPressed
 
@@ -921,10 +947,25 @@ public class MainWindow extends javax.swing.JFrame {
             previous.push(img);
             img = newImg;
             
-            removeRegion();
         }
         
     }//GEN-LAST:event_deleteActionPerformed
+
+    private void copyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyActionPerformed
+        
+        disableListeners();
+        
+        copying = true;
+        copyRegion = img.submat(MatUtil.getRect(REGION));
+        
+        JLabel lbRegion = new JLabel();
+        MatUtil.show(copyRegion, lbRegion);
+        
+        REGION.setLayout(null);
+        REGION.add(lbRegion);
+        REGION.repaint();
+        REGION.revalidate();
+    }//GEN-LAST:event_copyActionPerformed
     
     
     private void addMouseListeners() {
@@ -938,6 +979,14 @@ public class MainWindow extends javax.swing.JFrame {
                 else if (selectRegion)
                     setRegionSize(e.getX(), e.getY());
             }
+            
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                if (copying){
+                    REGION.setLocation(e.getPoint());
+                    REGION.repaint();
+                }
+            }
         });
         
         panel.addMouseListener(new MouseAdapter() {
@@ -949,8 +998,20 @@ public class MainWindow extends javax.swing.JFrame {
                     updateWidgetLocation(e.getPoint());
                 else if (selectRegion)
                     addRegion(e.getPoint());
+                else if (copying)
+                    paste();
             }
         });
+    }
+    
+    private void paste() {
+        
+        Mat newImg = MatUtil.copy(img);
+        MatUtil.copyToRegion(newImg, copyRegion, MatUtil.getRect(REGION));
+        MatUtil.show(newImg, lPhoto);
+        
+        previous.push(img);
+        img = newImg;
     }
     
     private void updateWidgetLocation(Point p) {
@@ -1016,6 +1077,15 @@ public class MainWindow extends javax.swing.JFrame {
         
     }
     
+    private void disablePasteMode(){
+        removeRegion();
+        REGION.removeAll();
+        copyRegion = null;
+    }
+    
+    private void disableListeners(){
+        selectRegion = copying = addingWidget = false;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog GlitchVHS;
@@ -1026,12 +1096,14 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenu btMasks;
     private javax.swing.JButton btnVhs;
     private javax.swing.ButtonGroup colors;
+    private javax.swing.JMenuItem copy;
     private javax.swing.JMenuItem ctrlY;
     private javax.swing.JMenuItem ctrlZ;
     private javax.swing.JMenuItem cut;
     private javax.swing.JMenuItem darken;
     private javax.swing.JMenuItem delete;
     private javax.swing.JMenuItem dogMask;
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JMenu filter;
     private javax.swing.JMenuItem glasses1Mask;
     private javax.swing.JMenu glitchButton;
@@ -1051,6 +1123,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenu photoSelection;
     private javax.swing.JMenuItem save;
     private javax.swing.JMenuItem select;
+    private javax.swing.JMenu tools;
     private javax.swing.JTextField txtxLength;
     private javax.swing.ButtonGroup vhs;
     private javax.swing.JRadioButton vhs_1;

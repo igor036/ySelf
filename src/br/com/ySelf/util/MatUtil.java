@@ -31,6 +31,9 @@ public abstract class MatUtil extends JFrame {
     
     //dog
     public static final String DOG_PNG = "img\\dog.png";
+    public static final String DOG_SNOUT = "img\\Dog\\dog_snout.png";
+    public static final String DOG_LEFT_EAR = "img\\Dog\\dog_left_ear.png";
+    public static final String DOG_RIGHT_EAR = "img\\Dog\\dog_right_ear.png";
     
     //glasses
     public static final String GLASSES_1 = "img\\glasses\\glasses_1.png";
@@ -89,38 +92,59 @@ public abstract class MatUtil extends JFrame {
         return bfImg;
     }
     
-    public static void dog(Mat img, String png) {
-
-        if (!fileExist(png))
-            throw new RuntimeException("Mascara DOG não encontrada!");
+    public static void dog(Mat img) {
 
         Rect[] faces = Detection.rectOfFace(img);
-        Mat sub = readImg(png);
 
-        for (Rect fr : faces) { 
+        Mat dog_snout     = readImg(DOG_SNOUT);
+        Mat dog_left_ear  = readImg(DOG_LEFT_EAR);
+        Mat dog_right_ear = readImg(DOG_RIGHT_EAR);
+        
+        for (Rect fr : faces) {            
+            
+            int width  = (int)(fr.width  * 0.35);
+            int height = (int)(fr.height * 0.35);
+            
+            int x = fr.x + (int)(fr.width * 0.07);
+            int y = Math.abs(fr.y - (int)(fr.width * 0.15));
+            
+            int sloopOfFace = Detection.sloopOfFace(img.submat(fr));
+            
+            Size size = new Size(width, height);
+            
+            //resize
+            Imgproc.resize(dog_left_ear, dog_left_ear, size);
+            Imgproc.resize(dog_right_ear, dog_right_ear, size);
+            Imgproc.resize(dog_snout, dog_snout, new Size(width * 0.80, height * 0.80));
+            
+            //rotation
+            rotate(dog_left_ear, sloopOfFace);
+            rotate(dog_right_ear, sloopOfFace);
+            rotate(dog_snout, sloopOfFace);
+            
+            //left ear
+            Mat region_left_ear = img.submat( new Rect(x, y, width, height));
+            overlay(region_left_ear, dog_left_ear);
             
             
-            fr.x -= 5;
-            fr.y += 5;
-            fr.width += 15;
-            fr.height += 70;                                                         
-
+            //right ear
+            x +=  fr.width - (fr.width * 0.35);
+            y += Math.abs(sloopOfFace);
             
-            if (img.width() - fr.width < 400) 
-                fr.y -= 20;
+            Mat region_right_ear = img.submat( new Rect(x, y, width, height));
+            overlay(region_right_ear, dog_right_ear);
             
-            double sloopOfFace = Detection.sloopOfFace(img.submat(fr));
-            rotate(sub, sloopOfFace);
+            //snout
+            if (fr.width >= 220)
+                x = fr.x + (fr.width/2)  - Math.abs(sloopOfFace) * (int)Math.round(fr.width * 0.04);
+            else
+                x = fr.x + (fr.width/2)  - Math.abs(sloopOfFace) * (int)Math.round(fr.width * 0.02);
             
-           
-            fr.x += sloopOfFace;
+            y = fr.y + (fr.height/2) - Math.abs(sloopOfFace);
             
+            Mat region_snout = img.submat( new Rect(x, y, width, height));
+            overlay(region_snout, dog_snout);
             
-            Mat face = img.submat(fr);
-            Imgproc.resize(sub, sub, face.size());
-            
-            overlay(face, sub);
-
         }
     }
     
@@ -143,7 +167,8 @@ public abstract class MatUtil extends JFrame {
         Mat sub = readImg(png);
 
 
-        for (Rect rect : eyes) { 
+        for (Rect rect : eyes) {
+            
             /*
             double sloopOfFace = Detection.sloopOfFace(img.submat(rect));
             rotate(sub, sloopOfFace);*/
@@ -237,11 +262,7 @@ public abstract class MatUtil extends JFrame {
                 subRegion.put(x, y, pixel1);
             }
         }
-    }
-    
-    
-    
-    
+    }    
     
     public static void sumMat(Mat img, Mat mask){
         
@@ -375,23 +396,28 @@ public abstract class MatUtil extends JFrame {
         Imgproc.GaussianBlur(mat.submat(region), mat.submat(region), new Size(size, size), Core.BORDER_DEFAULT);
     }
     
-    
-    public static void grayScale(Mat img){
-        Imgproc.cvtColor(img, img, Imgproc.COLOR_RGB2GRAY);
-    }
-    
-    public static void delete(Mat img, Rect region){
-        img.submat(region).setTo(new Scalar(0, 0, 0));
-    }
-    
-     public static void grayScale(Mat img,Rect region){
+    public static void grayScale(Mat img,Rect region){
         
         Mat sub = img.submat(region);
         Imgproc.cvtColor(sub, sub, Imgproc.COLOR_RGB2GRAY);
         Imgproc.cvtColor(sub,sub,Imgproc.COLOR_GRAY2BGR);
         
         sub.copyTo(img.submat(region));
-     }
+    }
+        
+    
+    public static void grayScale(Mat img) {
+        Imgproc.cvtColor(img, img, Imgproc.COLOR_RGB2GRAY);
+    }
+    
+    public static void delete(Mat img, Rect region) {
+        img.submat(region).setTo(new Scalar(0, 0, 0));
+    }
+    
+    public static void delete(Mat img, int x, int y, int size){
+        Rect region = new Rect(x, y, size,size);
+        img.submat(region).setTo(new Scalar(0, 0, 0));
+    }
     
     
     public static Mat readImg(String url) {
@@ -408,6 +434,10 @@ public abstract class MatUtil extends JFrame {
     
     public static void save(String path, Mat img) {
         Imgcodecs.imwrite(path, img);
+    }
+    
+    public static void copyToRegion(Mat img, Mat copy,Rect region){
+        copy.copyTo(img.submat(region));
     }
     
     public static Rect getRect(JComponent c){

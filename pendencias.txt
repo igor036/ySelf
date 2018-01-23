@@ -1,0 +1,44 @@
+Pendencias ySelf
+
+-Adicionar cópia de área. (Concluído!)
+-Adicionar lapis com seleção de cores.
+-Adicionar coletor de cores.
+-Adicionar rotação nos widget's
+-Adicionar filtros.
+
+-Criar a documentação do projeto.
+
+
+public static void dog(Mat img, String png) {
+
+        if (!fileExist(png))
+            throw new RuntimeException("Mascara DOG não encontrada!");
+
+        Rect[] faces = Detection.rectOfFace(img);
+        Mat sub = readImg(png);
+
+        for (Rect fr : faces) {
+            
+            fr.x -= 5;
+            fr.y += 5;
+            
+            fr.width += 15;
+            fr.height += 70;                                                 
+
+            
+            if (img.width() - fr.width < 400) 
+                fr.y -= 20;
+            
+            
+            double sloopOfFace = Detection.sloopOfFace(img.submat(fr));
+            rotate(sub, sloopOfFace);
+            
+            
+            Mat face = img.submat(fr);
+            Imgproc.resize(sub, sub, face.size());
+            
+            overlay(face, sub);
+
+        }
+    }
+    

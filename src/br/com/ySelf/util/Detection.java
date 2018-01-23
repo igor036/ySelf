@@ -6,7 +6,6 @@ GitHub: https://github.com/igor036
 
 package br.com.ySelf.util;
 
-import org.opencv.core.Core;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
@@ -20,9 +19,9 @@ public abstract class Detection {
     //var's
     private static CascadeClassifier face_cascade;
     private static CascadeClassifier eye_cascade;
-    private static boolean faceIsStarted = false;
-    private static boolean eyeIsStarted  = false;
-    private static boolean showDetection = false;
+    private static boolean faceIsStarted    = false;
+    private static boolean eyeIsStarted     = false;
+    private static boolean showDetection    = false;
     
     //const's
     private static final int ADJUSTMENT_X_WIDTH_GLASSES = 20;
@@ -48,7 +47,7 @@ public abstract class Detection {
 
         eyeIsStarted = true;
     }
-
+    
     public static Rect[] rectOfFace(Mat img) {
 
         if (!faceIsStarted) {
@@ -117,6 +116,7 @@ public abstract class Detection {
         
         return eyes;
     }
+    
 
     private static Mat preProcess(Mat img) {
 
@@ -140,4 +140,5 @@ public abstract class Detection {
         
         return eyes[1].y - eyes[0].y;
     }
+   
 }
