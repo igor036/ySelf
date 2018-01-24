@@ -9,6 +9,7 @@ package br.com.ySelf.window;
 import br.com.ySelf.util.EColor;
 import br.com.ySelf.util.MatUtil;
 import java.awt.Color;
+import java.awt.Component;
 
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -22,6 +23,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollBar;
 import org.opencv.core.Mat;
 
 
@@ -29,6 +31,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     //control of photo
     private Mat img;              //actually
+    private Mat temp;             //temp
     private Stack<Mat> previous; //ctrl+z 
     private Stack<Mat> next;     //ctrl+y
     
@@ -59,6 +62,7 @@ public class MainWindow extends javax.swing.JFrame {
         GlitchWave.setLocationRelativeTo(null);
         GlitchWave.setSize(400, 200);
         GlitchVHS.setSize(500, 200);
+        Propertys.setSize(400,200);
         
         WIDGET_EXTENSION = new ArrayList<>();
         WIDGETS = new ArrayList<>();
@@ -98,6 +102,11 @@ public class MainWindow extends javax.swing.JFrame {
         vhs_1_icon5 = new javax.swing.JLabel();
         btnVhs = new javax.swing.JButton();
         vhs = new javax.swing.ButtonGroup();
+        Propertys = new javax.swing.JDialog();
+        darkenLabel = new javax.swing.JLabel();
+        darkenBar = new javax.swing.JScrollBar();
+        lightenLabel = new javax.swing.JLabel();
+        lightenBar = new javax.swing.JScrollBar();
         panel = new javax.swing.JPanel();
         lPhoto = new javax.swing.JLabel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
@@ -120,13 +129,13 @@ public class MainWindow extends javax.swing.JFrame {
         blur = new javax.swing.JMenuItem();
         inversor = new javax.swing.JMenuItem();
         morphology = new javax.swing.JMenuItem();
-        darken = new javax.swing.JMenuItem();
         glitchButton = new javax.swing.JMenu();
         glitchWave = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         tools = new javax.swing.JMenu();
         select = new javax.swing.JMenuItem();
+        propertys = new javax.swing.JMenu();
 
         colors.add(blue);
         blue.setText("Blue");
@@ -291,6 +300,63 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addComponent(btnVhs)
                 .addContainerGap())
+        );
+
+        darkenLabel.setText("Escurecer:");
+
+        darkenBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
+        darkenBar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                darkenBarMouseReleased(evt);
+            }
+        });
+        darkenBar.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
+            public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
+                darkenBarAdjustmentValueChanged(evt);
+            }
+        });
+
+        lightenLabel.setText("Clarear:");
+
+        lightenBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
+        lightenBar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                lightenBarMouseReleased(evt);
+            }
+        });
+        lightenBar.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
+            public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
+                lightenBarAdjustmentValueChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout PropertysLayout = new javax.swing.GroupLayout(Propertys.getContentPane());
+        Propertys.getContentPane().setLayout(PropertysLayout);
+        PropertysLayout.setHorizontalGroup(
+            PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PropertysLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(darkenLabel)
+                    .addComponent(lightenLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lightenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(darkenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(114, Short.MAX_VALUE))
+        );
+        PropertysLayout.setVerticalGroup(
+            PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PropertysLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(darkenBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(darkenLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lightenBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lightenLabel))
+                .addContainerGap(145, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -464,15 +530,6 @@ public class MainWindow extends javax.swing.JFrame {
         });
         filter.add(morphology);
 
-        darken.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
-        darken.setText("Escurecer");
-        darken.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                darkenActionPerformed(evt);
-            }
-        });
-        filter.add(darken);
-
         menuBar.add(filter);
 
         glitchButton.setText("Glitch");
@@ -518,6 +575,14 @@ public class MainWindow extends javax.swing.JFrame {
         tools.add(select);
 
         menuBar.add(tools);
+
+        propertys.setText("Propriedades");
+        propertys.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                propertysMouseClicked(evt);
+            }
+        });
+        menuBar.add(propertys);
 
         setJMenuBar(menuBar);
 
@@ -745,29 +810,6 @@ public class MainWindow extends javax.swing.JFrame {
         
     }//GEN-LAST:event_morphologyActionPerformed
 
-    private void darkenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_darkenActionPerformed
-        
-        try {
-            
-            int darkLevel = Integer.parseInt(JOptionPane.showInputDialog(null,"Nível"));
-            
-            Mat newImg = MatUtil.copy(img);
-            
-            if (selectRegion){
-                MatUtil.darken(newImg, darkLevel,MatUtil.getRect(REGION));
-                removeRegion();
-            } else
-                MatUtil.darken(newImg, darkLevel);
-            MatUtil.show(newImg, lPhoto);
-
-            previous.push(img);
-            img = newImg;
-            
-        }catch(Exception ex){
-            JOptionPane.showMessageDialog(null, "Tente novamente!");
-        }
-    }//GEN-LAST:event_darkenActionPerformed
-
     private void btnVhsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVhsActionPerformed
       GlitchVHS.dispose();  
     }//GEN-LAST:event_btnVhsActionPerformed
@@ -902,6 +944,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void selectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectActionPerformed
+        disableListeners();
         selectRegion = true;
     }//GEN-LAST:event_selectActionPerformed
 
@@ -965,8 +1008,37 @@ public class MainWindow extends javax.swing.JFrame {
         REGION.add(lbRegion);
         REGION.repaint();
         REGION.revalidate();
+        
     }//GEN-LAST:event_copyActionPerformed
+
+    private void darkenBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_darkenBarAdjustmentValueChanged
+        applyDarken(darkenBar.getValue(), false);
+    }//GEN-LAST:event_darkenBarAdjustmentValueChanged
+
+    private void propertysMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_propertysMouseClicked
+        temp = MatUtil.copy(img);
+        Propertys.setModal(true);
+        Propertys.setVisible(true);
+        previous.push(img);
+        img = temp;
+        restartPorpertyComponentsValues();
+    }//GEN-LAST:event_propertysMouseClicked
+
+    private void lightenBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_lightenBarAdjustmentValueChanged
+        applyLighten(lightenBar.getValue(), false);
+    }//GEN-LAST:event_lightenBarAdjustmentValueChanged
+
+    private void darkenBarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_darkenBarMouseReleased
+        applyDarken(darkenBar.getValue(), true);
+    }//GEN-LAST:event_darkenBarMouseReleased
+
+    private void lightenBarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lightenBarMouseReleased
+        applyLighten(lightenBar.getValue(), true);
+    }//GEN-LAST:event_lightenBarMouseReleased
     
+    
+    
+    //util's method's
     
     private void addMouseListeners() {
         
@@ -1077,6 +1149,45 @@ public class MainWindow extends javax.swing.JFrame {
         
     }
     
+    private void applyLighten(int level, boolean replace){
+        
+        Mat copy = MatUtil.copy(temp);
+        
+        if (selectRegion)
+            MatUtil.lighten(copy, level, MatUtil.getRect(REGION));
+        else
+            MatUtil.lighten(copy, level);
+        
+        MatUtil.show(copy, lPhoto);
+        
+        if (replace)
+            temp = copy;
+        
+    }
+    
+    private void applyDarken(int level, boolean replace){
+        
+        Mat copy = MatUtil.copy(temp);
+        
+        if (selectRegion)
+            MatUtil.darken(copy, level, MatUtil.getRect(REGION));
+        else
+            MatUtil.darken(copy, level);
+        
+        MatUtil.show(copy, lPhoto);
+        
+        if (replace)
+            temp = copy;
+        
+    }
+    
+    private void restartPorpertyComponentsValues(){
+        Component[] components = Propertys.getContentPane().getComponents();
+        for (Component c : components)
+            if ( c instanceof  JScrollBar )
+                ((JScrollBar)c).setValue(0);
+    }
+    
     private void disablePasteMode(){
         removeRegion();
         REGION.removeAll();
@@ -1090,6 +1201,7 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog GlitchVHS;
     private javax.swing.JDialog GlitchWave;
+    private javax.swing.JDialog Propertys;
     private javax.swing.JRadioButton Red;
     private javax.swing.JRadioButton blue;
     private javax.swing.JMenuItem blur;
@@ -1100,7 +1212,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem ctrlY;
     private javax.swing.JMenuItem ctrlZ;
     private javax.swing.JMenuItem cut;
-    private javax.swing.JMenuItem darken;
+    private javax.swing.JScrollBar darkenBar;
+    private javax.swing.JLabel darkenLabel;
     private javax.swing.JMenuItem delete;
     private javax.swing.JMenuItem dogMask;
     private javax.swing.Box.Filler filler1;
@@ -1115,12 +1228,15 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JLabel lPhoto;
     private javax.swing.JLabel lb;
+    private javax.swing.JScrollBar lightenBar;
+    private javax.swing.JLabel lightenLabel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem morphology;
     private javax.swing.JButton okButton;
     private javax.swing.JMenu options;
     private javax.swing.JPanel panel;
     private javax.swing.JMenu photoSelection;
+    private javax.swing.JMenu propertys;
     private javax.swing.JMenuItem save;
     private javax.swing.JMenuItem select;
     private javax.swing.JMenu tools;

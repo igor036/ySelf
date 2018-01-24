@@ -101,13 +101,15 @@ public abstract class MatUtil extends JFrame {
         
         for (Rect fr : faces) {            
             
+            Mat face = img.submat(fr);
+            
             int width  = (int)(fr.width  * 0.35);
             int height = (int)(fr.height * 0.35);
             
             int x = fr.x + (int)(fr.width * 0.07);
             int y = Math.abs(fr.y - (int)(fr.width * 0.15));
             
-            int sloopOfFace = Detection.sloopOfFace(img.submat(fr));
+            int sloopOfFace = Detection.sloopOfFace(face);
             
             Size size = new Size(width, height);
             
@@ -135,8 +137,7 @@ public abstract class MatUtil extends JFrame {
             overlay(region_right_ear, dog_right_ear);
             
             //snout
-            
-            Rect[] eyesOfFace = Detection.eyesOfFace(img.submat(fr));
+            Rect[] eyesOfFace = Detection.eyesOfFace(face);
             
             if (eyesOfFace.length == 0 || eyesOfFace[0].x < eyesOfFace[1].x) 
                 x = fr.x + eyesOfFace[0].x + eyesOfFace[0].width;
@@ -159,8 +160,8 @@ public abstract class MatUtil extends JFrame {
         Mat rot_mat = Imgproc.getRotationMatrix2D(center, angle, 1);
         Mat rotated = new Mat();
         
-        Imgproc.warpAffine(img, img, rot_mat, img.size(), Imgproc.INTER_CUBIC);
-        
+        //Imgproc.warpAffine(img, img, rot_mat, img.size(), Imgproc.INTER_CUBIC);
+        Imgproc.warpAffine(img, rot_mat, rot_mat, rot_mat.size());
     }
     
     public static void glasses(Mat img, String png) {
@@ -174,9 +175,9 @@ public abstract class MatUtil extends JFrame {
 
         for (Rect rect : eyes) {
             
-            /*
+            
             double sloopOfFace = Detection.sloopOfFace(img.submat(rect));
-            rotate(sub, sloopOfFace);*/
+            rotate(sub, sloopOfFace);
             
             Mat face = img.submat(rect);
             Imgproc.resize(sub, sub, face.size());
@@ -287,7 +288,7 @@ public abstract class MatUtil extends JFrame {
         }
     }
     
-    public static void darken(Mat img, int darkLevel) {
+    public static void darken(Mat img, int level) {
         
         for (int x = 0; x < img.rows(); x++) {
             for(int y = 0; y < img.cols(); y++) {
@@ -295,28 +296,35 @@ public abstract class MatUtil extends JFrame {
                 double[] pixel = img.get(x, y);
                 
                 for (int rgb = 0; rgb < 3; rgb++)
-                    pixel[rgb] -= darkLevel;
+                    pixel[rgb] -= level;
                 
                 img.put(x, y, pixel);
             }    
         }
     }
     
-    public static void darken(Mat img, int darkLevel, Rect region) {
-        
-        Mat sub = img.submat(region);
-        
-        for (int x = 0; x < sub.rows(); x++) {
-            for(int y = 0; y < sub.cols(); y++) {
+    
+    public static void darken(Mat img, int level, Rect region) {
+        darken(img.submat(region), level);
+    }
+    
+    public static void lighten(Mat img, int level) {
+
+        for (int x = 0; x < img.rows(); x++) {
+            for(int y = 0; y < img.cols(); y++) {
                 
-                double[] pixel = sub.get(x, y);
+                double[] pixel = img.get(x, y);
                 
                 for (int rgb = 0; rgb < 3; rgb++)
-                    pixel[rgb] -= darkLevel;
+                    pixel[rgb] += level;
                 
-                sub.put(x, y, pixel);
+                img.put(x, y, pixel);
             }    
         }
+    }
+    
+    public static void lighten(Mat img, int level, Rect region) {
+        lighten(img.submat(region), level);
     }
     
     public static void vhs(Mat img, String VHS){
