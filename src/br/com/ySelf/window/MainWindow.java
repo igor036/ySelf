@@ -25,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
 import org.opencv.core.Mat;
+import org.opencv.core.Rect;
 
 
 public class MainWindow extends javax.swing.JFrame {
@@ -52,6 +53,7 @@ public class MainWindow extends javax.swing.JFrame {
     private boolean addingWidget = false;
     private boolean selectRegion = false;
     private boolean copying      = false;
+    private boolean usingPastPen = false;
     
     public MainWindow() {
         
@@ -135,6 +137,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem3 = new javax.swing.JMenuItem();
         tools = new javax.swing.JMenu();
         select = new javax.swing.JMenuItem();
+        pastPen = new javax.swing.JMenuItem();
         propertys = new javax.swing.JMenu();
 
         colors.add(blue);
@@ -574,6 +577,15 @@ public class MainWindow extends javax.swing.JFrame {
         });
         tools.add(select);
 
+        pastPen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        pastPen.setText("Pincel do passado");
+        pastPen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pastPenActionPerformed(evt);
+            }
+        });
+        tools.add(pastPen);
+
         menuBar.add(tools);
 
         propertys.setText("Propriedades");
@@ -628,14 +640,29 @@ public class MainWindow extends javax.swing.JFrame {
         
         previous.push(img);
         img = newImg;
+        removeRegion();
     }//GEN-LAST:event_dogMaskActionPerformed
 
     private void ctrlZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlZActionPerformed
         
         if(!previous.isEmpty()){
             
-            next.push(img);
-            img = previous.pop();
+            if (!selectRegion) {
+               
+                next.push(img);
+                img = previous.pop();
+            
+            } else {
+                
+                Rect roi = MatUtil.getRect(REGION);
+                Mat newImg = MatUtil.copy(img);
+        
+                previous.peek().submat(roi).copyTo(newImg.submat(roi));
+                previous.push(img);
+                img = newImg;
+                removeRegion();
+            }
+            
             MatUtil.show(img, lPhoto);
             
         } else 
@@ -646,8 +673,19 @@ public class MainWindow extends javax.swing.JFrame {
         
         if (!next.isEmpty()) {
             
-            previous.push(img);
-            img = next.pop();
+            if (!selectRegion) {
+                previous.push(img);
+                img = next.pop();
+            } else {
+                
+                Rect roi = MatUtil.getRect(REGION);
+                Mat newImg = MatUtil.copy(img);
+        
+                next.peek().submat(roi).copyTo(newImg.submat(roi));
+                previous.push(img);
+                img = newImg;
+                
+            }
             MatUtil.show(img, lPhoto);
         
         } else
@@ -1021,6 +1059,7 @@ public class MainWindow extends javax.swing.JFrame {
         Propertys.setVisible(true);
         previous.push(img);
         img = temp;
+        removeRegion();
         restartPorpertyComponentsValues();
     }//GEN-LAST:event_propertysMouseClicked
 
@@ -1035,11 +1074,14 @@ public class MainWindow extends javax.swing.JFrame {
     private void lightenBarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lightenBarMouseReleased
         applyLighten(lightenBar.getValue(), true);
     }//GEN-LAST:event_lightenBarMouseReleased
+
+    private void pastPenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pastPenActionPerformed
+        usingPastPen = true;
+    }//GEN-LAST:event_pastPenActionPerformed
     
     
     
     //util's method's
-    
     private void addMouseListeners() {
         
         panel.addMouseMotionListener(new MouseAdapter() {
@@ -1235,6 +1277,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton okButton;
     private javax.swing.JMenu options;
     private javax.swing.JPanel panel;
+    private javax.swing.JMenuItem pastPen;
     private javax.swing.JMenu photoSelection;
     private javax.swing.JMenu propertys;
     private javax.swing.JMenuItem save;

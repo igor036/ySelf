@@ -250,25 +250,8 @@ public abstract class MatUtil extends JFrame {
     
     
     public static void glitchWave(Mat img, int waveLength ,EColor color, Rect region) {
-           
-        Mat subRegion = img.submat(region);
-        Mat sub = copy(subRegion);
-        
-        for (int x = 0; x < sub.rows(); x++) {
-            for(int y = 0; y < sub.cols(); y++) {
-                
-                double[] pixel1 = subRegion.get(x, y);
-                
-                int xWave = x - waveLength >= 0 ? x-waveLength : waveLength-x;
-                int yWave = y - waveLength >= 0 ? y-waveLength : waveLength-y;
-                
-                double[] pixel2 = sub.get(xWave, yWave);
-                pixel1[color.colorValue()] = pixel2[color.colorValue()];
-                
-                subRegion.put(x, y, pixel1);
-            }
-        }
-    }    
+        glitchWave(img.submat(region), waveLength, color);
+    }
     
     public static void sumMat(Mat img, Mat mask){
         
@@ -420,7 +403,8 @@ public abstract class MatUtil extends JFrame {
         
     
     public static void grayScale(Mat img) {
-        Imgproc.cvtColor(img, img, Imgproc.COLOR_RGB2GRAY);
+        Imgproc.cvtColor(img,img,Imgproc.COLOR_RGB2GRAY);
+        Imgproc.cvtColor(img,img,Imgproc.COLOR_GRAY2BGR);
     }
     
     public static void delete(Mat img, Rect region) {
@@ -451,6 +435,10 @@ public abstract class MatUtil extends JFrame {
     
     public static void copyToRegion(Mat img, Mat copy,Rect region){
         copy.copyTo(img.submat(region));
+    }
+    
+    public static double[] pixel(Mat img,int x,int y){
+        return img.get(x, y);
     }
     
     public static Rect getRect(JComponent c){
