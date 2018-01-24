@@ -10,42 +10,6 @@ The project was developed with the intention of studying opencv !
 
 * **Igor Joaquim dos Santos Lima** - [github](https://github.com/igor036)
 
-<p align="center">
-  <img width="460" height="300" src="screenshot/mainWindow.png">
-</p>
+<iframe width="854" height="480" src="https://youtu.be/jCqKil-ZegU" frameborder="0" allowfullscreen></iframe>
 
-<p align="center">
-  <img width="460" height="300" src="screenshot/glasses1.png">
-</p>
-
-<p align="center">
-  <img width="460" height="300" src="screenshot/dog.png">
-</p>
-
-<p align="center">
-  <img width="460" height="300" src="screenshot/dogAndGlasses.png">
-</p>
-
-<p align="center">
-  <img width="460" height="300" src="screenshot/glitchwave.png">
-</p>
-
-<p align="center">
-  <img src="screenshot/vhs.jpg">
-</p>
-
-<p align="center">
-  <img src="screenshot/selectRegion.png">
-</p>
-
-<p align="center">
-  <img src="screenshot/dakenInRegion.png">
-</p>
-
-<p align="center">
-  <img src="screenshot/grayScaleInRegion.png">
-</p>
-
-<p align="center">
-  <img src="screenshot/waveInRegion.png">
-</p>
+<iframe width="854" height="480" src="https://youtu.be/VDq9WbWEQYo" frameborder="0" allowfullscreen></iframe>
