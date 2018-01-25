@@ -59,19 +59,15 @@ The project was developed with the intention of studying opencv !
 </p>
 
 <p align="center">
+  <img src="screenshot/dog.png">
+</p>
+
+<p align="center">
   <img src="screenshot/dog1.png">
 </p>
 
 <p align="center">
   <img src="screenshot/dog2.png">
-</p>
-
-<p align="center">
-  <img src="screenshot/dog3.png">
-</p>
-
-<p align="center">
-  <img src="screenshot/dog3.png">
 </p>
 
 https://www.youtube.com/embed/VDq9WbWEQYo
