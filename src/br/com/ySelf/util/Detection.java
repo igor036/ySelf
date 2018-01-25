@@ -6,6 +6,7 @@ GitHub: https://github.com/igor036
 
 package br.com.ySelf.util;
 
+import org.opencv.core.Core;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
@@ -150,6 +151,16 @@ public abstract class Detection {
         
         return noses[0];
     }
+    
+    public static double anchorPoint(Mat img){
+        
+        Rect[] eyes = eyesOfFace(img);
+        
+        if (eyes[0].x < eyes[1].x)
+            return (eyes[0].x + eyes[1].x) / 2;
+        
+        return (eyes[1].x + eyes[0].x) / 2;
+    }
 
     private static Mat preProcess(Mat img) {
 
@@ -161,7 +172,7 @@ public abstract class Detection {
         return processImg;
     }
     
-    public static int sloopOfFace(Mat img) {
+    public static int slopOfFace(Mat img) {
         
         Rect[] eyes = eyesOfFace(img);
         
@@ -174,4 +185,22 @@ public abstract class Detection {
         return eyes[1].y - eyes[0].y;
     }
    
+    public static double density(Mat img, Rect rect) {
+
+        Mat process = new Mat();
+        Mat kernel = Imgproc.getStructuringElement(2, new Size(23, 23));
+
+        Imgproc.cvtColor(img, process, Imgproc.COLOR_RGB2GRAY);
+        Imgproc.GaussianBlur(process, process, new Size(3, 3), 0, 0, Core.BORDER_DEFAULT);
+
+        Imgproc.Sobel(process, process, -1, 1, 0);
+        Imgproc.threshold(process, process, 100, 255, Imgproc.THRESH_BINARY);
+        Imgproc.morphologyEx(process, process, Imgproc.MORPH_CLOSE, kernel);
+
+        Mat temp = process.submat(rect);
+        int count_white = Core.countNonZero(temp);
+        int count_black = temp.cols() * temp.rows() - count_white;
+        return (count_white / (double) count_black);
+
+    }
 }
