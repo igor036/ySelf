@@ -143,7 +143,6 @@ public abstract class Detection {
 
         nose_cascade.detectMultiScale(img, matOfNoses);
         
-        
         Rect[] noses = matOfNoses.toArray();
         System.out.println(noses.length);
         if (noses.length > 1 && noses[1].x < noses[0].x)

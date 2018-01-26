@@ -298,14 +298,16 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="darkenLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="lightenLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="lightenLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="noiseBar" min="-2" pref="209" max="-2" attributes="0"/>
                       <Component id="lightenBar" min="-2" pref="209" max="-2" attributes="0"/>
                       <Component id="darkenBar" min="-2" pref="209" max="-2" attributes="0"/>
                   </Group>
@@ -326,7 +328,12 @@
                       <Component id="lightenBar" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="lightenLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="145" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="noiseBar" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="lightenLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="116" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -359,6 +366,21 @@
             <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lightenBarMouseReleased"/>
             <EventHandler event="adjustmentValueChanged" listener="java.awt.event.AdjustmentListener" parameters="java.awt.event.AdjustmentEvent" handler="lightenBarAdjustmentValueChanged"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JScrollBar" name="noiseBar">
+          <Properties>
+            <Property name="maximum" type="int" value="255"/>
+            <Property name="orientation" type="int" value="0"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="noiseBarMouseReleased"/>
+            <EventHandler event="adjustmentValueChanged" listener="java.awt.event.AdjustmentListener" parameters="java.awt.event.AdjustmentEvent" handler="noiseBarAdjustmentValueChanged"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lightenLabel1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Ru&#xed;do:"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
@@ -623,16 +645,13 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="selectActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="pastPen">
+            <MenuItem class="javax.swing.JMenuItem" name="pen">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Shift+Ctrl+Alt+P"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Pincel do passado"/>
+                <Property name="text" type="java.lang.String" value="Pincel"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pastPenActionPerformed"/>
-              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

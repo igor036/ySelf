@@ -106,6 +106,8 @@ public class MainWindow extends javax.swing.JFrame {
         darkenBar = new javax.swing.JScrollBar();
         lightenLabel = new javax.swing.JLabel();
         lightenBar = new javax.swing.JScrollBar();
+        noiseBar = new javax.swing.JScrollBar();
+        lightenLabel1 = new javax.swing.JLabel();
         panel = new javax.swing.JPanel();
         lPhoto = new javax.swing.JLabel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
@@ -135,7 +137,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem3 = new javax.swing.JMenuItem();
         tools = new javax.swing.JMenu();
         select = new javax.swing.JMenuItem();
-        pastPen = new javax.swing.JMenuItem();
+        pen = new javax.swing.JMenuItem();
         propertys = new javax.swing.JMenu();
 
         colors.add(blue);
@@ -331,6 +333,21 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        noiseBar.setMaximum(255);
+        noiseBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
+        noiseBar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                noiseBarMouseReleased(evt);
+            }
+        });
+        noiseBar.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
+            public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
+                noiseBarAdjustmentValueChanged(evt);
+            }
+        });
+
+        lightenLabel1.setText("Ruído:");
+
         javax.swing.GroupLayout PropertysLayout = new javax.swing.GroupLayout(Propertys.getContentPane());
         Propertys.getContentPane().setLayout(PropertysLayout);
         PropertysLayout.setHorizontalGroup(
@@ -339,9 +356,11 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(darkenLabel)
-                    .addComponent(lightenLabel))
+                    .addComponent(lightenLabel)
+                    .addComponent(lightenLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lightenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(darkenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(114, Short.MAX_VALUE))
@@ -357,7 +376,11 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lightenBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lightenLabel))
-                .addContainerGap(145, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lightenLabel1))
+                .addContainerGap(116, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -584,14 +607,9 @@ public class MainWindow extends javax.swing.JFrame {
         });
         tools.add(select);
 
-        pastPen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        pastPen.setText("Pincel do passado");
-        pastPen.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pastPenActionPerformed(evt);
-            }
-        });
-        tools.add(pastPen);
+        pen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        pen.setText("Pincel");
+        tools.add(pen);
 
         menuBar.add(tools);
 
@@ -1090,10 +1108,6 @@ public class MainWindow extends javax.swing.JFrame {
         applyLighten(lightenBar.getValue(), true);
     }//GEN-LAST:event_lightenBarMouseReleased
 
-    private void pastPenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pastPenActionPerformed
-        usingPastPen = true;
-    }//GEN-LAST:event_pastPenActionPerformed
-
     private void cartoonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cartoonActionPerformed
 
         Mat newImg = MatUtil.copy(img);
@@ -1110,6 +1124,14 @@ public class MainWindow extends javax.swing.JFrame {
         img = newImg;
 
     }//GEN-LAST:event_cartoonActionPerformed
+
+    private void noiseBarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_noiseBarMouseReleased
+        applyNoise(noiseBar.getValue(),true);
+    }//GEN-LAST:event_noiseBarMouseReleased
+
+    private void noiseBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_noiseBarAdjustmentValueChanged
+       applyNoise(noiseBar.getValue(),false);
+    }//GEN-LAST:event_noiseBarAdjustmentValueChanged
 
     //util's method's
     private void addMouseListeners() {
@@ -1259,6 +1281,24 @@ public class MainWindow extends javax.swing.JFrame {
         }
 
     }
+    
+    private void applyNoise(int level, boolean replace) {
+
+        Mat copy = MatUtil.copy(temp);
+
+        if (selectRegion) {
+            MatUtil.noise(copy, level, MatUtil.getRect(REGION));
+        } else {
+            MatUtil.noise(copy, level);
+        }
+
+        MatUtil.show(copy, lPhoto);
+
+        if (replace) {
+            temp = copy;
+        }
+
+    }
 
     private void restartPorpertyComponentsValues() {
         Component[] components = Propertys.getContentPane().getComponents();
@@ -1312,12 +1352,14 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel lb;
     private javax.swing.JScrollBar lightenBar;
     private javax.swing.JLabel lightenLabel;
+    private javax.swing.JLabel lightenLabel1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem morphology;
+    private javax.swing.JScrollBar noiseBar;
     private javax.swing.JButton okButton;
     private javax.swing.JMenu options;
     private javax.swing.JPanel panel;
-    private javax.swing.JMenuItem pastPen;
+    private javax.swing.JMenuItem pen;
     private javax.swing.JMenu photoSelection;
     private javax.swing.JMenu propertys;
     private javax.swing.JMenuItem save;

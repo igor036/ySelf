@@ -9,6 +9,7 @@ import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -139,7 +140,7 @@ public abstract class MatUtil extends JFrame {
 
             //snout       
             xOverlay = fr.x + (int) (Detection.anchorPoint(face) - fr.width * 0.05);
-            yOverlay = fr.y + (fr.height / 2) - (int) Math.abs(slopOfFace + density) * (int) (fr.width * 0.02);
+            yOverlay = fr.y + (fr.height / 2) - (int) Math.abs(slopOfFace + density) * (int) (fr.width * 0.01);
 
             Mat region_snout = img.submat(new Rect(xOverlay, yOverlay, width, height));
             overlay(region_snout, dog_snout);
@@ -158,9 +159,9 @@ public abstract class MatUtil extends JFrame {
 
     public static void glasses(Mat img, String png) {
 
-        if (!fileExist(png)) {
+        if (!fileExist(png)) 
             throw new RuntimeException("Mascara GLASSES não encontrada!");
-        }
+        
 
         Rect[] eyes = Detection.rectOfEye(img);
         Mat sub = readImg(png);
@@ -203,9 +204,8 @@ public abstract class MatUtil extends JFrame {
 
                     double alpha = pixel2[3] / 255f;
 
-                    for (int i = 0; i < 3; i++) {
+                    for (int i = 0; i < 3; i++) 
                         pixel1[i] = pixel2[i] * alpha + pixel1[i] * (1 - alpha);
-                    }
 
                 } //PHOTO WITHOUT OPACITY
                 else {
@@ -218,7 +218,7 @@ public abstract class MatUtil extends JFrame {
             }
         }
     }
-
+    
     public static void glitchWave(Mat img, int waveLength, EColor color) {
 
         Mat sub = copy(img);
@@ -239,10 +239,6 @@ public abstract class MatUtil extends JFrame {
         }
     }
 
-    public static void glitchWave(Mat img, int waveLength, EColor color, Rect region) {
-        glitchWave(img.submat(region), waveLength, color);
-    }
-
     public static void sumMat(Mat img, Mat mask) {
 
         Imgproc.resize(mask, mask, img.size());
@@ -253,91 +249,63 @@ public abstract class MatUtil extends JFrame {
                 double[] pixel1 = img.get(x, y);
                 double[] pixel2 = mask.get(x, y);
 
-                for (int rgb = 0; rgb < 3; rgb++) {
+                for (int rgb = 0; rgb < 3; rgb++)
                     pixel1[rgb] += pixel2[rgb];
-                }
 
                 img.put(x, y, pixel1);
             }
         }
     }
-
-    public static void darken(Mat img, int level) {
-
-        for (int x = 0; x < img.rows(); x++) {
-            for (int y = 0; y < img.cols(); y++) {
-
-                double[] pixel = img.get(x, y);
-
-                for (int rgb = 0; rgb < 3; rgb++) {
-                    pixel[rgb] -= level;
-                }
-
-                img.put(x, y, pixel);
-            }
-        }
-    }
-
-    public static void darken(Mat img, int level, Rect region) {
-        darken(img.submat(region), level);
-    }
-
-    public static void lighten(Mat img, int level) {
+    
+    private static void sumValuePixel(Mat img, int value) {
 
         for (int x = 0; x < img.rows(); x++) {
             for (int y = 0; y < img.cols(); y++) {
 
                 double[] pixel = img.get(x, y);
 
-                for (int rgb = 0; rgb < 3; rgb++) {
-                    pixel[rgb] += level;
-                }
-
+                for (int rgb = 0; rgb < 3; rgb++) 
+                    pixel[rgb] += value;
+                
                 img.put(x, y, pixel);
             }
         }
     }
+    
+    public static void noise(Mat img, int noise) {
+        
+        if (noise != 0) { 
+            
+            Random random = new Random();
+        
+            for (int x = 0; x < img.rows(); x++) {
+                for (int y = 0; y < img.cols(); y++) {
 
-    public static void lighten(Mat img, int level, Rect region) {
-        lighten(img.submat(region), level);
-    }
+                    double[] pixel = img.get(x, y);
+                    int value = random.nextInt(noise);
 
-    public static void vhs(Mat img, String VHS) {
+                    for (int i = 0; i < pixel.length; i++)
+                        pixel[i] += value;
 
-        if (!fileExist(VHS)) {
-            throw new RuntimeException("Mascara VHS não encontrada!");
+                    img.put(x, y, pixel);
+
+                }
+            }
         }
-
-        Mat vhs = readImg(VHS);
-        sumMat(img, vhs);
-    }
-
-    public static void morphology(Mat img, int morph_size) {
-
-        Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(morph_size, morph_size));
-        Imgproc.morphologyEx(img, img, Imgproc.MORPH_OPEN, element);
-
-    }
-
-    public static void morphology(Mat img, int morph_size, Rect region) {
-
-        Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(morph_size, morph_size));
-        Imgproc.morphologyEx(img.submat(region), img.submat(region), Imgproc.MORPH_OPEN, element);
-
     }
 
     public static void cartoon(Mat img) {
         
         Mat process = new Mat();
         Mat hierarchy = new Mat();
+        List<MatOfPoint> contours = new ArrayList<>();
   
         Imgproc.cvtColor(img, img, Imgproc.COLOR_BGRA2BGR);
-        Imgproc.pyrMeanShiftFiltering(img.clone(), img, 25, 40);
-        
+        Imgproc.pyrMeanShiftFiltering(img.clone(), img, 25, 40);       
         Imgproc.cvtColor(img, process, Imgproc.COLOR_RGB2GRAY);
         Imgproc.adaptiveThreshold(process,process, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C,Imgproc.THRESH_BINARY,9,2);
         Imgproc.cvtColor(process, process, Imgproc.COLOR_GRAY2RGB);
-   
+        
         for (int x = 0; x < img.rows(); x++) {
             for (int y = 0; y < img.cols(); y++) {
                 
@@ -349,23 +317,12 @@ public abstract class MatUtil extends JFrame {
         }
     }
     
-    public static void cartoon(Mat img,Rect region){
-        cartoon(img.submat(region));
-    }
-    
-    public static void resize(Mat img) {
-
-        Size size = new Size(img.width() - 100, img.height() - 100);
-        Imgproc.resize(img, img, size);
-    }
-
     public static void inversor(Mat img) {
 
         byte[] buffer = toByteArray(img);
 
-        for (int i = 0; i < buffer.length; i++) {
+        for (int i = 0; i < buffer.length; i++)
             buffer[i] *= -1;
-        }
 
         img.put(0, 0, buffer);
     }
@@ -375,9 +332,8 @@ public abstract class MatUtil extends JFrame {
         Mat sub = img.submat(region);
         byte[] buffer = toByteArray(sub);
 
-        for (int i = 0; i < buffer.length; i++) {
+        for (int i = 0; i < buffer.length; i++) 
             buffer[i] *= -1;
-        }
 
         sub.put(0, 0, buffer);
     }
@@ -397,12 +353,20 @@ public abstract class MatUtil extends JFrame {
 
         return buffer;
     }
+    
+    public static void vhs(Mat img, String VHS) {
 
+        if (!fileExist(VHS)) 
+            throw new RuntimeException("Mascara VHS não encontrada!");
+
+        Mat vhs = readImg(VHS);
+        sumMat(img, vhs);
+    }
+    
     public static void blur(Mat mat, int size) {
 
-        if (size % 3 != 0) {
+        if (size % 3 != 0) 
             size += 3;
-        }
 
         Imgproc.GaussianBlur(mat, mat, new Size(size, size), Core.BORDER_DEFAULT);
     }
@@ -424,8 +388,29 @@ public abstract class MatUtil extends JFrame {
 
         sub.copyTo(img.submat(region));
     }
+    
+    public static void morphology(Mat img, int morph_size) {
+
+        Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(morph_size, morph_size));
+        Imgproc.morphologyEx(img, img, Imgproc.MORPH_OPEN, element);
+
+    }
+
+    public static void morphology(Mat img, int morph_size, Rect region) {
+
+        Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(morph_size, morph_size));
+        Imgproc.morphologyEx(img.submat(region), img.submat(region), Imgproc.MORPH_OPEN, element);
+
+    }
+    
+    public static void resize(Mat img) {
+
+        Size size = new Size(img.width() - 100, img.height() - 100);
+        Imgproc.resize(img, img, size);
+    }
 
     public static void grayScale(Mat img) {
+        
         Imgproc.cvtColor(img, img, Imgproc.COLOR_RGB2GRAY);
         Imgproc.cvtColor(img, img, Imgproc.COLOR_GRAY2BGR);
     }
@@ -455,14 +440,42 @@ public abstract class MatUtil extends JFrame {
         Imgcodecs.imwrite(path, img);
     }
 
-    public static void copyToRegion(Mat img, Mat copy, Rect region) {
-        copy.copyTo(img.submat(region));
-    }
-
     public static double[] pixel(Mat img, int x, int y) {
         return img.get(x, y);
     }
+    
+    public static void darken(Mat img, int level) {
+        sumValuePixel(img, -level);
+    }
+    
+    public static void lighten(Mat img, int level) {
+        sumValuePixel(img, level);
+    }
+    
+    public static void copyToRegion(Mat img, Mat copy, Rect region) {
+        copy.copyTo(img.submat(region));
+    }
+    
+    public static void darken(Mat img, int level, Rect region) {
+        darken(img.submat(region), level);
+    }
 
+    public static void lighten(Mat img, int level, Rect region) {
+        lighten(img.submat(region), level);
+    }
+    
+    public static void cartoon(Mat img,Rect region){
+        cartoon(img.submat(region));
+    }
+    
+    public static void glitchWave(Mat img, int waveLength, EColor color, Rect region) {
+        glitchWave(img.submat(region), waveLength, color);
+    }
+    
+    public static void noise(Mat img, int noise, Rect region) {
+        noise(img.submat(region),noise);
+    }
+    
     public static Rect getRect(JComponent c) {
 
         int x = c.getX();
