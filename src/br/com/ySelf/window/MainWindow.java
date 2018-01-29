@@ -22,6 +22,7 @@ import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
@@ -51,7 +52,9 @@ public class MainWindow extends javax.swing.JFrame {
     private Mat paintImg;            //image paint
     private Mat penImage;           //image use to paint
     private Mat matZoomOut;
-
+    private Mat temp_2ndLayer;
+    private JPanel zoomRegion;
+    
     //control variables of listeners
     private boolean addingWidget = false;
     private boolean selectRegion = false;
@@ -1120,6 +1123,13 @@ public class MainWindow extends javax.swing.JFrame {
             
             
             MatUtil.resize(penImage, img.size());
+            penImageLabel.setText(photoPath);
+            
+            if (!zoomIn.isEnabled()){
+                penImage = penImage.submat(MatUtil.getRect(zoomRegion));
+                MatUtil.resize(penImage, matZoomOut.size());
+                temp_2ndLayer = MatUtil.copy(penImage);
+            }
         }             
         
     }//GEN-LAST:event_imgToPenActionPerformed
@@ -1253,8 +1263,10 @@ public class MainWindow extends javax.swing.JFrame {
         if (!next.isEmpty()) {
 
             if (!selectRegion) {
+                
                 previous.push(img);
                 img = next.pop();
+            
             } else {
 
                 Rect roi = MatUtil.getRect(REGION);
@@ -1303,22 +1315,38 @@ public class MainWindow extends javax.swing.JFrame {
         
         if (selectRegion) {
             
+            zoomIn.setEnabled(false);
+            zoomRegion = new JPanel();
+            zoomRegion.setBounds(REGION.getX(), REGION.getY(), REGION.getWidth(), REGION.getHeight());
             matZoomOut = MatUtil.copy(img);
             
-            img = img.submat(MatUtil.getRect(REGION));
+            img = img.submat(MatUtil.getRect(zoomRegion));
+            
+            //pen image - 2nd layer
+            if (penImage != null) {
+                
+                penImage = penImage.submat(MatUtil.getRect(zoomRegion));
+                MatUtil.resize(penImage, matZoomOut.size());
+                temp_2ndLayer = MatUtil.copy(penImage);
+            }
+            
             MatUtil.resize(img, matZoomOut.size());
             MatUtil.show(img, lPhoto);
             removeRegion();
-        }
+            
+        } else
+            JOptionPane.showMessageDialog(null, "Selecione a região do zoom");
         
     }//GEN-LAST:event_zoomInActionPerformed
 
     private void zoomOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutActionPerformed
-        
-        MatUtil.resize(img, new Size(REGION.getWidth(), REGION.getHeight()));
-        img.copyTo(matZoomOut.submat(MatUtil.getRect(REGION)));
+        zoomIn.setEnabled(true);
+        MatUtil.resize(img, new Size(zoomRegion.getWidth(), zoomRegion.getHeight()));
+        img.copyTo(matZoomOut.submat(MatUtil.getRect(zoomRegion)));
         img = matZoomOut;
         MatUtil.show(img, lPhoto);
+        penImage = temp_2ndLayer;
+        
     }//GEN-LAST:event_zoomOutActionPerformed
 
     //util's method's
@@ -1389,8 +1417,14 @@ public class MainWindow extends javax.swing.JFrame {
         
         } else {
         
+            
             Mat img1 = paintImg.submat(new Rect(x, y, (Integer)PenSize.getValue(), (Integer)PenSize.getValue()));
-            Mat img2 = penImage.submat(new Rect(x, y, (Integer)PenSize.getValue(), (Integer)PenSize.getValue()));
+            Mat img2 = null;
+            
+            if (!zoomOut.isEnabled())
+                img2 = penImage.submat(MatUtil.getRect(zoomRegion)).submat(new Rect(x, y, (Integer)PenSize.getValue(), (Integer)PenSize.getValue()));
+            else
+                img2 = penImage.submat(new Rect(x, y, (Integer)PenSize.getValue(), (Integer)PenSize.getValue()));
             
             MatUtil.overlay(img1,img2);
         }
