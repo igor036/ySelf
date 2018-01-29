@@ -191,7 +191,7 @@ public abstract class MatUtil extends JFrame {
         overlay(widgetRegion, widget);
     }
 
-    private static void overlay(Mat img, Mat widget) {
+    public static void overlay(Mat img, Mat widget) {
 
         for (int x = 0; x < widget.rows(); x++) {
             for (int y = 0; y < widget.cols(); y++) {
@@ -405,7 +405,7 @@ public abstract class MatUtil extends JFrame {
     
     public static void resize(Mat img) {
 
-        Size size = new Size(img.width() - 100, img.height() - 100);
+        Size size = new Size(img.width() * 0.05, img.height() * 0.05);
         Imgproc.resize(img, img, size);
     }
 
@@ -415,6 +415,10 @@ public abstract class MatUtil extends JFrame {
         Imgproc.cvtColor(img, img, Imgproc.COLOR_GRAY2BGR);
     }
 
+    public static void resize(Mat img, Size size) {
+        Imgproc.resize(img, img, size);
+    }
+    
     public static void delete(Mat img, Rect region) {
         img.submat(region).setTo(new Scalar(0, 0, 0));
     }
@@ -438,6 +442,10 @@ public abstract class MatUtil extends JFrame {
 
     public static void save(String path, Mat img) {
         Imgcodecs.imwrite(path, img);
+    }
+    
+    public static void paint(int[] color,int size, int x, int y, Mat img){
+        img.submat(new Rect(x, y, size, size)).setTo(new Scalar(color[0],color[1],color[2]));
     }
 
     public static double[] pixel(Mat img, int x, int y) {

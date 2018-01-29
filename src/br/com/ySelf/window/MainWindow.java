@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -33,6 +34,7 @@ public class MainWindow extends javax.swing.JFrame {
     private Stack<Mat> previous; //ctrl+z 
     private Stack<Mat> next;     //ctrl+y
 
+
     //glitch wave
     private int waveLength;
     private EColor color;
@@ -43,31 +45,34 @@ public class MainWindow extends javax.swing.JFrame {
     private final List<JLabel> WIDGETS;
 
     //outer's
-    private final JLabel REGION; //select region
+    private final JLabel REGION;       //select region
     private Mat copyRegion;           //copy region
+    private Mat paintImg;            //image paint
+    private Mat penImage;           //image use to paint
 
     //control variables of listeners
     private boolean addingWidget = false;
     private boolean selectRegion = false;
     private boolean copying = false;
-    private boolean usingPastPen = false;
-
+    private boolean usingPen = false;
+    
+    
     public MainWindow() {
 
         initComponents();
         addMouseListeners();
-
+        
         setResizable(false);
         GlitchWave.setLocationRelativeTo(null);
         GlitchWave.setSize(400, 200);
         GlitchVHS.setSize(500, 200);
-        Propertys.setSize(400, 200);
+        Propertys.setSize(400, 400);
 
         WIDGET_EXTENSION = new ArrayList<>();
         WIDGETS = new ArrayList<>();
+        REGION = new JLabel();
         previous = new Stack<>();
         next = new Stack<>();
-        REGION = new JLabel();
 
         WIDGET_EXTENSION.add("JPG");
         WIDGET_EXTENSION.add("JPEG");
@@ -108,6 +113,20 @@ public class MainWindow extends javax.swing.JFrame {
         lightenBar = new javax.swing.JScrollBar();
         noiseBar = new javax.swing.JScrollBar();
         lightenLabel1 = new javax.swing.JLabel();
+        penSizeLabel = new javax.swing.JLabel();
+        PenSize = new javax.swing.JSpinner();
+        penColorLabel = new javax.swing.JLabel();
+        penColor = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        imgToPen = new javax.swing.JButton();
+        rbtColor = new javax.swing.JRadioButton();
+        rbtImage = new javax.swing.JRadioButton();
+        penImageLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        goutTypePen = new javax.swing.ButtonGroup();
         panel = new javax.swing.JPanel();
         lPhoto = new javax.swing.JLabel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
@@ -137,7 +156,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem3 = new javax.swing.JMenuItem();
         tools = new javax.swing.JMenu();
         select = new javax.swing.JMenuItem();
-        pen = new javax.swing.JMenuItem();
+        pen = new javax.swing.JCheckBoxMenuItem();
         propertys = new javax.swing.JMenu();
 
         colors.add(blue);
@@ -147,7 +166,7 @@ public class MainWindow extends javax.swing.JFrame {
         Red.setText("Red");
 
         colors.add(yellow);
-        yellow.setText("Yellow");
+        yellow.setText("Green");
 
         okButton.setText("Okay");
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -178,7 +197,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(Red)
                     .addComponent(okButton))
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         GlitchWaveLayout.setVerticalGroup(
             GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -348,27 +367,101 @@ public class MainWindow extends javax.swing.JFrame {
 
         lightenLabel1.setText("Ruído:");
 
+        penSizeLabel.setText("Tamanho do pincel:");
+
+        penColorLabel.setText("Cor do pincel:");
+
+        penColor.setBackground(new java.awt.Color(0, 0, 0));
+        penColor.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                penColorMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout penColorLayout = new javax.swing.GroupLayout(penColor);
+        penColor.setLayout(penColorLayout);
+        penColorLayout.setHorizontalGroup(
+            penColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 21, Short.MAX_VALUE)
+        );
+        penColorLayout.setVerticalGroup(
+            penColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+
+        jLabel2.setText("Pincel");
+
+        jLabel3.setText("Imagem");
+
+        imgToPen.setText("Selecionar imagem de camada ");
+        imgToPen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                imgToPenActionPerformed(evt);
+            }
+        });
+
+        goutTypePen.add(rbtColor);
+        rbtColor.setSelected(true);
+        rbtColor.setText("Usar cor.");
+
+        goutTypePen.add(rbtImage);
+        rbtImage.setText("Usar camada.");
+
+        penImageLabel.setText("..");
+
         javax.swing.GroupLayout PropertysLayout = new javax.swing.GroupLayout(Propertys.getContentPane());
         Propertys.getContentPane().setLayout(PropertysLayout);
         PropertysLayout.setHorizontalGroup(
             PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PropertysLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(darkenLabel)
-                    .addComponent(lightenLabel)
-                    .addComponent(lightenLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lightenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(darkenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(114, Short.MAX_VALUE))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(darkenLabel)
+                            .addComponent(lightenLabel1)
+                            .addComponent(lightenLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lightenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(darkenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGap(167, 167, 167)
+                        .addComponent(jLabel3))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(PropertysLayout.createSequentialGroup()
+                                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(penSizeLabel)
+                                    .addComponent(penColorLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(PenSize, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(penColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(37, 37, 37)
+                                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(rbtImage)
+                                    .addComponent(rbtColor)))
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(PropertysLayout.createSequentialGroup()
+                                .addGap(147, 147, 147)
+                                .addComponent(jLabel2))
+                            .addGroup(PropertysLayout.createSequentialGroup()
+                                .addGap(52, 52, 52)
+                                .addComponent(imgToPen))))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGap(144, 144, 144)
+                        .addComponent(penImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         PropertysLayout.setVerticalGroup(
             PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PropertysLayout.createSequentialGroup()
-                .addGap(21, 21, 21)
+                .addGap(6, 6, 6)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(darkenBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(darkenLabel))
@@ -380,8 +473,35 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lightenLabel1))
-                .addContainerGap(116, Short.MAX_VALUE))
+                .addGap(28, 28, 28)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(4, 4, 4)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(penSizeLabel)
+                            .addComponent(PenSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rbtColor))
+                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(PropertysLayout.createSequentialGroup()
+                                .addGap(9, 9, 9)
+                                .addComponent(penColorLabel))
+                            .addGroup(PropertysLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(rbtImage))))
+                    .addComponent(penColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(imgToPen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(penImageLabel)
+                .addContainerGap(53, Short.MAX_VALUE))
         );
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addKeyListener(new java.awt.event.KeyAdapter() {
@@ -404,7 +524,7 @@ public class MainWindow extends javax.swing.JFrame {
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelLayout.createSequentialGroup()
                 .addComponent(lPhoto)
-                .addGap(0, 376, Short.MAX_VALUE))
+                .addContainerGap(435, Short.MAX_VALUE))
         );
 
         photoSelection.setText("Selecionar Foto");
@@ -767,9 +887,9 @@ public class MainWindow extends javax.swing.JFrame {
         if (selectRegion) {
             MatUtil.inversor(newImg, MatUtil.getRect(REGION));
             removeRegion();
-        } else {
+        }else 
             MatUtil.inversor(newImg);
-        }
+        
         MatUtil.show(newImg, lPhoto);
 
         previous.push(img);
@@ -840,7 +960,7 @@ public class MainWindow extends javax.swing.JFrame {
 
             /* !! ALERT: improve, make dynamic verification */
             if (yellow.isSelected()) {
-                color = EColor.YELLOW;
+                color = EColor.GREEN;
             } else if (blue.isSelected()) {
                 color = EColor.BLUE;
             } else {
@@ -1133,6 +1253,32 @@ public class MainWindow extends javax.swing.JFrame {
        applyNoise(noiseBar.getValue(),false);
     }//GEN-LAST:event_noiseBarAdjustmentValueChanged
 
+    private void penColorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_penColorMouseClicked
+        
+        Color color = JColorChooser.showDialog(null, "Selecione a cor!",Color.BLACK);
+        penColor.setBackground(color);
+       
+    }//GEN-LAST:event_penColorMouseClicked
+
+    private void imgToPenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imgToPenActionPerformed
+        
+        JFileChooser fileChooser = new JFileChooser();
+
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+
+            String photoPath = fileChooser.getSelectedFile().getAbsolutePath();
+            penImage = MatUtil.readImg(photoPath);
+            
+            Mat icon = MatUtil.copy(penImage);
+            MatUtil.resize(icon);
+            MatUtil.show(icon, penImageLabel);
+            
+            
+            MatUtil.resize(penImage, img.size());
+        }             
+        
+    }//GEN-LAST:event_imgToPenActionPerformed
+
     //util's method's
     private void addMouseListeners() {
 
@@ -1140,11 +1286,12 @@ public class MainWindow extends javax.swing.JFrame {
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (addingWidget) {
+                if (addingWidget)
                     updateWidgetLocation(e.getPoint());
-                } else if (selectRegion) {
+                else if (selectRegion)
                     setRegionSize(e.getX(), e.getY());
-                }
+                else if (pen.isSelected())
+                    paint(e.getX(), e.getY());
             }
 
             @Override
@@ -1161,17 +1308,54 @@ public class MainWindow extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
 
-                if (addingWidget) {
+                if (addingWidget)
                     updateWidgetLocation(e.getPoint());
-                } else if (selectRegion) {
+                else if (selectRegion) 
                     addRegion(e.getPoint());
-                } else if (copying) {
+                else if (copying) 
                     paste();
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e){
+                
+                if (pen.isSelected()){
+                    
+                    previous.add(img);
+                    img = MatUtil.copy(paintImg);
+                    paintImg = null;
                 }
             }
         });
     }
 
+    private void paint(int x, int y){
+        
+        if (paintImg == null)
+            paintImg = MatUtil.copy(img);
+        
+        if (rbtColor.isSelected()) {
+        
+        
+            int[] color = {
+                            penColor.getBackground().getBlue(),
+                            penColor.getBackground().getGreen(),
+                            penColor.getBackground().getRed()
+
+                        };
+            MatUtil.paint(color,(Integer)PenSize.getValue(), x, y, paintImg);
+        
+        } else {
+        
+            Mat img1 = paintImg.submat(new Rect(x, y, (Integer)PenSize.getValue(), (Integer)PenSize.getValue()));
+            Mat img2 = penImage.submat(new Rect(x, y, (Integer)PenSize.getValue(), (Integer)PenSize.getValue()));
+            
+            MatUtil.overlay(img1,img2);
+        }
+        
+        MatUtil.show(paintImg, lPhoto);
+    }
+    
     private void paste() {
 
         Mat newImg = MatUtil.copy(img);
@@ -1316,12 +1500,14 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void disableListeners() {
-        selectRegion = copying = addingWidget = false;
+        selectRegion = copying = addingWidget = usingPen = false;
     }
 
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog GlitchVHS;
     private javax.swing.JDialog GlitchWave;
+    private javax.swing.JSpinner PenSize;
     private javax.swing.JDialog Propertys;
     private javax.swing.JRadioButton Red;
     private javax.swing.JRadioButton blue;
@@ -1343,11 +1529,18 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem glasses1Mask;
     private javax.swing.JMenu glitchButton;
     private javax.swing.JMenuItem glitchWave;
+    private javax.swing.ButtonGroup goutTypePen;
     private javax.swing.JMenuItem gray;
+    private javax.swing.JButton imgToPen;
     private javax.swing.JMenuItem inversor;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JLabel lPhoto;
     private javax.swing.JLabel lb;
     private javax.swing.JScrollBar lightenBar;
@@ -1359,9 +1552,15 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton okButton;
     private javax.swing.JMenu options;
     private javax.swing.JPanel panel;
-    private javax.swing.JMenuItem pen;
+    private javax.swing.JCheckBoxMenuItem pen;
+    private javax.swing.JPanel penColor;
+    private javax.swing.JLabel penColorLabel;
+    private javax.swing.JLabel penImageLabel;
+    private javax.swing.JLabel penSizeLabel;
     private javax.swing.JMenu photoSelection;
     private javax.swing.JMenu propertys;
+    private javax.swing.JRadioButton rbtColor;
+    private javax.swing.JRadioButton rbtImage;
     private javax.swing.JMenuItem save;
     private javax.swing.JMenuItem select;
     private javax.swing.JMenu tools;

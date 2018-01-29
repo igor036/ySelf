@@ -5,7 +5,7 @@ GitHub: https://github.com/igor036
 
 
 /* RGB 
- * pixel[0] = yellow
+ * pixel[0] = green
  * pixel[1] = blue
  * pixel[2] = red
  */
@@ -14,7 +14,7 @@ package br.com.ySelf.util;
 
 public enum EColor {
     
-    YELLOW(0), 
+    GREEN(0), 
     BLUE(1), 
     RED(2); 
     
