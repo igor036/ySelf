@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
+import org.opencv.core.Size;
 
 public class MainWindow extends javax.swing.JFrame {
 
@@ -49,6 +50,7 @@ public class MainWindow extends javax.swing.JFrame {
     private Mat copyRegion;           //copy region
     private Mat paintImg;            //image paint
     private Mat penImage;           //image use to paint
+    private Mat matZoomOut;
 
     //control variables of listeners
     private boolean addingWidget = false;
@@ -140,6 +142,8 @@ public class MainWindow extends javax.swing.JFrame {
         cut = new javax.swing.JMenuItem();
         delete = new javax.swing.JMenuItem();
         save = new javax.swing.JMenuItem();
+        zoomIn = new javax.swing.JMenuItem();
+        zoomOut = new javax.swing.JMenuItem();
         btMasks = new javax.swing.JMenu();
         dogMask = new javax.swing.JMenuItem();
         glasses1Mask = new javax.swing.JMenuItem();
@@ -600,6 +604,24 @@ public class MainWindow extends javax.swing.JFrame {
         });
         options.add(save);
 
+        zoomIn.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_EQUALS, java.awt.event.InputEvent.SHIFT_MASK));
+        zoomIn.setText("Zoom +");
+        zoomIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomInActionPerformed(evt);
+            }
+        });
+        options.add(zoomIn);
+
+        zoomOut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_MINUS, java.awt.event.InputEvent.SHIFT_MASK));
+        zoomOut.setText("Zoom -");
+        zoomOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomOutActionPerformed(evt);
+            }
+        });
+        options.add(zoomOut);
+
         menuBar.add(options);
 
         btMasks.setText("Mascaras");
@@ -767,6 +789,7 @@ public class MainWindow extends javax.swing.JFrame {
             img = MatUtil.readImg(photoPath);
             MatUtil.show(img, lPhoto);
 
+            lPhoto.setSize(img.width(), img.height());
             previous.clear();
             next.clear();
 
@@ -787,57 +810,6 @@ public class MainWindow extends javax.swing.JFrame {
         img = newImg;
         removeRegion();
     }//GEN-LAST:event_dogMaskActionPerformed
-
-    private void ctrlZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlZActionPerformed
-
-        if (!previous.isEmpty()) {
-
-            if (!selectRegion) {
-
-                next.push(img);
-                img = previous.pop();
-
-            } else {
-
-                Rect roi = MatUtil.getRect(REGION);
-                Mat newImg = MatUtil.copy(img);
-
-                previous.peek().submat(roi).copyTo(newImg.submat(roi));
-                previous.push(img);
-                img = newImg;
-                removeRegion();
-            }
-
-            MatUtil.show(img, lPhoto);
-
-        } else {
-            JOptionPane.showMessageDialog(null, "Não há mais oque desfazer!");
-        }
-    }//GEN-LAST:event_ctrlZActionPerformed
-
-    private void ctrlYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlYActionPerformed
-
-        if (!next.isEmpty()) {
-
-            if (!selectRegion) {
-                previous.push(img);
-                img = next.pop();
-            } else {
-
-                Rect roi = MatUtil.getRect(REGION);
-                Mat newImg = MatUtil.copy(img);
-
-                next.peek().submat(roi).copyTo(newImg.submat(roi));
-                previous.push(img);
-                img = newImg;
-
-            }
-            MatUtil.show(img, lPhoto);
-
-        } else {
-            JOptionPane.showMessageDialog(null, "Não há mais oque refazer!");
-        }
-    }//GEN-LAST:event_ctrlYActionPerformed
 
     private void grayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_grayActionPerformed
 
@@ -1038,83 +1010,6 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
-    private void widgetBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_widgetBtActionPerformed
-
-        disableListeners();
-
-        JFileChooser fileChooser = new JFileChooser();
-
-        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-
-            widgetPath = fileChooser.getSelectedFile().getAbsolutePath();
-
-            if (WIDGET_EXTENSION.contains(widgetPath.substring(widgetPath.lastIndexOf(".") + 1).toUpperCase())) {
-
-                Mat widget = MatUtil.readImg(widgetPath);
-                JLabel widgetLabel = new JLabel(new ImageIcon(widgetPath));
-                widgetLabel.setBounds(this.getX() / 2, this.getY() / 2, widget.cols(), widget.rows());
-
-                panel.setLayout(null);
-                panel.add(widgetLabel);
-                panel.setComponentZOrder(widgetLabel, 0);
-
-                for (int i = 1; i < WIDGETS.size(); i++) {
-                    panel.setComponentZOrder(WIDGETS.get(i), i);
-                }
-
-                panel.setComponentZOrder(lPhoto, WIDGETS.size() + 1);
-                panel.repaint();
-                panel.revalidate();
-
-                WIDGETS.add(widgetLabel);
-
-                addingWidget = true;
-
-            } else {
-                JOptionPane.showMessageDialog(null, "O arquivo selecionado não é válido!");
-            }
-        }
-
-    }//GEN-LAST:event_widgetBtActionPerformed
-
-    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-
-        if (img != null) {
-
-            try {
-
-                JFileChooser fileChooser = new JFileChooser();
-
-                if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-
-                    Mat newImg = MatUtil.copy(img);
-
-                    for (JLabel widget : WIDGETS) {
-                        MatUtil.widget(newImg, MatUtil.readImg(widget.getIcon().toString()), widget.getX(), widget.getY());
-                        panel.remove(widget);
-                    }
-
-                    MatUtil.show(newImg, lPhoto);
-
-                    previous.push(img);
-                    img = newImg;
-
-                    MatUtil.save(fileChooser.getSelectedFile().getAbsolutePath(), img);
-                    JOptionPane.showMessageDialog(null, "Salvo!");
-
-                    WIDGETS.clear();
-
-                    addingWidget = false;
-                }
-
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Erro ao salvar, tente colocar o caminho com o nome do arquivo!");
-                System.out.println(ex.getMessage());
-            }
-
-        }
-    }//GEN-LAST:event_saveActionPerformed
-
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
 
         JFileChooser fileChooser = new JFileChooser();
@@ -1151,56 +1046,6 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_formKeyPressed
-
-    private void cutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cutActionPerformed
-
-        if (!selectRegion) {
-            JOptionPane.showMessageDialog(null, "Selecione uma área primeiro!");
-        } else {
-
-            Mat newImg = MatUtil.cut(img, MatUtil.getRect(REGION));
-            MatUtil.show(newImg, lPhoto);
-
-            previous.push(img);
-            img = newImg;
-
-            removeRegion();
-        }
-    }//GEN-LAST:event_cutActionPerformed
-
-    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
-
-        if (!selectRegion) {
-            JOptionPane.showMessageDialog(null, "Selecione uma área primeiro!");
-        } else {
-
-            Mat newImg = MatUtil.copy(img);
-            MatUtil.delete(newImg, MatUtil.getRect(REGION));
-            MatUtil.show(newImg, lPhoto);
-
-            previous.push(img);
-            img = newImg;
-
-        }
-
-    }//GEN-LAST:event_deleteActionPerformed
-
-    private void copyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyActionPerformed
-
-        disableListeners();
-
-        copying = true;
-        copyRegion = img.submat(MatUtil.getRect(REGION));
-
-        JLabel lbRegion = new JLabel();
-        MatUtil.show(copyRegion, lbRegion);
-
-        REGION.setLayout(null);
-        REGION.add(lbRegion);
-        REGION.repaint();
-        REGION.revalidate();
-
-    }//GEN-LAST:event_copyActionPerformed
 
     private void darkenBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_darkenBarAdjustmentValueChanged
         applyDarken(darkenBar.getValue(), false);
@@ -1278,6 +1123,203 @@ public class MainWindow extends javax.swing.JFrame {
         }             
         
     }//GEN-LAST:event_imgToPenActionPerformed
+
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+
+        if (img != null) {
+
+            try {
+
+                JFileChooser fileChooser = new JFileChooser();
+
+                if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+
+                    Mat newImg = MatUtil.copy(img);
+
+                    for (JLabel widget : WIDGETS) {
+                        MatUtil.widget(newImg, MatUtil.readImg(widget.getIcon().toString()), widget.getX(), widget.getY());
+                        panel.remove(widget);
+                    }
+
+                    MatUtil.show(newImg, lPhoto);
+
+                    previous.push(img);
+                    img = newImg;
+
+                    MatUtil.save(fileChooser.getSelectedFile().getAbsolutePath(), img);
+                    JOptionPane.showMessageDialog(null, "Salvo!");
+
+                    WIDGETS.clear();
+
+                    addingWidget = false;
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Erro ao salvar, tente colocar o caminho com o nome do arquivo!");
+                System.out.println(ex.getMessage());
+            }
+
+        }
+    }//GEN-LAST:event_saveActionPerformed
+
+    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
+
+        if (!selectRegion) {
+            JOptionPane.showMessageDialog(null, "Selecione uma área primeiro!");
+        } else {
+
+            Mat newImg = MatUtil.copy(img);
+            MatUtil.delete(newImg, MatUtil.getRect(REGION));
+            MatUtil.show(newImg, lPhoto);
+
+            previous.push(img);
+            img = newImg;
+
+        }
+    }//GEN-LAST:event_deleteActionPerformed
+
+    private void cutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cutActionPerformed
+
+        if (!selectRegion) {
+            JOptionPane.showMessageDialog(null, "Selecione uma área primeiro!");
+        } else {
+
+            Mat newImg = MatUtil.cut(img, MatUtil.getRect(REGION));
+            MatUtil.show(newImg, lPhoto);
+
+            previous.push(img);
+            img = newImg;
+
+            removeRegion();
+        }
+    }//GEN-LAST:event_cutActionPerformed
+
+    private void copyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyActionPerformed
+
+        disableListeners();
+
+        copying = true;
+        copyRegion = img.submat(MatUtil.getRect(REGION));
+
+        JLabel lbRegion = new JLabel();
+        MatUtil.show(copyRegion, lbRegion);
+
+        REGION.setLayout(null);
+        REGION.add(lbRegion);
+        REGION.repaint();
+        REGION.revalidate();
+    }//GEN-LAST:event_copyActionPerformed
+
+    private void widgetBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_widgetBtActionPerformed
+
+        disableListeners();
+
+        JFileChooser fileChooser = new JFileChooser();
+
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+
+            widgetPath = fileChooser.getSelectedFile().getAbsolutePath();
+
+            if (WIDGET_EXTENSION.contains(widgetPath.substring(widgetPath.lastIndexOf(".") + 1).toUpperCase())) {
+
+                Mat widget = MatUtil.readImg(widgetPath);
+                JLabel widgetLabel = new JLabel(new ImageIcon(widgetPath));
+                widgetLabel.setBounds(this.getX() / 2, this.getY() / 2, widget.cols(), widget.rows());
+
+                panel.setLayout(null);
+                panel.add(widgetLabel);
+                panel.setComponentZOrder(widgetLabel, 0);
+
+                for (int i = 1; i < WIDGETS.size(); i++) {
+                    panel.setComponentZOrder(WIDGETS.get(i), i);
+                }
+
+                panel.setComponentZOrder(lPhoto, WIDGETS.size() + 1);
+                panel.repaint();
+                panel.revalidate();
+
+                WIDGETS.add(widgetLabel);
+
+                addingWidget = true;
+
+            } else {
+                JOptionPane.showMessageDialog(null, "O arquivo selecionado não é válido!");
+            }
+        }
+    }//GEN-LAST:event_widgetBtActionPerformed
+
+    private void ctrlYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlYActionPerformed
+
+        if (!next.isEmpty()) {
+
+            if (!selectRegion) {
+                previous.push(img);
+                img = next.pop();
+            } else {
+
+                Rect roi = MatUtil.getRect(REGION);
+                Mat newImg = MatUtil.copy(img);
+
+                next.peek().submat(roi).copyTo(newImg.submat(roi));
+                previous.push(img);
+                img = newImg;
+
+            }
+            MatUtil.show(img, lPhoto);
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Não há mais oque refazer!");
+        }
+    }//GEN-LAST:event_ctrlYActionPerformed
+
+    private void ctrlZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlZActionPerformed
+
+        if (!previous.isEmpty()) {
+
+            if (!selectRegion) {
+
+                next.push(img);
+                img = previous.pop();
+
+            } else {
+
+                Rect roi = MatUtil.getRect(REGION);
+                Mat newImg = MatUtil.copy(img);
+
+                previous.peek().submat(roi).copyTo(newImg.submat(roi));
+                previous.push(img);
+                img = newImg;
+                removeRegion();
+            }
+
+            MatUtil.show(img, lPhoto);
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Não há mais oque desfazer!");
+        }
+    }//GEN-LAST:event_ctrlZActionPerformed
+
+    private void zoomInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomInActionPerformed
+        
+        if (selectRegion) {
+            
+            matZoomOut = MatUtil.copy(img);
+            
+            img = img.submat(MatUtil.getRect(REGION));
+            MatUtil.resize(img, matZoomOut.size());
+            MatUtil.show(img, lPhoto);
+            removeRegion();
+        }
+        
+    }//GEN-LAST:event_zoomInActionPerformed
+
+    private void zoomOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutActionPerformed
+        
+        MatUtil.resize(img, new Size(REGION.getWidth(), REGION.getHeight()));
+        img.copyTo(matZoomOut.submat(MatUtil.getRect(REGION)));
+        img = matZoomOut;
+        MatUtil.show(img, lPhoto);
+    }//GEN-LAST:event_zoomOutActionPerformed
 
     //util's method's
     private void addMouseListeners() {
@@ -1580,5 +1622,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JRadioButton vhs_date_2;
     private javax.swing.JMenuItem widgetBt;
     private javax.swing.JRadioButton yellow;
+    private javax.swing.JMenuItem zoomIn;
+    private javax.swing.JMenuItem zoomOut;
     // End of variables declaration//GEN-END:variables
 }

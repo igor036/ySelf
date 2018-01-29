@@ -70,7 +70,7 @@ public abstract class MatUtil extends JFrame {
     }
 
     public static void show(Mat img, JLabel lbImg) {
-        lbImg.setBounds(0, 0, (int) img.size().width, (int) img.size().height);
+        //lbImg.setBounds(0, 0, (int) img.size().width, (int) img.size().height);
         ImageIcon imgIcon = new ImageIcon(bufferedImg(img));
         lbImg.setIcon(imgIcon);
     }
