@@ -1,0 +1,1719 @@
+/*
+Authors: Igor Joaquim dos Santos Lima
+GitHub: https://github.com/igor036
+ */
+package br.com.ySelf.window;
+
+import br.com.ySelf.modal.EColor;
+import br.com.ySelf.util.MatUtil;
+import java.awt.Color;
+import java.awt.Component;
+
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.util.List;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Stack;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.core.Size;
+
+public class Window extends javax.swing.JFrame {
+
+    //control of photo
+    private Mat img;              //actually
+    private Mat temp;             //temp
+    private Stack<Mat> previous; //ctrl+z 
+    private Stack<Mat> next;     //ctrl+y
+
+
+    //glitch wave
+    private int waveLength;
+    private EColor color;
+
+    //widget
+    private String widgetPath;
+    private final List<String> WIDGET_EXTENSION;
+    private final List<JLabel> WIDGETS;
+
+    //outer's
+    private final JLabel REGION;       //select region
+    private int rx,ry;
+    private Mat copyRegion;           //copy region
+    private Mat paintImg;            //image paint
+    private Mat penImage;           //image use to paint
+    private Mat matZoomOut;
+    private Mat temp_2ndLayer;
+    
+    
+    private JPanel zoomRegion;
+    
+    //control variables of listeners
+    private boolean addingWidget = false;
+    private boolean selectRegion = false;
+    private boolean copying = false;
+    private boolean usingPen = false;
+    
+    public Window(Mat img, String title){
+        this(title);
+        this.img = img;
+        MatUtil.show(img, lPhoto);
+        lPhoto.setSize(img.width(), img.height());
+        this.setSize(img.width(), img.height());
+    }
+    
+    public Window(String title) {
+
+        initComponents();
+        addMouseListeners();
+        
+        setResizable(false);
+        GlitchWave.setLocationRelativeTo(null);
+        GlitchWave.setSize(400, 200);
+        GlitchVHS.setSize(500, 200);
+        Propertys.setSize(400, 400);
+
+        WIDGET_EXTENSION = new ArrayList<>();
+        WIDGETS = new ArrayList<>();
+        REGION = new JLabel();
+        previous = new Stack<>();
+        next = new Stack<>();
+
+        WIDGET_EXTENSION.add("JPG");
+        WIDGET_EXTENSION.add("JPEG");
+        WIDGET_EXTENSION.add("PNG");
+        this.setTitle(title);
+    }
+
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        GlitchWave = new javax.swing.JDialog();
+        blue = new javax.swing.JRadioButton();
+        Red = new javax.swing.JRadioButton();
+        yellow = new javax.swing.JRadioButton();
+        okButton = new javax.swing.JButton();
+        txtxLength = new javax.swing.JTextField();
+        lb = new javax.swing.JLabel();
+        colors = new javax.swing.ButtonGroup();
+        GlitchVHS = new javax.swing.JDialog();
+        vhs_1 = new javax.swing.JRadioButton();
+        vhs_2 = new javax.swing.JRadioButton();
+        vhs_3 = new javax.swing.JRadioButton();
+        vhs_4 = new javax.swing.JRadioButton();
+        vhs_date_1 = new javax.swing.JRadioButton();
+        vhs_date_2 = new javax.swing.JRadioButton();
+        vhs_1_icon = new javax.swing.JLabel();
+        vhs_2_icon = new javax.swing.JLabel();
+        vhs_3_icon = new javax.swing.JLabel();
+        vhs_4_icon = new javax.swing.JLabel();
+        vhs_1_icon4 = new javax.swing.JLabel();
+        vhs_1_icon5 = new javax.swing.JLabel();
+        btnVhs = new javax.swing.JButton();
+        vhs = new javax.swing.ButtonGroup();
+        Propertys = new javax.swing.JDialog();
+        darkenLabel = new javax.swing.JLabel();
+        darkenBar = new javax.swing.JScrollBar();
+        lightenLabel = new javax.swing.JLabel();
+        lightenBar = new javax.swing.JScrollBar();
+        noiseBar = new javax.swing.JScrollBar();
+        lightenLabel1 = new javax.swing.JLabel();
+        penSizeLabel = new javax.swing.JLabel();
+        PenSize = new javax.swing.JSpinner();
+        penColorLabel = new javax.swing.JLabel();
+        penColor = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
+        lbSize = new javax.swing.JLabel();
+        txtWidth = new javax.swing.JTextField();
+        txtHeight = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        btResize = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        goutTypePen = new javax.swing.ButtonGroup();
+        panel = new javax.swing.JPanel();
+        lPhoto = new javax.swing.JLabel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        menuBar = new javax.swing.JMenuBar();
+        photoSelection = new javax.swing.JMenu();
+        options = new javax.swing.JMenu();
+        ctrlZ = new javax.swing.JMenuItem();
+        ctrlY = new javax.swing.JMenuItem();
+        widgetBt = new javax.swing.JMenuItem();
+        copy = new javax.swing.JMenuItem();
+        cut = new javax.swing.JMenuItem();
+        save = new javax.swing.JMenuItem();
+        zoomIn = new javax.swing.JMenuItem();
+        zoomOut = new javax.swing.JMenuItem();
+        btMasks = new javax.swing.JMenu();
+        dogMask = new javax.swing.JMenuItem();
+        glasses1Mask = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        filter = new javax.swing.JMenu();
+        gray = new javax.swing.JMenuItem();
+        blur = new javax.swing.JMenuItem();
+        inversor = new javax.swing.JMenuItem();
+        morphology = new javax.swing.JMenuItem();
+        cartoon = new javax.swing.JMenuItem();
+        glitchButton = new javax.swing.JMenu();
+        glitchWave = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        tools = new javax.swing.JMenu();
+        select = new javax.swing.JMenuItem();
+        pen = new javax.swing.JCheckBoxMenuItem();
+        eraser = new javax.swing.JCheckBoxMenuItem();
+        propertys = new javax.swing.JMenu();
+
+        colors.add(blue);
+        blue.setText("Blue");
+
+        colors.add(Red);
+        Red.setText("Red");
+
+        colors.add(yellow);
+        yellow.setText("Green");
+
+        okButton.setText("Okay");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
+            }
+        });
+
+        lb.setText("Tamanho:");
+
+        javax.swing.GroupLayout GlitchWaveLayout = new javax.swing.GroupLayout(GlitchWave.getContentPane());
+        GlitchWave.getContentPane().setLayout(GlitchWaveLayout);
+        GlitchWaveLayout.setHorizontalGroup(
+            GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(GlitchWaveLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(GlitchWaveLayout.createSequentialGroup()
+                        .addComponent(yellow)
+                        .addGap(35, 35, 35)
+                        .addComponent(blue)
+                        .addGap(25, 25, 25))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, GlitchWaveLayout.createSequentialGroup()
+                        .addComponent(lb)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtxLength, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addGroup(GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Red)
+                    .addComponent(okButton))
+                .addContainerGap(42, Short.MAX_VALUE))
+        );
+        GlitchWaveLayout.setVerticalGroup(
+            GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(GlitchWaveLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(yellow)
+                    .addComponent(blue)
+                    .addComponent(Red))
+                .addGap(18, 18, 18)
+                .addGroup(GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtxLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(okButton)
+                    .addComponent(lb))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        GlitchVHS.setResizable(false);
+
+        vhs.add(vhs_1);
+        vhs_1.setText("VHS_1");
+
+        vhs.add(vhs_2);
+        vhs_2.setText("VHS_2");
+
+        vhs.add(vhs_3);
+        vhs_3.setText("VHS_3");
+
+        vhs.add(vhs_4);
+        vhs_4.setText("VHS_4");
+
+        vhs.add(vhs_date_1);
+        vhs_date_1.setText("VHS_DATE_1");
+
+        vhs.add(vhs_date_2);
+        vhs_date_2.setText("VHS_DATE_2");
+
+        vhs_1_icon.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\1.jpg")); // NOI18N
+
+        vhs_2_icon.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\2.jpg")); // NOI18N
+
+        vhs_3_icon.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\3.jpg")); // NOI18N
+
+        vhs_4_icon.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\4.jpg")); // NOI18N
+
+        vhs_1_icon4.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\vhs_date1.png")); // NOI18N
+
+        vhs_1_icon5.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\vhs_date2.jpg")); // NOI18N
+
+        btnVhs.setText("Aplicar");
+        btnVhs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVhsActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout GlitchVHSLayout = new javax.swing.GroupLayout(GlitchVHS.getContentPane());
+        GlitchVHS.getContentPane().setLayout(GlitchVHSLayout);
+        GlitchVHSLayout.setHorizontalGroup(
+            GlitchVHSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(GlitchVHSLayout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addGroup(GlitchVHSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(GlitchVHSLayout.createSequentialGroup()
+                        .addComponent(vhs_1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(vhs_1_icon))
+                    .addGroup(GlitchVHSLayout.createSequentialGroup()
+                        .addComponent(vhs_2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(vhs_2_icon)))
+                .addGap(32, 32, 32)
+                .addGroup(GlitchVHSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(GlitchVHSLayout.createSequentialGroup()
+                        .addComponent(vhs_3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(vhs_3_icon)
+                        .addGap(30, 30, 30)
+                        .addComponent(vhs_date_2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(vhs_1_icon5))
+                    .addGroup(GlitchVHSLayout.createSequentialGroup()
+                        .addGroup(GlitchVHSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnVhs)
+                            .addGroup(GlitchVHSLayout.createSequentialGroup()
+                                .addComponent(vhs_4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(vhs_4_icon)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(vhs_date_1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(vhs_1_icon4)))
+                .addContainerGap(65, Short.MAX_VALUE))
+        );
+        GlitchVHSLayout.setVerticalGroup(
+            GlitchVHSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(GlitchVHSLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(GlitchVHSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(GlitchVHSLayout.createSequentialGroup()
+                        .addGroup(GlitchVHSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(vhs_1)
+                            .addComponent(vhs_1_icon))
+                        .addGap(18, 18, 18)
+                        .addGroup(GlitchVHSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(vhs_2)
+                            .addComponent(vhs_2_icon)))
+                    .addGroup(GlitchVHSLayout.createSequentialGroup()
+                        .addGroup(GlitchVHSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(GlitchVHSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(vhs_3)
+                                .addComponent(vhs_3_icon))
+                            .addComponent(vhs_date_2)
+                            .addComponent(vhs_1_icon5))
+                        .addGap(15, 15, 15)
+                        .addGroup(GlitchVHSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(vhs_4)
+                            .addComponent(vhs_4_icon)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, GlitchVHSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(vhs_date_1)
+                                .addComponent(vhs_1_icon4)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addComponent(btnVhs)
+                .addContainerGap())
+        );
+
+        darkenLabel.setText("Escurecer:");
+
+        darkenBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
+        darkenBar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                darkenBarMouseReleased(evt);
+            }
+        });
+        darkenBar.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
+            public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
+                darkenBarAdjustmentValueChanged(evt);
+            }
+        });
+
+        lightenLabel.setText("Clarear:");
+
+        lightenBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
+        lightenBar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                lightenBarMouseReleased(evt);
+            }
+        });
+        lightenBar.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
+            public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
+                lightenBarAdjustmentValueChanged(evt);
+            }
+        });
+
+        noiseBar.setMaximum(255);
+        noiseBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
+        noiseBar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                noiseBarMouseReleased(evt);
+            }
+        });
+        noiseBar.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
+            public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
+                noiseBarAdjustmentValueChanged(evt);
+            }
+        });
+
+        lightenLabel1.setText("Ruído:");
+
+        penSizeLabel.setText("Tamanho do pincel:");
+
+        penColorLabel.setText("Cor do pincel:");
+
+        penColor.setBackground(new java.awt.Color(0, 0, 0));
+        penColor.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                penColorMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout penColorLayout = new javax.swing.GroupLayout(penColor);
+        penColor.setLayout(penColorLayout);
+        penColorLayout.setHorizontalGroup(
+            penColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 21, Short.MAX_VALUE)
+        );
+        penColorLayout.setVerticalGroup(
+            penColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+
+        jLabel2.setText("Pincel");
+
+        jLabel3.setText("Imagem");
+
+        lbSize.setText("Tamannho(LxA): ");
+
+        jLabel4.setText("Largura:");
+
+        jLabel5.setText("Altura:");
+
+        btResize.setText("Redimensionar");
+        btResize.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btResizeActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout PropertysLayout = new javax.swing.GroupLayout(Propertys.getContentPane());
+        Propertys.getContentPane().setLayout(PropertysLayout);
+        PropertysLayout.setHorizontalGroup(
+            PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PropertysLayout.createSequentialGroup()
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(darkenLabel)
+                            .addComponent(lightenLabel1)
+                            .addComponent(lightenLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lightenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(darkenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGap(167, 167, 167)
+                        .addComponent(jLabel3))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(PropertysLayout.createSequentialGroup()
+                                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(penSizeLabel)
+                                    .addComponent(penColorLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(PenSize, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(penColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGap(172, 172, 172)
+                        .addComponent(jLabel2))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGap(43, 43, 43)
+                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btResize)
+                            .addGroup(PropertysLayout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(2, 2, 2)
+                                .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(30, 30, 30)
+                                .addComponent(jLabel5))
+                            .addComponent(lbSize))
+                        .addGap(5, 5, 5)
+                        .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(80, Short.MAX_VALUE))
+        );
+        PropertysLayout.setVerticalGroup(
+            PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PropertysLayout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(darkenBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(darkenLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lightenBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lightenLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lightenLabel1))
+                .addGap(28, 28, 28)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addGap(16, 16, 16)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(penSizeLabel)
+                            .addComponent(PenSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(10, 10, 10)
+                        .addComponent(penColorLabel))
+                    .addComponent(penColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbSize)
+                .addGap(24, 24, 24)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addComponent(btResize)
+                .addGap(22, 22, 22))
+        );
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
+
+        lPhoto.setText("Selecione uma imagem  ...");
+
+        javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
+        panel.setLayout(panelLayout);
+        panelLayout.setHorizontalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLayout.createSequentialGroup()
+                .addComponent(lPhoto)
+                .addGap(0, 307, Short.MAX_VALUE))
+        );
+        panelLayout.setVerticalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLayout.createSequentialGroup()
+                .addComponent(lPhoto)
+                .addContainerGap(306, Short.MAX_VALUE))
+        );
+
+        photoSelection.setText("Selecionar Foto");
+        photoSelection.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                photoSelectionMouseClicked(evt);
+            }
+        });
+        menuBar.add(photoSelection);
+
+        options.setText("Opções");
+
+        ctrlZ.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
+        ctrlZ.setText("Desfazer");
+        ctrlZ.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctrlZActionPerformed(evt);
+            }
+        });
+        options.add(ctrlZ);
+
+        ctrlY.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
+        ctrlY.setText("Refazer");
+        ctrlY.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctrlYActionPerformed(evt);
+            }
+        });
+        options.add(ctrlY);
+
+        widgetBt.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
+        widgetBt.setText("Widget");
+        widgetBt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                widgetBtActionPerformed(evt);
+            }
+        });
+        options.add(widgetBt);
+
+        copy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
+        copy.setText("Copiar");
+        copy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copyActionPerformed(evt);
+            }
+        });
+        options.add(copy);
+
+        cut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        cut.setText("Cortar");
+        cut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cutActionPerformed(evt);
+            }
+        });
+        options.add(cut);
+
+        save.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        save.setText("Salvar");
+        save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveActionPerformed(evt);
+            }
+        });
+        options.add(save);
+
+        zoomIn.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_EQUALS, java.awt.event.InputEvent.SHIFT_MASK));
+        zoomIn.setText("Zoom +");
+        zoomIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomInActionPerformed(evt);
+            }
+        });
+        options.add(zoomIn);
+
+        zoomOut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_MINUS, java.awt.event.InputEvent.SHIFT_MASK));
+        zoomOut.setText("Zoom -");
+        zoomOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomOutActionPerformed(evt);
+            }
+        });
+        options.add(zoomOut);
+
+        menuBar.add(options);
+
+        btMasks.setText("Mascaras");
+
+        dogMask.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, java.awt.event.InputEvent.CTRL_MASK));
+        dogMask.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\dog-icon.png")); // NOI18N
+        dogMask.setText("Cachorro");
+        dogMask.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dogMaskActionPerformed(evt);
+            }
+        });
+        btMasks.add(dogMask);
+
+        glasses1Mask.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, java.awt.event.InputEvent.CTRL_MASK));
+        glasses1Mask.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\glasses_1.png")); // NOI18N
+        glasses1Mask.setText("Óculos 1");
+        glasses1Mask.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                glasses1MaskActionPerformed(evt);
+            }
+        });
+        btMasks.add(glasses1Mask);
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem1.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\glasses_2.png")); // NOI18N
+        jMenuItem1.setText("Óculos 2");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        btMasks.add(jMenuItem1);
+
+        menuBar.add(btMasks);
+
+        filter.setText("Filtros");
+
+        gray.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
+        gray.setText("Escala de Cinza");
+        gray.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                grayActionPerformed(evt);
+            }
+        });
+        filter.add(gray);
+
+        blur.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
+        blur.setText("Desfocar");
+        blur.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                blurActionPerformed(evt);
+            }
+        });
+        filter.add(blur);
+
+        inversor.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.CTRL_MASK));
+        inversor.setText("Inverter");
+        inversor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inversorActionPerformed(evt);
+            }
+        });
+        filter.add(inversor);
+
+        morphology.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.CTRL_MASK));
+        morphology.setText("Morfologia");
+        morphology.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                morphologyActionPerformed(evt);
+            }
+        });
+        filter.add(morphology);
+
+        cartoon.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_K, java.awt.event.InputEvent.CTRL_MASK));
+        cartoon.setText("Desenho");
+        cartoon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cartoonActionPerformed(evt);
+            }
+        });
+        filter.add(cartoon);
+
+        menuBar.add(filter);
+
+        glitchButton.setText("Glitch");
+
+        glitchWave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.SHIFT_MASK));
+        glitchWave.setText("Wave");
+        glitchWave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                glitchWaveActionPerformed(evt);
+            }
+        });
+        glitchButton.add(glitchWave);
+
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem2.setText("VHS");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        glitchButton.add(jMenuItem2);
+
+        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem3.setText("Somar");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        glitchButton.add(jMenuItem3);
+
+        menuBar.add(glitchButton);
+
+        tools.setText("Ferramentas");
+
+        select.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        select.setText("Selecionar");
+        select.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectActionPerformed(evt);
+            }
+        });
+        tools.add(select);
+
+        pen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        pen.setText("Pincel");
+        tools.add(pen);
+
+        eraser.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, java.awt.event.InputEvent.SHIFT_MASK));
+        eraser.setText("Borracha");
+        tools.add(eraser);
+
+        menuBar.add(tools);
+
+        propertys.setText("Propriedades");
+        propertys.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                propertysMouseClicked(evt);
+            }
+        });
+        menuBar.add(propertys);
+
+        setJMenuBar(menuBar);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void photoSelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_photoSelectionMouseClicked
+
+        JFileChooser fileChooser = new JFileChooser();
+
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+
+            String photoPath = fileChooser.getSelectedFile().getAbsolutePath();
+            img = MatUtil.readImg(photoPath);
+            MatUtil.show(img, lPhoto);
+
+            lPhoto.setSize(img.width(), img.height());
+            previous.clear();
+            next.clear();
+
+            lPhoto.setText("");
+            
+            updatePropertys();
+        }
+    }//GEN-LAST:event_photoSelectionMouseClicked
+
+    private void dogMaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dogMaskActionPerformed
+
+        Mat newImg = MatUtil.copy(img);
+
+        MatUtil.dog(newImg);
+        MatUtil.show(newImg, lPhoto);
+
+        previous.push(img);
+        img = newImg;
+        removeRegion();
+    }//GEN-LAST:event_dogMaskActionPerformed
+
+    private void grayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_grayActionPerformed
+
+        Mat newImg = MatUtil.copy(img);
+
+        if (selectRegion) {
+
+            MatUtil.grayScale(newImg, MatUtil.getRect(REGION));
+            removeRegion();
+
+        } else {
+            MatUtil.grayScale(newImg);
+        }
+
+        MatUtil.show(newImg, lPhoto);
+
+        previous.push(img);
+        img = newImg;
+    }//GEN-LAST:event_grayActionPerformed
+
+    private void blurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blurActionPerformed
+
+        int blurLevel = Integer.parseInt(JOptionPane.showInputDialog(null, "Nível de desfoque", JOptionPane.WARNING_MESSAGE));
+
+        Mat newImg = MatUtil.copy(img);
+
+        if (selectRegion) {
+
+            MatUtil.blur(newImg, blurLevel, MatUtil.getRect(REGION));
+            removeRegion();
+
+        } else {
+            MatUtil.blur(newImg, blurLevel);
+        }
+
+        MatUtil.show(newImg, lPhoto);
+
+        previous.push(img);
+        img = newImg;
+
+    }//GEN-LAST:event_blurActionPerformed
+
+    private void inversorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inversorActionPerformed
+
+        Mat newImg = MatUtil.copy(img);
+
+        if (selectRegion) {
+            MatUtil.inversor(newImg, MatUtil.getRect(REGION));
+            removeRegion();
+        }else 
+            MatUtil.inversor(newImg);
+        
+        MatUtil.show(newImg, lPhoto);
+
+        previous.push(img);
+        img = newImg;
+
+    }//GEN-LAST:event_inversorActionPerformed
+
+    private void glasses1MaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_glasses1MaskActionPerformed
+
+        try {
+
+            Mat newImg = MatUtil.copy(img);
+
+            MatUtil.glasses(newImg, MatUtil.GLASSES_1);
+            MatUtil.show(newImg, lPhoto);
+
+            previous.push(img);
+            img = newImg;
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Combinação de efeitos inválida!");
+        }
+    }//GEN-LAST:event_glasses1MaskActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+
+        try {
+
+            Mat newImg = MatUtil.copy(img);
+
+            MatUtil.glasses(newImg, MatUtil.GLASSES_2);
+            MatUtil.show(newImg, lPhoto);
+
+            previous.push(img);
+            img = newImg;
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Combinação de efeitos inválida!");
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void glitchWaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_glitchWaveActionPerformed
+
+        GlitchWave.setModal(true);
+        GlitchWave.setVisible(true);
+
+        Mat newImg = MatUtil.copy(img);
+
+        if (selectRegion) {
+            MatUtil.glitchWave(newImg, waveLength, color, MatUtil.getRect(REGION));
+            removeRegion();
+        } else {
+            MatUtil.glitchWave(newImg, waveLength, color);
+        }
+
+        MatUtil.show(newImg, lPhoto);
+
+        previous.push(img);
+        img = newImg;
+
+    }//GEN-LAST:event_glitchWaveActionPerformed
+
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+
+        try {
+
+            waveLength = Integer.parseInt(txtxLength.getText());
+
+            /* !! ALERT: improve, make dynamic verification */
+            if (yellow.isSelected()) {
+                color = EColor.GREEN;
+            } else if (blue.isSelected()) {
+                color = EColor.BLUE;
+            } else {
+                color = EColor.RED;
+            }
+
+            GlitchWave.dispose();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erro no preenchimento!");
+        }
+    }//GEN-LAST:event_okButtonActionPerformed
+
+    private void morphologyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_morphologyActionPerformed
+
+        try {
+
+            int morph_size = Integer.parseInt(JOptionPane.showInputDialog(null, "Tamanho"));
+
+            Mat newImg = MatUtil.copy(img);
+
+            if (selectRegion) {
+                MatUtil.morphology(newImg, morph_size, MatUtil.getRect(REGION));
+                removeRegion();
+            } else {
+                MatUtil.morphology(newImg, morph_size);
+            }
+            MatUtil.show(newImg, lPhoto);
+
+            previous.push(img);
+            img = newImg;
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Tente novamente!");
+        }
+
+    }//GEN-LAST:event_morphologyActionPerformed
+
+    private void btnVhsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVhsActionPerformed
+        GlitchVHS.dispose();
+    }//GEN-LAST:event_btnVhsActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+
+        try {
+
+            GlitchVHS.setModal(true);
+            GlitchVHS.setVisible(true);
+
+            Mat newImg = MatUtil.copy(img);
+
+            /* !! ALERT: improve, make dynamic verification */
+            if (vhs_1.isSelected()) {
+                MatUtil.vhs(newImg, MatUtil.VHS_1);
+            } else if (vhs_2.isSelected()) {
+                MatUtil.vhs(newImg, MatUtil.VHS_2);
+            } else if (vhs_3.isSelected()) {
+                MatUtil.vhs(newImg, MatUtil.VHS_3);
+            } else if (vhs_4.isSelected()) {
+                MatUtil.vhs(newImg, MatUtil.VHS_4);
+            } else if (vhs_date_1.isSelected()) {
+                MatUtil.vhs(newImg, MatUtil.VHS_DATE_1);
+            } else {
+                MatUtil.vhs(newImg, MatUtil.VHS_DATE_2);
+            }
+
+            MatUtil.show(newImg, lPhoto);
+
+            previous.push(img);
+            img = newImg;
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Tente novamente!");
+            System.out.println("ERRO: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+
+        JFileChooser fileChooser = new JFileChooser();
+
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+
+            Mat newImg = MatUtil.copy(img);
+
+            MatUtil.sumMat(newImg, MatUtil.readImg(fileChooser.getSelectedFile().getAbsolutePath()));
+            MatUtil.show(newImg, lPhoto);
+
+            previous.push(img);
+            img = newImg;
+
+        }
+
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+
+        if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
+
+            if (selectRegion) {
+                removeRegion();
+            } else if (addingWidget) {
+                removeWidget();
+            } else if (copying) {
+                disablePasteMode();
+            }
+        } else if (evt.getKeyCode() == KeyEvent.VK_F12){
+            MatUtil.show(penImage, "");
+        }
+    }//GEN-LAST:event_formKeyPressed
+
+    private void darkenBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_darkenBarAdjustmentValueChanged
+        applyDarken(darkenBar.getValue(), false);
+    }//GEN-LAST:event_darkenBarAdjustmentValueChanged
+
+    private void propertysMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_propertysMouseClicked
+        temp = MatUtil.copy(img);
+        Propertys.setModal(true);
+        Propertys.setVisible(true);
+        previous.push(img);
+        img = temp;
+        removeRegion();
+        restartPorpertyComponentsValues();
+    }//GEN-LAST:event_propertysMouseClicked
+
+    private void lightenBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_lightenBarAdjustmentValueChanged
+        applyLighten(lightenBar.getValue(), false);
+    }//GEN-LAST:event_lightenBarAdjustmentValueChanged
+
+    private void darkenBarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_darkenBarMouseReleased
+        applyDarken(darkenBar.getValue(), true);
+    }//GEN-LAST:event_darkenBarMouseReleased
+
+    private void lightenBarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lightenBarMouseReleased
+        applyLighten(lightenBar.getValue(), true);
+    }//GEN-LAST:event_lightenBarMouseReleased
+
+    private void cartoonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cartoonActionPerformed
+
+        Mat newImg = MatUtil.copy(img);
+        
+        if (selectRegion) {
+            MatUtil.cartoon(newImg, MatUtil.getRect(REGION));
+            removeRegion();
+        }   else
+            MatUtil.cartoon(newImg);
+        
+        MatUtil.show(newImg, lPhoto);
+
+        previous.push(img);
+        img = newImg;
+
+    }//GEN-LAST:event_cartoonActionPerformed
+
+    private void noiseBarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_noiseBarMouseReleased
+        applyNoise(noiseBar.getValue(),true);
+    }//GEN-LAST:event_noiseBarMouseReleased
+
+    private void noiseBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_noiseBarAdjustmentValueChanged
+       applyNoise(noiseBar.getValue(),false);
+    }//GEN-LAST:event_noiseBarAdjustmentValueChanged
+
+    private void penColorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_penColorMouseClicked
+        
+        Color color = JColorChooser.showDialog(null, "Selecione a cor!",Color.BLACK);
+        penColor.setBackground(color);
+       
+    }//GEN-LAST:event_penColorMouseClicked
+
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+
+        if (img != null) {
+
+            try {
+
+                JFileChooser fileChooser = new JFileChooser();
+
+                if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+
+                    Mat newImg = MatUtil.copy(img);
+
+                    for (JLabel widget : WIDGETS) {
+                        MatUtil.widget(newImg, MatUtil.readImg(widget.getIcon().toString()), widget.getX(), widget.getY());
+                        panel.remove(widget);
+                    }
+
+                    MatUtil.show(newImg, lPhoto);
+
+                    previous.push(img);
+                    img = newImg;
+
+                    MatUtil.save(fileChooser.getSelectedFile().getAbsolutePath(), img);
+                    JOptionPane.showMessageDialog(null, "Salvo!");
+
+                    WIDGETS.clear();
+
+                    addingWidget = false;
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Erro ao salvar, tente colocar o caminho com o nome do arquivo!");
+                System.out.println(ex.getMessage());
+            }
+
+        }
+    }//GEN-LAST:event_saveActionPerformed
+
+    private void cutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cutActionPerformed
+
+        if (!selectRegion) {
+            JOptionPane.showMessageDialog(null, "Selecione uma área primeiro!");
+        } else {
+
+            Mat newImg = MatUtil.cut(img, MatUtil.getRect(REGION));
+            MatUtil.show(newImg, lPhoto);
+
+            previous.push(img);
+            img = newImg;
+
+            removeRegion();
+        }
+    }//GEN-LAST:event_cutActionPerformed
+
+    private void copyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyActionPerformed
+
+        disableListeners();
+
+        copying = true;
+        copyRegion = img.submat(MatUtil.getRect(REGION));
+
+        JLabel lbRegion = new JLabel();
+        MatUtil.show(copyRegion, lbRegion);
+
+        REGION.setLayout(null);
+        REGION.add(lbRegion);
+        REGION.repaint();
+        REGION.revalidate();
+    }//GEN-LAST:event_copyActionPerformed
+
+    private void widgetBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_widgetBtActionPerformed
+
+        disableListeners();
+
+        JFileChooser fileChooser = new JFileChooser();
+
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+
+            widgetPath = fileChooser.getSelectedFile().getAbsolutePath();
+
+            if (WIDGET_EXTENSION.contains(widgetPath.substring(widgetPath.lastIndexOf(".") + 1).toUpperCase())) {
+
+                Mat widget = MatUtil.readImg(widgetPath);
+                JLabel widgetLabel = new JLabel(new ImageIcon(widgetPath));
+                widgetLabel.setBounds(this.getX() / 2, this.getY() / 2, widget.cols(), widget.rows());
+
+                panel.setLayout(null);
+                panel.add(widgetLabel);
+                panel.setComponentZOrder(widgetLabel, 0);
+
+                for (int i = 1; i < WIDGETS.size(); i++) 
+                    panel.setComponentZOrder(WIDGETS.get(i), i);
+
+                panel.setComponentZOrder(lPhoto, WIDGETS.size() + 1);
+                panel.repaint();
+                panel.revalidate();
+
+                WIDGETS.add(widgetLabel);
+
+                addingWidget = true;
+
+            } else {
+                JOptionPane.showMessageDialog(null, "O arquivo selecionado não é válido!");
+            }
+        }
+    }//GEN-LAST:event_widgetBtActionPerformed
+
+    private void ctrlYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlYActionPerformed
+
+        if (!next.isEmpty()) {
+
+            if (!selectRegion) {
+                
+                previous.push(img);
+                img = next.pop();
+            
+            } else {
+
+                Rect roi = MatUtil.getRect(REGION);
+                Mat newImg = MatUtil.copy(img);
+
+                next.peek().submat(roi).copyTo(newImg.submat(roi));
+                previous.push(img);
+                img = newImg;
+
+            }
+            MatUtil.show(img, lPhoto);
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Não há mais oque refazer!");
+        }
+    }//GEN-LAST:event_ctrlYActionPerformed
+
+    private void ctrlZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlZActionPerformed
+
+        if (!previous.isEmpty()) {
+
+            if (!selectRegion) {
+
+                next.push(img);
+                img = previous.pop();
+
+            } else {
+
+                Rect roi = MatUtil.getRect(REGION);
+                Mat newImg = MatUtil.copy(img);
+
+                previous.peek().submat(roi).copyTo(newImg.submat(roi));
+                previous.push(img);
+                img = newImg;
+                removeRegion();
+            }
+
+            MatUtil.show(img, lPhoto);
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Não há mais oque desfazer!");
+        }
+    }//GEN-LAST:event_ctrlZActionPerformed
+
+    private void zoomInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomInActionPerformed
+        
+        if (selectRegion) {
+            
+            zoomIn.setEnabled(false);
+            zoomRegion = new JPanel();
+            zoomRegion.setBounds(REGION.getX(), REGION.getY(), REGION.getWidth(), REGION.getHeight());
+            matZoomOut = MatUtil.copy(img);
+            
+            img = img.submat(MatUtil.getRect(zoomRegion));
+            
+            //pen image - 2nd layer
+            if (penImage != null) {
+                
+                temp_2ndLayer = MatUtil.copy(penImage);
+                penImage = penImage.submat(MatUtil.getRect(zoomRegion));
+                MatUtil.resize(penImage, temp_2ndLayer.size());
+            }
+            
+            MatUtil.resize(img, matZoomOut.size());
+            MatUtil.show(img, lPhoto);
+            removeRegion();
+            
+        } else
+            JOptionPane.showMessageDialog(null, "Selecione a região do zoom");
+        
+    }//GEN-LAST:event_zoomInActionPerformed
+
+    private void zoomOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutActionPerformed
+        
+        zoomIn.setEnabled(true);
+        
+        MatUtil.resize(img, new Size(zoomRegion.getWidth(), zoomRegion.getHeight()));
+              
+        img.copyTo(matZoomOut.submat(MatUtil.getRect(zoomRegion)));
+        img = matZoomOut;
+        
+        MatUtil.show(img, lPhoto);
+        penImage = temp_2ndLayer;
+        
+    }//GEN-LAST:event_zoomOutActionPerformed
+
+    private void selectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectActionPerformed
+        disableListeners();
+        selectRegion = true;
+    }//GEN-LAST:event_selectActionPerformed
+
+    private void btResizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btResizeActionPerformed
+        
+        try {
+            
+            
+            double width = Double.parseDouble(txtWidth.getText());
+            double height = Double.parseDouble(txtHeight.getText());
+            
+            Mat newImg = MatUtil.copy(img);
+            MatUtil.resize(newImg, new Size(width, height));
+
+            previous.push(img);
+            img = newImg;
+            
+            MatUtil.show(img, lPhoto);
+            
+            updatePropertys();
+                    
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(null, "Pre-encha corretamente os dados!");
+        }
+        
+    }//GEN-LAST:event_btResizeActionPerformed
+
+    //util's method's
+    private void addMouseListeners() {
+
+        panel.addMouseMotionListener(new MouseAdapter() {
+            
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                
+                
+                if (addingWidget)
+                    updateWidgetLocation(e.getPoint());
+                else if (selectRegion)
+                    setRegionSize(e.getX(), e.getY());
+                else if (pen.isSelected() || eraser.isSelected())
+                    paint(e.getX(), e.getY());
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                if (copying) {
+                    REGION.setLocation(e.getPoint());
+                    REGION.repaint();
+                }
+            }
+        });
+
+        panel.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                if (addingWidget)
+                    updateWidgetLocation(e.getPoint());
+                else if (selectRegion) 
+                    addRegion(e.getPoint());
+                else if (copying) 
+                    paste();
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e){
+                
+                if (pen.isSelected() || eraser.isSelected() ){
+                    
+                    previous.add(img);
+                    img = MatUtil.copy(paintImg);
+                    paintImg = null;
+                }
+            }
+        });
+    }
+
+    
+    private void paint(int x, int y){
+       
+        int width  = Math.abs(x + (Integer)PenSize.getValue() - img.cols());
+        int heigth = Math.abs(y + (Integer)PenSize.getValue() - img.cols());
+        
+        
+        if (paintImg == null)
+            paintImg = MatUtil.copy(img);
+        
+        if ( pen.isSelected() /*&& rbtColor.isSelected()*/ ) {
+        
+        
+            int[] color = {
+                            penColor.getBackground().getBlue(),
+                            penColor.getBackground().getGreen(),
+                            penColor.getBackground().getRed()
+
+                        };
+            MatUtil.paint(color,(Integer)PenSize.getValue(), x, y, paintImg);
+        
+        } else {
+            
+            Mat img1 = paintImg.submat(new Rect(x, y, (Integer)PenSize.getValue(), (Integer)PenSize.getValue()));
+            Mat img2 = null;
+            
+            if (!zoomOut.isEnabled())
+                img2 = penImage.submat(MatUtil.getRect(zoomRegion)).submat(new Rect(x, y, (Integer)PenSize.getValue(), (Integer)PenSize.getValue()));
+            else
+                img2 = penImage.submat(new Rect(x, y, (Integer)PenSize.getValue(), (Integer)PenSize.getValue()));
+            
+            MatUtil.overlay(img1,img2);
+        }
+        
+        MatUtil.show(paintImg, lPhoto);
+    }
+    
+    private void paste() {
+
+        Mat newImg = MatUtil.copy(img);
+        MatUtil.copyToRegion(newImg, copyRegion, MatUtil.getRect(REGION));
+        MatUtil.show(newImg, lPhoto);
+
+        previous.push(img);
+        img = newImg;
+    }
+
+    private void updateWidgetLocation(Point p) {
+
+        if (!WIDGETS.isEmpty()) {
+
+            p.setLocation(p.x + 2, p.y - 47);
+
+            JLabel widgetLabel = WIDGETS.get(WIDGETS.size() - 1);
+            widgetLabel.setLocation(p);
+            widgetLabel.repaint();
+        }
+    }
+
+    private void addRegion(Point p) {
+        
+        REGION.setLocation(p);
+        REGION.setSize(20, 20);
+        REGION.setBorder(BorderFactory.createLineBorder(Color.cyan));
+
+        panel.setLayout(null);
+        panel.add(REGION);
+        panel.setComponentZOrder(REGION, 0);
+
+        for (int i = 1; i < WIDGETS.size(); i++) {
+            panel.setComponentZOrder(WIDGETS.get(i), i);
+        }
+
+        panel.setComponentZOrder(lPhoto, WIDGETS.size() + 1);
+        panel.repaint();
+        panel.revalidate();
+        
+        rx = REGION.getX();
+        ry = REGION.getY();
+
+    }
+
+    private void setRegionSize(int w, int h) {
+        
+        int x = 0,y = 0;
+        int width = 0, heigth = 0;
+        
+        if (w < rx) {
+            
+            x = w;
+            width = rx - w;
+        
+        } else {
+        
+            x = rx;
+            width = w-rx;
+        }
+        
+        
+        if (h < ry) {
+            
+            y = h;
+            heigth = ry - h;
+        
+        } else {
+        
+            y = ry;
+            heigth = h-ry;
+        }
+        
+        
+        REGION.setBounds(x,y,width,heigth);
+       
+    }
+
+    private void removeRegion() {
+
+        panel.setLayout(null);
+        panel.remove(REGION);
+        panel.repaint();
+        panel.revalidate();
+        selectRegion = false;
+    }
+
+    private void removeWidget() {
+
+        if (!WIDGETS.isEmpty()) {
+
+            JLabel widget = WIDGETS.get(WIDGETS.size() - 1);
+            WIDGETS.remove(WIDGETS.size() - 1);
+
+            panel.setLayout(null);
+            panel.remove(widget);
+            panel.repaint();
+            panel.revalidate();
+        }
+
+    }
+
+    private void applyLighten(int level, boolean replace) {
+
+        Mat copy = MatUtil.copy(temp);
+
+        if (selectRegion) {
+            MatUtil.lighten(copy, level, MatUtil.getRect(REGION));
+        } else {
+            MatUtil.lighten(copy, level);
+        }
+
+        MatUtil.show(copy, lPhoto);
+
+        if (replace) {
+            temp = copy;
+        }
+
+    }
+
+    private void applyDarken(int level, boolean replace) {
+
+        Mat copy = MatUtil.copy(temp);
+
+        if (selectRegion) {
+            MatUtil.darken(copy, level, MatUtil.getRect(REGION));
+        } else {
+            MatUtil.darken(copy, level);
+        }
+
+        MatUtil.show(copy, lPhoto);
+
+        if (replace) {
+            temp = copy;
+        }
+
+    }
+    
+    private void applyNoise(int level, boolean replace) {
+
+        Mat copy = MatUtil.copy(temp);
+
+        if (selectRegion) {
+            MatUtil.noise(copy, level, MatUtil.getRect(REGION));
+        } else {
+            MatUtil.noise(copy, level);
+        }
+
+        MatUtil.show(copy, lPhoto);
+
+        if (replace) {
+            temp = copy;
+        }
+
+    }
+
+    private void restartPorpertyComponentsValues() {
+        Component[] components = Propertys.getContentPane().getComponents();
+        for (Component c : components) {
+            if (c instanceof JScrollBar) {
+                ((JScrollBar) c).setValue(0);
+            }
+        }
+    }
+
+    private void disablePasteMode() {
+        removeRegion();
+        REGION.removeAll();
+        copyRegion = null;
+    }
+
+    private void disableListeners() {
+        selectRegion = copying = addingWidget = usingPen = false;
+    }
+
+    public Mat getImg(){
+        return img;
+    }
+    
+    public void setNextLayerMat(Mat img){
+        this.penImage = img;      
+    }
+    
+    private void updatePropertys(){
+        
+        txtWidth.setText(img.width()+"");
+        txtHeight.setText(img.height()+"");
+        lbSize.setText("Tamanho (LxA): "+img.width() + "x" + img.height());
+        
+        int width = img.width() >= 200 ? img.width() : 200;
+        int height = img.height() >= 200 ? img.height() : 200;
+        
+        
+        this.setSize(width,height);
+        
+    }
+    
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JDialog GlitchVHS;
+    private javax.swing.JDialog GlitchWave;
+    private javax.swing.JSpinner PenSize;
+    private javax.swing.JDialog Propertys;
+    private javax.swing.JRadioButton Red;
+    private javax.swing.JRadioButton blue;
+    private javax.swing.JMenuItem blur;
+    private javax.swing.JMenu btMasks;
+    private javax.swing.JButton btResize;
+    private javax.swing.JButton btnVhs;
+    private javax.swing.JMenuItem cartoon;
+    private javax.swing.ButtonGroup colors;
+    private javax.swing.JMenuItem copy;
+    private javax.swing.JMenuItem ctrlY;
+    private javax.swing.JMenuItem ctrlZ;
+    private javax.swing.JMenuItem cut;
+    private javax.swing.JScrollBar darkenBar;
+    private javax.swing.JLabel darkenLabel;
+    private javax.swing.JMenuItem dogMask;
+    private javax.swing.JCheckBoxMenuItem eraser;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.JMenu filter;
+    private javax.swing.JMenuItem glasses1Mask;
+    private javax.swing.JMenu glitchButton;
+    private javax.swing.JMenuItem glitchWave;
+    private javax.swing.ButtonGroup goutTypePen;
+    private javax.swing.JMenuItem gray;
+    private javax.swing.JMenuItem inversor;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel lPhoto;
+    private javax.swing.JLabel lb;
+    private javax.swing.JLabel lbSize;
+    private javax.swing.JScrollBar lightenBar;
+    private javax.swing.JLabel lightenLabel;
+    private javax.swing.JLabel lightenLabel1;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem morphology;
+    private javax.swing.JScrollBar noiseBar;
+    private javax.swing.JButton okButton;
+    private javax.swing.JMenu options;
+    private javax.swing.JPanel panel;
+    private javax.swing.JCheckBoxMenuItem pen;
+    private javax.swing.JPanel penColor;
+    private javax.swing.JLabel penColorLabel;
+    private javax.swing.JLabel penSizeLabel;
+    private javax.swing.JMenu photoSelection;
+    private javax.swing.JMenu propertys;
+    private javax.swing.JMenuItem save;
+    private javax.swing.JMenuItem select;
+    private javax.swing.JMenu tools;
+    private javax.swing.JTextField txtHeight;
+    private javax.swing.JTextField txtWidth;
+    private javax.swing.JTextField txtxLength;
+    private javax.swing.ButtonGroup vhs;
+    private javax.swing.JRadioButton vhs_1;
+    private javax.swing.JLabel vhs_1_icon;
+    private javax.swing.JLabel vhs_1_icon4;
+    private javax.swing.JLabel vhs_1_icon5;
+    private javax.swing.JRadioButton vhs_2;
+    private javax.swing.JLabel vhs_2_icon;
+    private javax.swing.JRadioButton vhs_3;
+    private javax.swing.JLabel vhs_3_icon;
+    private javax.swing.JRadioButton vhs_4;
+    private javax.swing.JLabel vhs_4_icon;
+    private javax.swing.JRadioButton vhs_date_1;
+    private javax.swing.JRadioButton vhs_date_2;
+    private javax.swing.JMenuItem widgetBt;
+    private javax.swing.JRadioButton yellow;
+    private javax.swing.JMenuItem zoomIn;
+    private javax.swing.JMenuItem zoomOut;
+    // End of variables declaration//GEN-END:variables
+}

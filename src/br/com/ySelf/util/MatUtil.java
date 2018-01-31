@@ -4,6 +4,7 @@ GitHub: https://github.com/igor036
  */
 package br.com.ySelf.util;
 
+import br.com.ySelf.modal.EColor;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
@@ -418,7 +419,7 @@ public abstract class MatUtil extends JFrame {
     public static void resize(Mat img, Size size) {
         Imgproc.resize(img, img, size);
     }
-    
+   
     public static void delete(Mat img, Rect region) {
         img.submat(region).setTo(new Scalar(0, 0, 0));
     }
