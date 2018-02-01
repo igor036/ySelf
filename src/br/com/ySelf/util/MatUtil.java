@@ -318,6 +318,32 @@ public abstract class MatUtil extends JFrame {
         }
     }
     
+    public static void sepia(Mat img){
+    
+        /* R = pixel[2] / tr = 0.393R + 0.769G + 0.189B
+         * G = pixel[1] / tg = 0.349R + 0.686G + 0.168B
+         * B = pixel[0] / tb = 0.0272R + 0.534G + 0.131B
+         */
+        
+        for (int x = 0; x < img.rows(); x++) {
+            for (int y = 0; y < img.cols(); y++) {
+            
+                
+                double R = img.get(x, y)[2], 
+                       G = img.get(x, y)[1], 
+                       B = img.get(x, y)[0];
+                
+                double[] data = {
+                    0.272*R + 0.534*G + 0.131*B,
+                    0.349*R + 0.686*G + 0.168*B,
+                    0.393*R + 0.769*G + 0.189*B
+                };
+                
+                img.put(x, y, data);
+            }
+        }
+    }
+    
     public static void inversor(Mat img) {
 
         byte[] buffer = toByteArray(img);

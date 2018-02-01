@@ -169,6 +169,7 @@ public class Window extends javax.swing.JFrame {
         inversor = new javax.swing.JMenuItem();
         morphology = new javax.swing.JMenuItem();
         cartoon = new javax.swing.JMenuItem();
+        sepia = new javax.swing.JMenuItem();
         glitchButton = new javax.swing.JMenu();
         glitchWave = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -714,6 +715,15 @@ public class Window extends javax.swing.JFrame {
             }
         });
         filter.add(cartoon);
+
+        sepia.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
+        sepia.setText("Sépia");
+        sepia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sepiaActionPerformed(evt);
+            }
+        });
+        filter.add(sepia);
 
         menuBar.add(filter);
 
@@ -1346,6 +1356,17 @@ public class Window extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btResizeActionPerformed
 
+    private void sepiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sepiaActionPerformed
+        
+        Mat newImg = MatUtil.copy(img);
+        MatUtil.sepia(newImg);
+        
+        previous.push(img);
+        img = newImg;
+        MatUtil.show(img, lPhoto);
+        
+    }//GEN-LAST:event_sepiaActionPerformed
+
     //util's method's
     private void addMouseListeners() {
 
@@ -1640,8 +1661,10 @@ public class Window extends javax.swing.JFrame {
     
     public void removeWidgetSelection(){
         
-        selectedWidget.setBorder(null);
-        selectedWidget = null;
+        if (selectedWidget != null){
+            selectedWidget.setBorder(null);
+            selectedWidget = null;
+        }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1704,6 +1727,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JMenu propertys;
     private javax.swing.JMenuItem save;
     private javax.swing.JMenuItem select;
+    private javax.swing.JMenuItem sepia;
     private javax.swing.JMenu tools;
     private javax.swing.JTextField txtHeight;
     private javax.swing.JTextField txtWidth;
