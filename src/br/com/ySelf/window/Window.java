@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
+import javax.swing.event.MouseInputAdapter;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.core.Size;
@@ -54,15 +55,13 @@ public class Window extends javax.swing.JFrame {
     private Mat penImage;           //image use to paint
     private Mat matZoomOut;
     private Mat temp_2ndLayer;
-    
+    private JLabel  selectedWidget;
     
     private JPanel zoomRegion;
     
     //control variables of listeners
-    private boolean addingWidget = false;
     private boolean selectRegion = false;
     private boolean copying = false;
-    private boolean usingPen = false;
     
     public Window(Mat img, String title){
         this(title);
@@ -1046,10 +1045,10 @@ public class Window extends javax.swing.JFrame {
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
 
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-
+            
             if (selectRegion) {
                 removeRegion();
-            } else if (addingWidget) {
+            } else if (selectedWidget != null){
                 removeWidget();
             } else if (copying) {
                 disablePasteMode();
@@ -1144,7 +1143,6 @@ public class Window extends javax.swing.JFrame {
 
                     WIDGETS.clear();
 
-                    addingWidget = false;
                 }
 
             } catch (Exception ex) {
@@ -1201,6 +1199,7 @@ public class Window extends javax.swing.JFrame {
 
                 Mat widget = MatUtil.readImg(widgetPath);
                 JLabel widgetLabel = new JLabel(new ImageIcon(widgetPath));
+                addWidgetListener(widgetLabel);
                 widgetLabel.setBounds(this.getX() / 2, this.getY() / 2, widget.cols(), widget.rows());
 
                 panel.setLayout(null);
@@ -1216,7 +1215,6 @@ public class Window extends javax.swing.JFrame {
 
                 WIDGETS.add(widgetLabel);
 
-                addingWidget = true;
 
             } else {
                 JOptionPane.showMessageDialog(null, "O arquivo selecionado não é válido!");
@@ -1356,10 +1354,7 @@ public class Window extends javax.swing.JFrame {
             @Override
             public void mouseDragged(MouseEvent e) {
                 
-                
-                if (addingWidget)
-                    updateWidgetLocation(e.getPoint());
-                else if (selectRegion)
+                if (selectRegion)
                     setRegionSize(e.getX(), e.getY());
                 else if (pen.isSelected() || eraser.isSelected())
                     paint(e.getX(), e.getY());
@@ -1378,17 +1373,19 @@ public class Window extends javax.swing.JFrame {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-
-                if (addingWidget)
-                    updateWidgetLocation(e.getPoint());
-                else if (selectRegion) 
+                
+                removeWidgetSelection();
+                
+                if (selectRegion) 
                     addRegion(e.getPoint());
                 else if (copying) 
                     paste();
             }
             
+            
             @Override
             public void mouseReleased(MouseEvent e){
+                
                 
                 if (pen.isSelected() || eraser.isSelected() ){
                     
@@ -1402,39 +1399,43 @@ public class Window extends javax.swing.JFrame {
 
     
     private void paint(int x, int y){
-       
-        int width  = Math.abs(x + (Integer)PenSize.getValue() - img.cols());
-        int heigth = Math.abs(y + (Integer)PenSize.getValue() - img.cols());
         
+        x = x < 0 ? 0 : x;
+        y = y < 0 ? 0 : y;
         
         if (paintImg == null)
             paintImg = MatUtil.copy(img);
         
-        if ( pen.isSelected() /*&& rbtColor.isSelected()*/ ) {
+        int size = (Integer)PenSize.getValue();
+        int width  = x + size > paintImg.cols()? (x + size) - paintImg.cols(): size;
+        int heigth = y + size > paintImg.rows()? (y + size) - paintImg.rows(): size;
         
         
+        if ( pen.isSelected()) {
+            
             int[] color = {
-                            penColor.getBackground().getBlue(),
-                            penColor.getBackground().getGreen(),
-                            penColor.getBackground().getRed()
-
-                        };
-            MatUtil.paint(color,(Integer)PenSize.getValue(), x, y, paintImg);
+                penColor.getBackground().getBlue(),
+                penColor.getBackground().getGreen(),
+                penColor.getBackground().getRed()
+            };
+            
+            MatUtil.paint(color,width,heigth, x, y, paintImg);
         
         } else {
             
-            Mat img1 = paintImg.submat(new Rect(x, y, (Integer)PenSize.getValue(), (Integer)PenSize.getValue()));
+            Mat img1 = paintImg.submat(new Rect(x, y, width, heigth));
             Mat img2 = null;
             
             if (!zoomOut.isEnabled())
-                img2 = penImage.submat(MatUtil.getRect(zoomRegion)).submat(new Rect(x, y, (Integer)PenSize.getValue(), (Integer)PenSize.getValue()));
+                img2 = penImage.submat(MatUtil.getRect(zoomRegion)).submat(new Rect(x, y,width, heigth));
             else
-                img2 = penImage.submat(new Rect(x, y, (Integer)PenSize.getValue(), (Integer)PenSize.getValue()));
+                img2 = penImage.submat(new Rect(x, y, width, heigth));
             
             MatUtil.overlay(img1,img2);
         }
         
         MatUtil.show(paintImg, lPhoto);
+        
     }
     
     private void paste() {
@@ -1445,18 +1446,6 @@ public class Window extends javax.swing.JFrame {
 
         previous.push(img);
         img = newImg;
-    }
-
-    private void updateWidgetLocation(Point p) {
-
-        if (!WIDGETS.isEmpty()) {
-
-            p.setLocation(p.x + 2, p.y - 47);
-
-            JLabel widgetLabel = WIDGETS.get(WIDGETS.size() - 1);
-            widgetLabel.setLocation(p);
-            widgetLabel.repaint();
-        }
     }
 
     private void addRegion(Point p) {
@@ -1525,18 +1514,11 @@ public class Window extends javax.swing.JFrame {
     }
 
     private void removeWidget() {
-
-        if (!WIDGETS.isEmpty()) {
-
-            JLabel widget = WIDGETS.get(WIDGETS.size() - 1);
-            WIDGETS.remove(WIDGETS.size() - 1);
-
-            panel.setLayout(null);
-            panel.remove(widget);
-            panel.repaint();
-            panel.revalidate();
-        }
-
+        WIDGETS.remove(selectedWidget);
+        panel.setLayout(null);
+        panel.remove(selectedWidget);
+        panel.repaint();
+        panel.revalidate();
     }
 
     private void applyLighten(int level, boolean replace) {
@@ -1609,7 +1591,7 @@ public class Window extends javax.swing.JFrame {
     }
 
     private void disableListeners() {
-        selectRegion = copying = addingWidget = usingPen = false;
+        selectRegion = copying  = false;
     }
 
     public Mat getImg(){
@@ -1632,6 +1614,34 @@ public class Window extends javax.swing.JFrame {
         
         this.setSize(width,height);
         
+    }
+    
+    
+    private void addWidgetListener(JLabel widget){
+        Window win = this;
+        MouseInputAdapter mia = new MouseInputAdapter () { 
+            int x;
+            int y; 
+            public void mousePressed (MouseEvent me) { 
+                x = me.getX (); 
+                y = me.getY ();
+                win.selectedWidget = widget;
+                widget.setBorder(BorderFactory.createLineBorder(Color.CYAN));
+            } 
+            public void mouseDragged (MouseEvent e) { 
+                widget.setLocation (widget.getX () + e.getX () - x, widget.getY () + e.getY () - y); 
+            } 
+        }; 
+        
+        widget.addMouseListener (mia); 
+        widget.addMouseMotionListener (mia); 
+        
+    }
+    
+    public void removeWidgetSelection(){
+        
+        selectedWidget.setBorder(null);
+        selectedWidget = null;
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

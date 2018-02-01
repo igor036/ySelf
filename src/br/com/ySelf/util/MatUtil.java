@@ -445,8 +445,8 @@ public abstract class MatUtil extends JFrame {
         Imgcodecs.imwrite(path, img);
     }
     
-    public static void paint(int[] color,int size, int x, int y, Mat img){
-        img.submat(new Rect(x, y, size, size)).setTo(new Scalar(color[0],color[1],color[2]));
+    public static void paint(int[] color,int width,int height, int x, int y, Mat img){
+        img.submat(new Rect(x, y, width, height)).setTo(new Scalar(color[0],color[1],color[2]));
     }
 
     public static double[] pixel(Mat img, int x, int y) {
