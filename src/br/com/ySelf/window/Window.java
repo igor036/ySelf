@@ -10,6 +10,8 @@ import java.awt.Color;
 import java.awt.Component;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.util.List;
@@ -77,9 +79,15 @@ public class Window extends javax.swing.JFrame {
         addMouseListeners();
         
         setResizable(false);
+        
         GlitchWave.setLocationRelativeTo(null);
+        GlitchVHS.setLocationRelativeTo(null);
+        GlitchLilac.setLocationRelativeTo(null);
+        Propertys.setLocationRelativeTo(null);
+        
         GlitchWave.setSize(400, 200);
         GlitchVHS.setSize(500, 200);
+        GlitchLilac.setSize(300, 100);
         Propertys.setSize(400, 400);
 
         WIDGET_EXTENSION = new ArrayList<>();
@@ -92,6 +100,8 @@ public class Window extends javax.swing.JFrame {
         WIDGET_EXTENSION.add("JPEG");
         WIDGET_EXTENSION.add("PNG");
         this.setTitle(title);
+        
+        penSize.setValue(10);
     }
 
     @SuppressWarnings("unchecked")
@@ -101,7 +111,7 @@ public class Window extends javax.swing.JFrame {
         GlitchWave = new javax.swing.JDialog();
         blue = new javax.swing.JRadioButton();
         Red = new javax.swing.JRadioButton();
-        yellow = new javax.swing.JRadioButton();
+        green = new javax.swing.JRadioButton();
         okButton = new javax.swing.JButton();
         txtxLength = new javax.swing.JTextField();
         lb = new javax.swing.JLabel();
@@ -129,7 +139,7 @@ public class Window extends javax.swing.JFrame {
         noiseBar = new javax.swing.JScrollBar();
         lightenLabel1 = new javax.swing.JLabel();
         penSizeLabel = new javax.swing.JLabel();
-        PenSize = new javax.swing.JSpinner();
+        penSize = new javax.swing.JSpinner();
         penColorLabel = new javax.swing.JLabel();
         penColor = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -145,6 +155,10 @@ public class Window extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         goutTypePen = new javax.swing.ButtonGroup();
+        GlitchLilac = new javax.swing.JDialog();
+        rbtGreen = new javax.swing.JCheckBox();
+        rbtBlue = new javax.swing.JCheckBox();
+        rbtRed = new javax.swing.JCheckBox();
         panel = new javax.swing.JPanel();
         lPhoto = new javax.swing.JLabel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
@@ -174,20 +188,23 @@ public class Window extends javax.swing.JFrame {
         glitchWave = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        lilac = new javax.swing.JMenuItem();
         tools = new javax.swing.JMenu();
         select = new javax.swing.JMenuItem();
         pen = new javax.swing.JCheckBoxMenuItem();
         eraser = new javax.swing.JCheckBoxMenuItem();
         propertys = new javax.swing.JMenu();
 
+        GlitchWave.setTitle("Glitch Wave");
+
         colors.add(blue);
-        blue.setText("Blue");
+        blue.setText("Azul");
 
         colors.add(Red);
-        Red.setText("Red");
+        Red.setText("Vermelho");
 
-        colors.add(yellow);
-        yellow.setText("Green");
+        colors.add(green);
+        green.setText("Verde");
 
         okButton.setText("Okay");
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -206,7 +223,7 @@ public class Window extends javax.swing.JFrame {
                 .addGap(17, 17, 17)
                 .addGroup(GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(GlitchWaveLayout.createSequentialGroup()
-                        .addComponent(yellow)
+                        .addComponent(green)
                         .addGap(35, 35, 35)
                         .addComponent(blue)
                         .addGap(25, 25, 25))
@@ -218,14 +235,14 @@ public class Window extends javax.swing.JFrame {
                 .addGroup(GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(Red)
                     .addComponent(okButton))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         GlitchWaveLayout.setVerticalGroup(
             GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(GlitchWaveLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addGroup(GlitchWaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(yellow)
+                    .addComponent(green)
                     .addComponent(blue)
                     .addComponent(Red))
                 .addGap(18, 18, 18)
@@ -236,6 +253,7 @@ public class Window extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        GlitchVHS.setTitle("Glitch VHS");
         GlitchVHS.setResizable(false);
 
         vhs.add(vhs_1);
@@ -345,6 +363,8 @@ public class Window extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        Propertys.setTitle("Propriedades");
+
         darkenLabel.setText("Escurecer:");
 
         darkenBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
@@ -434,49 +454,51 @@ public class Window extends javax.swing.JFrame {
             .addGroup(PropertysLayout.createSequentialGroup()
                 .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGap(167, 167, 167)
+                        .addComponent(jLabel3))
+                    .addGroup(PropertysLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(darkenLabel)
                             .addComponent(lightenLabel1)
                             .addComponent(lightenLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(34, 34, 34)
                         .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lightenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(darkenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(PropertysLayout.createSequentialGroup()
-                        .addGap(167, 167, 167)
-                        .addComponent(jLabel3))
-                    .addGroup(PropertysLayout.createSequentialGroup()
-                        .addGap(22, 22, 22)
+                        .addGap(29, 29, 29)
                         .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(PropertysLayout.createSequentialGroup()
+                                .addGap(98, 98, 98)
+                                .addComponent(btResize))
+                            .addGroup(PropertysLayout.createSequentialGroup()
+                                .addGap(13, 13, 13)
+                                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(PropertysLayout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addGap(2, 2, 2)
+                                        .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(30, 30, 30)
+                                        .addComponent(jLabel5))
+                                    .addComponent(lbSize))
+                                .addGap(5, 5, 5)
+                                .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(PropertysLayout.createSequentialGroup()
                                 .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(penSizeLabel)
                                     .addComponent(penColorLabel))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(PenSize, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(penSize, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(penColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(PropertysLayout.createSequentialGroup()
-                        .addGap(172, 172, 172)
-                        .addComponent(jLabel2))
-                    .addGroup(PropertysLayout.createSequentialGroup()
-                        .addGap(43, 43, 43)
-                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btResize)
+                            .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(PropertysLayout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(2, 2, 2)
-                                .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(30, 30, 30)
-                                .addComponent(jLabel5))
-                            .addComponent(lbSize))
-                        .addGap(5, 5, 5)
-                        .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(80, Short.MAX_VALUE))
+                                .addGap(150, 150, 150)
+                                .addComponent(jLabel2)))))
+                .addContainerGap(73, Short.MAX_VALUE))
         );
         PropertysLayout.setVerticalGroup(
             PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -484,18 +506,20 @@ public class Window extends javax.swing.JFrame {
                 .addGap(6, 6, 6)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(darkenBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(darkenLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lightenBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lightenLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lightenLabel1))
-                .addGap(28, 28, 28)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addComponent(darkenBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lightenBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addComponent(darkenLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lightenLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lightenLabel1)))
+                .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
@@ -504,13 +528,13 @@ public class Window extends javax.swing.JFrame {
                     .addGroup(PropertysLayout.createSequentialGroup()
                         .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(penSizeLabel)
-                            .addComponent(PenSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(penSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(10, 10, 10)
                         .addComponent(penColorLabel))
                     .addComponent(penColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(lbSize)
                 .addGap(24, 24, 24)
                 .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -518,14 +542,46 @@ public class Window extends javax.swing.JFrame {
                     .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addGap(47, 47, 47)
                 .addComponent(btResize)
-                .addGap(22, 22, 22))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
+
+        GlitchLilac.setTitle("Glitch Lilás");
+
+        rbtGreen.setText("Verde");
+
+        rbtBlue.setText("Azul");
+
+        rbtRed.setText("Vermelho");
+
+        javax.swing.GroupLayout GlitchLilacLayout = new javax.swing.GroupLayout(GlitchLilac.getContentPane());
+        GlitchLilac.getContentPane().setLayout(GlitchLilacLayout);
+        GlitchLilacLayout.setHorizontalGroup(
+            GlitchLilacLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(GlitchLilacLayout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(rbtGreen)
+                .addGap(18, 18, 18)
+                .addComponent(rbtBlue)
+                .addGap(34, 34, 34)
+                .addComponent(rbtRed)
+                .addContainerGap(38, Short.MAX_VALUE))
+        );
+        GlitchLilacLayout.setVerticalGroup(
+            GlitchLilacLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(GlitchLilacLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(GlitchLilacLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rbtGreen)
+                    .addComponent(rbtBlue)
+                    .addComponent(rbtRed))
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addKeyListener(new java.awt.event.KeyAdapter() {
@@ -756,6 +812,15 @@ public class Window extends javax.swing.JFrame {
         });
         glitchButton.add(jMenuItem3);
 
+        lilac.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
+        lilac.setText("Lilás");
+        lilac.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lilacActionPerformed(evt);
+            }
+        });
+        glitchButton.add(lilac);
+
         menuBar.add(glitchButton);
 
         tools.setText("Ferramentas");
@@ -810,6 +875,7 @@ public class Window extends javax.swing.JFrame {
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 
             String photoPath = fileChooser.getSelectedFile().getAbsolutePath();
+            
             img = MatUtil.readImg(photoPath);
             MatUtil.show(img, lPhoto);
 
@@ -929,6 +995,7 @@ public class Window extends javax.swing.JFrame {
 
     private void glitchWaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_glitchWaveActionPerformed
 
+        
         GlitchWave.setModal(true);
         GlitchWave.setVisible(true);
 
@@ -949,24 +1016,31 @@ public class Window extends javax.swing.JFrame {
     }//GEN-LAST:event_glitchWaveActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-
-        try {
-
-            waveLength = Integer.parseInt(txtxLength.getText());
-
-            /* !! ALERT: improve, make dynamic verification */
-            if (yellow.isSelected()) {
-                color = EColor.GREEN;
-            } else if (blue.isSelected()) {
-                color = EColor.BLUE;
-            } else {
-                color = EColor.RED;
-            }
-
+        
+        if (!lb.isVisible() && !txtxLength.isVisible())
             GlitchWave.dispose();
+        
+        else {
+            
+            try {
 
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Erro no preenchimento!");
+                waveLength = Integer.parseInt(txtxLength.getText());
+
+                /* !! ALERT: improve, make dynamic verification */
+                if (green.isSelected()) {
+                    color = EColor.GREEN;
+                } else if (blue.isSelected()) {
+                    color = EColor.BLUE;
+                } else {
+                    color = EColor.RED;
+                }
+
+                GlitchWave.dispose();
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Erro no preenchimento!");
+            }
+            
         }
     }//GEN-LAST:event_okButtonActionPerformed
 
@@ -1367,6 +1441,18 @@ public class Window extends javax.swing.JFrame {
         
     }//GEN-LAST:event_sepiaActionPerformed
 
+    private void lilacActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lilacActionPerformed
+                
+        GlitchLilac.setModal(true);
+        GlitchLilac.setVisible(true);
+        
+        if (rbtBlue.isSelected() || rbtGreen.isSelected() || rbtRed.isSelected()) {
+            Mat newImg = MatUtil.copy(img);
+            previous.push(newImg);
+            img = temp;
+        }
+    }//GEN-LAST:event_lilacActionPerformed
+
     //util's method's
     private void addMouseListeners() {
 
@@ -1416,6 +1502,27 @@ public class Window extends javax.swing.JFrame {
                 }
             }
         });
+        
+        ActionListener cbx = new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+                boolean[] colors = {
+                    rbtBlue.isSelected(),
+                    rbtGreen.isSelected(),
+                    rbtRed.isSelected()
+                };
+                
+                temp = MatUtil.copy(img);
+                
+                MatUtil.lilac(temp, colors);
+                MatUtil.show(temp, lPhoto);
+            }
+        };
+        
+        rbtBlue.addActionListener(cbx);
+        rbtGreen.addActionListener(cbx);
+        rbtRed.addActionListener(cbx);
     }
 
     
@@ -1427,7 +1534,7 @@ public class Window extends javax.swing.JFrame {
         if (paintImg == null)
             paintImg = MatUtil.copy(img);
         
-        int size = (Integer)PenSize.getValue();
+        int size = (Integer)penSize.getValue();
         int width  = x + size > paintImg.cols()? (x + size) - paintImg.cols(): size;
         int heigth = y + size > paintImg.rows()? (y + size) - paintImg.rows(): size;
         
@@ -1668,9 +1775,9 @@ public class Window extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JDialog GlitchLilac;
     private javax.swing.JDialog GlitchVHS;
     private javax.swing.JDialog GlitchWave;
-    private javax.swing.JSpinner PenSize;
     private javax.swing.JDialog Propertys;
     private javax.swing.JRadioButton Red;
     private javax.swing.JRadioButton blue;
@@ -1695,6 +1802,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JMenuItem glitchWave;
     private javax.swing.ButtonGroup goutTypePen;
     private javax.swing.JMenuItem gray;
+    private javax.swing.JRadioButton green;
     private javax.swing.JMenuItem inversor;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -1713,6 +1821,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JScrollBar lightenBar;
     private javax.swing.JLabel lightenLabel;
     private javax.swing.JLabel lightenLabel1;
+    private javax.swing.JMenuItem lilac;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem morphology;
     private javax.swing.JScrollBar noiseBar;
@@ -1722,9 +1831,13 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem pen;
     private javax.swing.JPanel penColor;
     private javax.swing.JLabel penColorLabel;
+    private javax.swing.JSpinner penSize;
     private javax.swing.JLabel penSizeLabel;
     private javax.swing.JMenu photoSelection;
     private javax.swing.JMenu propertys;
+    private javax.swing.JCheckBox rbtBlue;
+    private javax.swing.JCheckBox rbtGreen;
+    private javax.swing.JCheckBox rbtRed;
     private javax.swing.JMenuItem save;
     private javax.swing.JMenuItem select;
     private javax.swing.JMenuItem sepia;
@@ -1746,7 +1859,6 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JRadioButton vhs_date_1;
     private javax.swing.JRadioButton vhs_date_2;
     private javax.swing.JMenuItem widgetBt;
-    private javax.swing.JRadioButton yellow;
     private javax.swing.JMenuItem zoomIn;
     private javax.swing.JMenuItem zoomOut;
     // End of variables declaration//GEN-END:variables

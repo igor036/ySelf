@@ -16,8 +16,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import org.opencv.core.Core;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
@@ -147,7 +147,7 @@ public abstract class MatUtil extends JFrame {
             overlay(region_snout, dog_snout);
         }
     }
-
+    
     public static void rotate(Mat img, double angle) {
 
         Point center = new Point(img.cols() / 2, img.rows() / 2);
@@ -343,6 +343,28 @@ public abstract class MatUtil extends JFrame {
             }
         }
     }
+    
+    public static void lilac(Mat img, boolean[] colors){
+        
+        for (int x = 0; x < img.rows(); x++) {
+            for (int y = 0; y < img.cols(); y++) {
+                
+
+                double b = img.get(x, y)[0],
+                       g = img.get(x, y)[1],
+                       r = img.get(x, y)[2];
+                
+                double[] data = {
+                    colors[0] ? 0.5f * (255 + g + r) : b,
+                    colors[1] ? 0.25 * (510 + r + g - 2 * b) : g,
+                    colors[2] ? 0.5f * 1.0f / 3.0f * (r + g + b) : r
+                };
+                
+                img.put(x, y, data);
+            }
+        }
+    }
+    
     
     public static void inversor(Mat img) {
 
