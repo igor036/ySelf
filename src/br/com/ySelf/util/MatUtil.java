@@ -365,6 +365,20 @@ public abstract class MatUtil extends JFrame {
         }
     }
     
+    public static void contrastAndBrightness(Mat img,double alpha, double beta) {
+        
+        for (int x = 0; x < img.rows(); x++) {
+            for (int y = 0; y < img.cols(); y++) {
+                
+                double[] pixel = img.get(x, y);
+                
+                for (int i = 0; i < 3; i++)
+                    pixel[i] = (int)(alpha * (pixel[i] + beta));
+                
+                img.put(x,y,pixel);
+            }
+        }
+    }
     
     public static void inversor(Mat img) {
 
@@ -501,24 +515,8 @@ public abstract class MatUtil extends JFrame {
         return img.get(x, y);
     }
     
-    public static void darken(Mat img, int level) {
-        sumValuePixel(img, -level);
-    }
-    
-    public static void lighten(Mat img, int level) {
-        sumValuePixel(img, level);
-    }
-    
     public static void copyToRegion(Mat img, Mat copy, Rect region) {
         copy.copyTo(img.submat(region));
-    }
-    
-    public static void darken(Mat img, int level, Rect region) {
-        darken(img.submat(region), level);
-    }
-
-    public static void lighten(Mat img, int level, Rect region) {
-        lighten(img.submat(region), level);
     }
     
     public static void cartoon(Mat img,Rect region){
@@ -533,6 +531,10 @@ public abstract class MatUtil extends JFrame {
         noise(img.submat(region),noise);
     }
     
+    
+    public static void contrastAndBrightness(Mat img,double alpha, double beta, Rect region) {
+        contrastAndBrightness(img.submat(region), alpha, beta);
+    }
     public static Rect getRect(JComponent c) {
 
         int x = c.getX();

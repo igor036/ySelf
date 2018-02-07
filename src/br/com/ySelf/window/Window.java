@@ -132,10 +132,8 @@ public class Window extends javax.swing.JFrame {
         btnVhs = new javax.swing.JButton();
         vhs = new javax.swing.ButtonGroup();
         Propertys = new javax.swing.JDialog();
-        darkenLabel = new javax.swing.JLabel();
-        darkenBar = new javax.swing.JScrollBar();
-        lightenLabel = new javax.swing.JLabel();
-        lightenBar = new javax.swing.JScrollBar();
+        contrastLabel = new javax.swing.JLabel();
+        brightnessLabel = new javax.swing.JLabel();
         noiseBar = new javax.swing.JScrollBar();
         lightenLabel1 = new javax.swing.JLabel();
         penSizeLabel = new javax.swing.JLabel();
@@ -152,6 +150,11 @@ public class Window extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         btResize = new javax.swing.JButton();
+        jSeparator3 = new javax.swing.JSeparator();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        contrastSlide = new javax.swing.JSlider();
+        brightnessSlider = new javax.swing.JSlider();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         goutTypePen = new javax.swing.ButtonGroup();
@@ -365,33 +368,9 @@ public class Window extends javax.swing.JFrame {
 
         Propertys.setTitle("Propriedades");
 
-        darkenLabel.setText("Escurecer:");
+        contrastLabel.setText("Contraste:");
 
-        darkenBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
-        darkenBar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                darkenBarMouseReleased(evt);
-            }
-        });
-        darkenBar.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
-            public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
-                darkenBarAdjustmentValueChanged(evt);
-            }
-        });
-
-        lightenLabel.setText("Clarear:");
-
-        lightenBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
-        lightenBar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                lightenBarMouseReleased(evt);
-            }
-        });
-        lightenBar.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
-            public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
-                lightenBarAdjustmentValueChanged(evt);
-            }
-        });
+        brightnessLabel.setText("Brilho:");
 
         noiseBar.setMaximum(255);
         noiseBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
@@ -432,7 +411,7 @@ public class Window extends javax.swing.JFrame {
 
         jLabel2.setText("Pincel");
 
-        jLabel3.setText("Imagem");
+        jLabel3.setText("Contraste");
 
         lbSize.setText("Tamannho(LxA): ");
 
@@ -444,6 +423,27 @@ public class Window extends javax.swing.JFrame {
         btResize.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btResizeActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Ruído:");
+
+        jLabel7.setText("Tamanho:");
+
+        contrastSlide.setMinimum(-100);
+        contrastSlide.setToolTipText("");
+        contrastSlide.setValue(0);
+        contrastSlide.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                contrastSlideStateChanged(evt);
+            }
+        });
+
+        brightnessSlider.setMinimum(1);
+        brightnessSlider.setToolTipText("");
+        brightnessSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                brightnessSliderStateChanged(evt);
             }
         });
 
@@ -459,45 +459,59 @@ public class Window extends javax.swing.JFrame {
                     .addGroup(PropertysLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(darkenLabel)
-                            .addComponent(lightenLabel1)
-                            .addComponent(lightenLabel))
-                        .addGap(34, 34, 34)
+                            .addComponent(contrastLabel)
+                            .addComponent(brightnessLabel))
+                        .addGap(28, 28, 28)
                         .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lightenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(darkenBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(brightnessSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(contrastSlide, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(PropertysLayout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                        .addContainerGap()
                         .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(PropertysLayout.createSequentialGroup()
-                                .addGap(98, 98, 98)
-                                .addComponent(btResize))
-                            .addGroup(PropertysLayout.createSequentialGroup()
-                                .addGap(13, 13, 13)
-                                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGap(17, 17, 17)
+                                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(PropertysLayout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addGap(2, 2, 2)
-                                        .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(30, 30, 30)
-                                        .addComponent(jLabel5))
-                                    .addComponent(lbSize))
-                                .addGap(5, 5, 5)
-                                .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(13, 13, 13)
+                                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addGroup(PropertysLayout.createSequentialGroup()
+                                                .addComponent(jLabel4)
+                                                .addGap(2, 2, 2)
+                                                .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(30, 30, 30)
+                                                .addComponent(jLabel5))
+                                            .addComponent(lbSize))
+                                        .addGap(5, 5, 5)
+                                        .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(PropertysLayout.createSequentialGroup()
+                                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(penSizeLabel)
+                                            .addComponent(penColorLabel))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(penSize, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(penColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(PropertysLayout.createSequentialGroup()
-                                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(penSizeLabel)
-                                    .addComponent(penColorLabel))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(penSize, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(penColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lightenLabel1)
+                                .addGap(34, 34, 34)
+                                .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(PropertysLayout.createSequentialGroup()
-                                .addGap(150, 150, 150)
-                                .addComponent(jLabel2)))))
+                                .addGap(148, 148, 148)
+                                .addComponent(jLabel2))))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGap(135, 135, 135)
+                        .addComponent(btResize))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGap(167, 167, 167)
+                        .addComponent(jLabel6))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addGap(157, 157, 157)
+                        .addComponent(jLabel7)))
                 .addContainerGap(73, Short.MAX_VALUE))
         );
         PropertysLayout.setVerticalGroup(
@@ -506,33 +520,38 @@ public class Window extends javax.swing.JFrame {
                 .addGap(6, 6, 6)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PropertysLayout.createSequentialGroup()
-                        .addComponent(darkenBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(contrastSlide, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lightenBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(brightnessSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(PropertysLayout.createSequentialGroup()
-                        .addComponent(darkenLabel)
+                        .addComponent(contrastLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lightenLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lightenLabel1)))
+                        .addComponent(brightnessLabel)))
                 .addGap(18, 18, 18)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(noiseBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lightenLabel1))
+                .addGap(18, 18, 18)
                 .addComponent(jLabel2)
-                .addGap(16, 16, 16)
-                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(PropertysLayout.createSequentialGroup()
-                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(penSizeLabel)
-                            .addComponent(penSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(10, 10, 10)
-                        .addComponent(penColorLabel))
-                    .addComponent(penColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(penSizeLabel)
+                    .addComponent(penSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(11, 11, 11)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(penColorLabel)
+                    .addComponent(penColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(lbSize)
@@ -542,9 +561,9 @@ public class Window extends javax.swing.JFrame {
                     .addComponent(txtWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel5))
-                .addGap(47, 47, 47)
+                .addGap(18, 18, 18)
                 .addComponent(btResize)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addGap(94, 94, 94))
         );
 
         jTextArea1.setColumns(20);
@@ -1142,10 +1161,6 @@ public class Window extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formKeyPressed
 
-    private void darkenBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_darkenBarAdjustmentValueChanged
-        applyDarken(darkenBar.getValue(), false);
-    }//GEN-LAST:event_darkenBarAdjustmentValueChanged
-
     private void propertysMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_propertysMouseClicked
         temp = MatUtil.copy(img);
         Propertys.setModal(true);
@@ -1155,18 +1170,6 @@ public class Window extends javax.swing.JFrame {
         removeRegion();
         restartPorpertyComponentsValues();
     }//GEN-LAST:event_propertysMouseClicked
-
-    private void lightenBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_lightenBarAdjustmentValueChanged
-        applyLighten(lightenBar.getValue(), false);
-    }//GEN-LAST:event_lightenBarAdjustmentValueChanged
-
-    private void darkenBarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_darkenBarMouseReleased
-        applyDarken(darkenBar.getValue(), true);
-    }//GEN-LAST:event_darkenBarMouseReleased
-
-    private void lightenBarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lightenBarMouseReleased
-        applyLighten(lightenBar.getValue(), true);
-    }//GEN-LAST:event_lightenBarMouseReleased
 
     private void cartoonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cartoonActionPerformed
 
@@ -1453,6 +1456,14 @@ public class Window extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_lilacActionPerformed
 
+    private void contrastSlideStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_contrastSlideStateChanged
+        contrastAndBrightness();
+    }//GEN-LAST:event_contrastSlideStateChanged
+
+    private void brightnessSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_brightnessSliderStateChanged
+        contrastAndBrightness();
+    }//GEN-LAST:event_brightnessSliderStateChanged
+
     //util's method's
     private void addMouseListeners() {
 
@@ -1648,41 +1659,18 @@ public class Window extends javax.swing.JFrame {
         panel.repaint();
         panel.revalidate();
     }
-
-    private void applyLighten(int level, boolean replace) {
-
-        Mat copy = MatUtil.copy(temp);
-
-        if (selectRegion) {
-            MatUtil.lighten(copy, level, MatUtil.getRect(REGION));
-        } else {
-            MatUtil.lighten(copy, level);
-        }
-
-        MatUtil.show(copy, lPhoto);
-
-        if (replace) {
-            temp = copy;
-        }
-
-    }
-
-    private void applyDarken(int level, boolean replace) {
-
-        Mat copy = MatUtil.copy(temp);
-
-        if (selectRegion) {
-            MatUtil.darken(copy, level, MatUtil.getRect(REGION));
-        } else {
-            MatUtil.darken(copy, level);
-        }
-
-        MatUtil.show(copy, lPhoto);
-
-        if (replace) {
-            temp = copy;
-        }
-
+    
+    private void contrastAndBrightness(){
+        
+        temp = MatUtil.copy(img);
+        
+        if (selectRegion)
+            MatUtil.contrastAndBrightness(temp, brightnessSlider.getValue(), -contrastSlide.getValue(), MatUtil.getRect(REGION));
+        else
+            MatUtil.contrastAndBrightness(temp, brightnessSlider.getValue(), -contrastSlide.getValue());
+        
+        
+        MatUtil.show(temp, lPhoto);
     }
     
     private void applyNoise(int level, boolean replace) {
@@ -1782,17 +1770,19 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JRadioButton Red;
     private javax.swing.JRadioButton blue;
     private javax.swing.JMenuItem blur;
+    private javax.swing.JLabel brightnessLabel;
+    private javax.swing.JSlider brightnessSlider;
     private javax.swing.JMenu btMasks;
     private javax.swing.JButton btResize;
     private javax.swing.JButton btnVhs;
     private javax.swing.JMenuItem cartoon;
     private javax.swing.ButtonGroup colors;
+    private javax.swing.JLabel contrastLabel;
+    private javax.swing.JSlider contrastSlide;
     private javax.swing.JMenuItem copy;
     private javax.swing.JMenuItem ctrlY;
     private javax.swing.JMenuItem ctrlZ;
     private javax.swing.JMenuItem cut;
-    private javax.swing.JScrollBar darkenBar;
-    private javax.swing.JLabel darkenLabel;
     private javax.swing.JMenuItem dogMask;
     private javax.swing.JCheckBoxMenuItem eraser;
     private javax.swing.Box.Filler filler1;
@@ -1808,18 +1798,19 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JLabel lPhoto;
     private javax.swing.JLabel lb;
     private javax.swing.JLabel lbSize;
-    private javax.swing.JScrollBar lightenBar;
-    private javax.swing.JLabel lightenLabel;
     private javax.swing.JLabel lightenLabel1;
     private javax.swing.JMenuItem lilac;
     private javax.swing.JMenuBar menuBar;
