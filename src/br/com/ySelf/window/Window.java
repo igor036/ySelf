@@ -54,9 +54,9 @@ public class Window extends javax.swing.JFrame {
     private int rx,ry;
     private Mat copyRegion;           //copy region
     private Mat paintImg;            //image paint
-    private Mat penImage;           //image use to paint
+    private Mat nexLayerImg;           //image use to paint
     private Mat matZoomOut;
-    private Mat temp_2ndLayer;
+    private Mat matZoomOutNexLayerImg;
     private JLabel  selectedWidget;
     
     private JPanel zoomRegion;
@@ -192,7 +192,7 @@ public class Window extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         lilac = new javax.swing.JMenuItem();
-        tools = new javax.swing.JMenu();
+        colorDetection = new javax.swing.JMenu();
         select = new javax.swing.JMenuItem();
         pen = new javax.swing.JCheckBoxMenuItem();
         eraser = new javax.swing.JCheckBoxMenuItem();
@@ -441,6 +441,7 @@ public class Window extends javax.swing.JFrame {
 
         brightnessSlider.setMinimum(1);
         brightnessSlider.setToolTipText("");
+        brightnessSlider.setValue(1);
         brightnessSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 brightnessSliderStateChanged(evt);
@@ -842,7 +843,7 @@ public class Window extends javax.swing.JFrame {
 
         menuBar.add(glitchButton);
 
-        tools.setText("Ferramentas");
+        colorDetection.setText("Ferramentas");
 
         select.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         select.setText("Selecionar");
@@ -851,17 +852,17 @@ public class Window extends javax.swing.JFrame {
                 selectActionPerformed(evt);
             }
         });
-        tools.add(select);
+        colorDetection.add(select);
 
         pen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         pen.setText("Pincel");
-        tools.add(pen);
+        colorDetection.add(pen);
 
         eraser.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, java.awt.event.InputEvent.SHIFT_MASK));
         eraser.setText("Borracha");
-        tools.add(eraser);
+        colorDetection.add(eraser);
 
-        menuBar.add(tools);
+        menuBar.add(colorDetection);
 
         propertys.setText("Propriedades");
         propertys.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1134,8 +1135,7 @@ public class Window extends javax.swing.JFrame {
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 
             Mat newImg = MatUtil.copy(img);
-
-            MatUtil.sumMat(newImg, MatUtil.readImg(fileChooser.getSelectedFile().getAbsolutePath()));
+            MatUtil.overlay(newImg,MatUtil.readImg(fileChooser.getSelectedFile().getAbsolutePath()) );
             MatUtil.show(newImg, lPhoto);
 
             previous.push(img);
@@ -1157,7 +1157,7 @@ public class Window extends javax.swing.JFrame {
                 disablePasteMode();
             }
         } else if (evt.getKeyCode() == KeyEvent.VK_F12){
-            MatUtil.show(penImage, "");
+            MatUtil.show(nexLayerImg, "");
         }
     }//GEN-LAST:event_formKeyPressed
 
@@ -1374,11 +1374,11 @@ public class Window extends javax.swing.JFrame {
             img = img.submat(MatUtil.getRect(zoomRegion));
             
             //pen image - 2nd layer
-            if (penImage != null) {
+            if (nexLayerImg != null) {
                 
-                temp_2ndLayer = MatUtil.copy(penImage);
-                penImage = penImage.submat(MatUtil.getRect(zoomRegion));
-                MatUtil.resize(penImage, temp_2ndLayer.size());
+                matZoomOutNexLayerImg = MatUtil.copy(nexLayerImg);
+                nexLayerImg = nexLayerImg.submat(MatUtil.getRect(zoomRegion));
+                MatUtil.resize(nexLayerImg, matZoomOut.size());
             }
             
             MatUtil.resize(img, matZoomOut.size());
@@ -1400,30 +1400,24 @@ public class Window extends javax.swing.JFrame {
         img = matZoomOut;
         
         MatUtil.show(img, lPhoto);
-        penImage = temp_2ndLayer;
+        nexLayerImg = matZoomOutNexLayerImg;
         
     }//GEN-LAST:event_zoomOutActionPerformed
 
-    private void selectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectActionPerformed
-        disableListeners();
-        selectRegion = true;
-    }//GEN-LAST:event_selectActionPerformed
-
     private void btResizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btResizeActionPerformed
         
-        try {
-            
+        try { 
             
             double width = Double.parseDouble(txtWidth.getText());
             double height = Double.parseDouble(txtHeight.getText());
             
-            Mat newImg = MatUtil.copy(img);
+            Mat newImg = MatUtil.copy(temp);
             MatUtil.resize(newImg, new Size(width, height));
 
             previous.push(img);
-            img = newImg;
+            img = temp = newImg;
             
-            MatUtil.show(img, lPhoto);
+            MatUtil.show(temp, lPhoto);
             
             updatePropertys();
                     
@@ -1464,6 +1458,11 @@ public class Window extends javax.swing.JFrame {
         contrastAndBrightness();
     }//GEN-LAST:event_brightnessSliderStateChanged
 
+    private void selectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectActionPerformed
+        disableListeners();
+        selectRegion = true;
+    }//GEN-LAST:event_selectActionPerformed
+
     //util's method's
     private void addMouseListeners() {
 
@@ -1493,7 +1492,6 @@ public class Window extends javax.swing.JFrame {
             public void mouseClicked(MouseEvent e) {
                 
                 removeWidgetSelection();
-                
                 if (selectRegion) 
                     addRegion(e.getPoint());
                 else if (copying) 
@@ -1566,9 +1564,9 @@ public class Window extends javax.swing.JFrame {
             Mat img2 = null;
             
             if (!zoomOut.isEnabled())
-                img2 = penImage.submat(MatUtil.getRect(zoomRegion)).submat(new Rect(x, y,width, heigth));
+                img2 = nexLayerImg.submat(MatUtil.getRect(zoomRegion)).submat(new Rect(x, y,width, heigth));
             else
-                img2 = penImage.submat(new Rect(x, y, width, heigth));
+                img2 = nexLayerImg.submat(new Rect(x, y, width, heigth));
             
             MatUtil.overlay(img1,img2);
         }
@@ -1715,7 +1713,7 @@ public class Window extends javax.swing.JFrame {
     }
     
     public void setNextLayerMat(Mat img){
-        this.penImage = img;      
+        this.nexLayerImg = img;      
     }
     
     private void updatePropertys(){
@@ -1776,6 +1774,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JButton btResize;
     private javax.swing.JButton btnVhs;
     private javax.swing.JMenuItem cartoon;
+    private javax.swing.JMenu colorDetection;
     private javax.swing.ButtonGroup colors;
     private javax.swing.JLabel contrastLabel;
     private javax.swing.JSlider contrastSlide;
@@ -1832,7 +1831,6 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JMenuItem save;
     private javax.swing.JMenuItem select;
     private javax.swing.JMenuItem sepia;
-    private javax.swing.JMenu tools;
     private javax.swing.JTextField txtHeight;
     private javax.swing.JTextField txtWidth;
     private javax.swing.JTextField txtxLength;

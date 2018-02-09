@@ -580,6 +580,7 @@
           <Properties>
             <Property name="minimum" type="int" value="1"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>
+            <Property name="value" type="int" value="1"/>
           </Properties>
           <Events>
             <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="brightnessSliderStateChanged"/>
@@ -933,7 +934,7 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="tools">
+        <Menu class="javax.swing.JMenu" name="colorDetection">
           <Properties>
             <Property name="text" type="java.lang.String" value="Ferramentas"/>
           </Properties>

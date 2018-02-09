@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
@@ -26,7 +27,7 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-
+import org.opencv.core.MatOfPoint2f;
 
 public abstract class MatUtil extends JFrame {
 
@@ -152,7 +153,6 @@ public abstract class MatUtil extends JFrame {
 
         Point center = new Point(img.cols() / 2, img.rows() / 2);
         Mat rot_mat = Imgproc.getRotationMatrix2D(center, angle, 1);
-        Mat rotated = new Mat();
 
         Imgproc.warpAffine(img, img, rot_mat, img.size(), Imgproc.INTER_CUBIC);
         //Imgproc.warpAffine(img, rot_mat, rot_mat, rot_mat.size());
@@ -257,22 +257,7 @@ public abstract class MatUtil extends JFrame {
             }
         }
     }
-    
-    private static void sumValuePixel(Mat img, int value) {
-
-        for (int x = 0; x < img.rows(); x++) {
-            for (int y = 0; y < img.cols(); y++) {
-
-                double[] pixel = img.get(x, y);
-
-                for (int rgb = 0; rgb < 3; rgb++) 
-                    pixel[rgb] += value;
-                
-                img.put(x, y, pixel);
-            }
-        }
-    }
-    
+   
     public static void noise(Mat img, int noise) {
         
         if (noise != 0) { 
@@ -365,6 +350,7 @@ public abstract class MatUtil extends JFrame {
         }
     }
     
+    
     public static void contrastAndBrightness(Mat img,double alpha, double beta) {
         
         for (int x = 0; x < img.rows(); x++) {
@@ -379,7 +365,7 @@ public abstract class MatUtil extends JFrame {
             }
         }
     }
-    
+
     public static void inversor(Mat img) {
 
         byte[] buffer = toByteArray(img);
@@ -389,7 +375,7 @@ public abstract class MatUtil extends JFrame {
 
         img.put(0, 0, buffer);
     }
-
+    
     public static void inversor(Mat img, Rect region) {
 
         Mat sub = img.submat(region);
