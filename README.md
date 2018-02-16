@@ -10,6 +10,6 @@ The project was developed with the intention of studying opencv !
 
 * **Igor Joaquim dos Santos Lima** - [github](https://github.com/igor036)
 
-## Demo in https://youtu.be/KmnyY8UDb6Y
+## Demo in https://youtu.be/7zMPXhd-pN0
 
 

@@ -517,6 +517,10 @@ public abstract class MatUtil extends JFrame {
         noise(img.submat(region),noise);
     }
     
+    public static void sepia(Mat img, Rect region){
+        sepia(img.submat(region));
+    }
+    
     
     public static void contrastAndBrightness(Mat img,double alpha, double beta, Rect region) {
         contrastAndBrightness(img.submat(region), alpha, beta);

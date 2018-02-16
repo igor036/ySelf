@@ -1430,7 +1430,15 @@ public class Window extends javax.swing.JFrame {
     private void sepiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sepiaActionPerformed
         
         Mat newImg = MatUtil.copy(img);
-        MatUtil.sepia(newImg);
+        
+        if (selectRegion) {
+        
+            MatUtil.sepia(newImg, MatUtil.getRect(REGION));
+            removeRegion();
+            
+        }else
+            MatUtil.sepia(newImg);
+        
         
         previous.push(img);
         img = newImg;
