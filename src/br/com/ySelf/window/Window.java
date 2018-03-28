@@ -6,6 +6,7 @@ package br.com.ySelf.window;
 
 import br.com.ySelf.modal.EColor;
 import br.com.ySelf.util.MatUtil;
+import br.com.ySelf.util.Text;
 import java.awt.Color;
 import java.awt.Component;
 
@@ -26,9 +27,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.MouseInputAdapter;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 
 public class Window extends javax.swing.JFrame {
@@ -58,12 +62,15 @@ public class Window extends javax.swing.JFrame {
     private Mat matZoomOut;
     private Mat matZoomOutNexLayerImg;
     private JLabel  selectedWidget;
-    
+   
     private JPanel zoomRegion;
+    private Text text;
     
     //control variables of listeners
     private boolean selectRegion = false;
     private boolean copying = false;
+    
+   
     
     public Window(Mat img, String title){
         this(title);
@@ -89,6 +96,7 @@ public class Window extends javax.swing.JFrame {
         GlitchVHS.setSize(500, 200);
         GlitchLilac.setSize(300, 100);
         Propertys.setSize(400, 400);
+        Text.setSize(400, 400);
 
         WIDGET_EXTENSION = new ArrayList<>();
         WIDGETS = new ArrayList<>();
@@ -162,6 +170,13 @@ public class Window extends javax.swing.JFrame {
         rbtGreen = new javax.swing.JCheckBox();
         rbtBlue = new javax.swing.JCheckBox();
         rbtRed = new javax.swing.JCheckBox();
+        Text = new javax.swing.JDialog();
+        lbText = new javax.swing.JLabel();
+        txtText = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        pnlTextColor = new javax.swing.JPanel();
+        textScale = new javax.swing.JSpinner();
         panel = new javax.swing.JPanel();
         lPhoto = new javax.swing.JLabel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
@@ -176,6 +191,7 @@ public class Window extends javax.swing.JFrame {
         save = new javax.swing.JMenuItem();
         zoomIn = new javax.swing.JMenuItem();
         zoomOut = new javax.swing.JMenuItem();
+        writeText = new javax.swing.JMenuItem();
         btMasks = new javax.swing.JMenu();
         dogMask = new javax.swing.JMenuItem();
         glasses1Mask = new javax.swing.JMenuItem();
@@ -603,6 +619,73 @@ public class Window extends javax.swing.JFrame {
                 .addContainerGap(19, Short.MAX_VALUE))
         );
 
+        lbText.setText("Texto:");
+
+        jLabel1.setText("Tamanho:");
+
+        jLabel8.setText("Cor:");
+
+        pnlTextColor.setBackground(new java.awt.Color(0, 0, 0));
+        pnlTextColor.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pnlTextColorMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlTextColorLayout = new javax.swing.GroupLayout(pnlTextColor);
+        pnlTextColor.setLayout(pnlTextColorLayout);
+        pnlTextColorLayout.setHorizontalGroup(
+            pnlTextColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 21, Short.MAX_VALUE)
+        );
+        pnlTextColorLayout.setVerticalGroup(
+            pnlTextColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
+        );
+
+        textScale.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                textScaleStateChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout TextLayout = new javax.swing.GroupLayout(Text.getContentPane());
+        Text.getContentPane().setLayout(TextLayout);
+        TextLayout.setHorizontalGroup(
+            TextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(TextLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(TextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(TextLayout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pnlTextColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lbText)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(TextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtText, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textScale, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(91, Short.MAX_VALUE))
+        );
+        TextLayout.setVerticalGroup(
+            TextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(TextLayout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(TextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbText)
+                    .addComponent(txtText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(17, 17, 17)
+                .addGroup(TextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(textScale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(TextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8)
+                    .addComponent(pnlTextColor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(82, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -708,6 +791,14 @@ public class Window extends javax.swing.JFrame {
             }
         });
         options.add(zoomOut);
+
+        writeText.setText("Texto");
+        writeText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                writeTextActionPerformed(evt);
+            }
+        });
+        options.add(writeText);
 
         menuBar.add(options);
 
@@ -1471,6 +1562,39 @@ public class Window extends javax.swing.JFrame {
         selectRegion = true;
     }//GEN-LAST:event_selectActionPerformed
 
+    private void pnlTextColorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlTextColorMouseClicked
+        
+        Color color = JColorChooser.showDialog(null, "Selecione a cor!",Color.BLACK);
+        text.setColor(new Scalar(color.getBlue(), color.getGreen(), color.getRed()));
+        
+        writeText();
+        
+    }//GEN-LAST:event_pnlTextColorMouseClicked
+
+    private void writeTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_writeTextActionPerformed
+        
+        if (selectRegion) {
+            
+            text = new Text();
+        
+            Text.setModal(true);
+            Text.setVisible(true);
+        
+            previous.push(img);
+            img = temp;
+            
+            removeRegion();
+        } else 
+            JOptionPane.showMessageDialog(null, "Selecione a área do texto!");
+  
+    }//GEN-LAST:event_writeTextActionPerformed
+
+    private void textScaleStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_textScaleStateChanged
+
+        text.setScale((int)textScale.getValue());
+        writeText();
+    }//GEN-LAST:event_textScaleStateChanged
+
     //util's method's
     private void addMouseListeners() {
 
@@ -1537,11 +1661,40 @@ public class Window extends javax.swing.JFrame {
             }
         };
         
+        txtText.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                text.setStr(txtText.getText());
+                writeText();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                text.setStr(txtText.getText());
+                writeText();
+                
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                text.setStr(txtText.getText());
+                writeText();
+
+            }
+        });
+        
+        
         rbtBlue.addActionListener(cbx);
         rbtGreen.addActionListener(cbx);
         rbtRed.addActionListener(cbx);
     }
 
+    
+    private void writeText() {
+        temp = MatUtil.copy(img);
+        MatUtil.writeText(text,temp, MatUtil.getRect(REGION));
+        MatUtil.show(temp, lPhoto);
+    }
     
     private void paint(int x, int y){
         
@@ -1774,6 +1927,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JDialog GlitchWave;
     private javax.swing.JDialog Propertys;
     private javax.swing.JRadioButton Red;
+    private javax.swing.JDialog Text;
     private javax.swing.JRadioButton blue;
     private javax.swing.JMenuItem blur;
     private javax.swing.JLabel brightnessLabel;
@@ -1801,12 +1955,14 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JMenuItem gray;
     private javax.swing.JRadioButton green;
     private javax.swing.JMenuItem inversor;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
@@ -1818,6 +1974,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JLabel lPhoto;
     private javax.swing.JLabel lb;
     private javax.swing.JLabel lbSize;
+    private javax.swing.JLabel lbText;
     private javax.swing.JLabel lightenLabel1;
     private javax.swing.JMenuItem lilac;
     private javax.swing.JMenuBar menuBar;
@@ -1832,6 +1989,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JSpinner penSize;
     private javax.swing.JLabel penSizeLabel;
     private javax.swing.JMenu photoSelection;
+    private javax.swing.JPanel pnlTextColor;
     private javax.swing.JMenu propertys;
     private javax.swing.JCheckBox rbtBlue;
     private javax.swing.JCheckBox rbtGreen;
@@ -1839,7 +1997,9 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JMenuItem save;
     private javax.swing.JMenuItem select;
     private javax.swing.JMenuItem sepia;
+    private javax.swing.JSpinner textScale;
     private javax.swing.JTextField txtHeight;
+    private javax.swing.JTextField txtText;
     private javax.swing.JTextField txtWidth;
     private javax.swing.JTextField txtxLength;
     private javax.swing.ButtonGroup vhs;
@@ -1856,6 +2016,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JRadioButton vhs_date_1;
     private javax.swing.JRadioButton vhs_date_2;
     private javax.swing.JMenuItem widgetBt;
+    private javax.swing.JMenuItem writeText;
     private javax.swing.JMenuItem zoomIn;
     private javax.swing.JMenuItem zoomOut;
     // End of variables declaration//GEN-END:variables

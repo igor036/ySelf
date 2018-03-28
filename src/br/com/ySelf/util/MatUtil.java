@@ -178,7 +178,7 @@ public abstract class MatUtil extends JFrame {
 
         }
     }
-
+    
     public static void widget(Mat img, Mat widget, int wx, int wy) {
 
         final int width = wx + widget.width() > img.width() ? img.width() : wx + widget.width();
@@ -239,6 +239,8 @@ public abstract class MatUtil extends JFrame {
             }
         }
     }
+    
+    
 
     public static void sumMat(Mat img, Mat mask) {
 
@@ -353,6 +355,9 @@ public abstract class MatUtil extends JFrame {
     
     public static void contrastAndBrightness(Mat img,double alpha, double beta) {
         
+        alpha *= 0.4;
+        beta *= 0.4;
+        
         for (int x = 0; x < img.rows(); x++) {
             for (int y = 0; y < img.cols(); y++) {
                 
@@ -386,6 +391,7 @@ public abstract class MatUtil extends JFrame {
 
         sub.put(0, 0, buffer);
     }
+   
 
     public static Mat copy(Mat img) {
         Mat imgCopy = new Mat();
@@ -519,6 +525,13 @@ public abstract class MatUtil extends JFrame {
     
     public static void sepia(Mat img, Rect region){
         sepia(img.submat(region));
+    }
+    
+    public static void writeText(Text text, Mat img, Rect region ) {
+    
+        img = img.submat(region);
+        Point point = new Point(0, img.height()/2);
+        Imgproc.putText(img, text.getStr(), point,Core.FONT_ITALIC, text.getScale(), text.getColor(),text.getScale());
     }
     
     

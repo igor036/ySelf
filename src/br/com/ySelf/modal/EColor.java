@@ -27,4 +27,6 @@ public enum EColor {
     public int colorValue(){
         return this.color;
     }
+    
+
 }
