@@ -192,6 +192,7 @@ public class Window extends javax.swing.JFrame {
         zoomIn = new javax.swing.JMenuItem();
         zoomOut = new javax.swing.JMenuItem();
         writeText = new javax.swing.JMenuItem();
+        focus = new javax.swing.JMenuItem();
         btMasks = new javax.swing.JMenu();
         dogMask = new javax.swing.JMenuItem();
         glasses1Mask = new javax.swing.JMenuItem();
@@ -799,6 +800,15 @@ public class Window extends javax.swing.JFrame {
             }
         });
         options.add(writeText);
+
+        focus.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        focus.setText("Focar");
+        focus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                focusActionPerformed(evt);
+            }
+        });
+        options.add(focus);
 
         menuBar.add(options);
 
@@ -1595,6 +1605,23 @@ public class Window extends javax.swing.JFrame {
         writeText();
     }//GEN-LAST:event_textScaleStateChanged
 
+    private void focusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_focusActionPerformed
+        
+        if (selectRegion) {
+        
+            Mat newImg = MatUtil.copy(img);
+            MatUtil.focus(newImg, MatUtil.getRect(REGION));
+            MatUtil.show(newImg, lPhoto);
+
+            previous.push(img);
+            img = newImg;
+
+            removeRegion();
+            
+        } else
+            JOptionPane.showMessageDialog(null, "Selecione a área que deseja focar!");
+    }//GEN-LAST:event_focusActionPerformed
+
     //util's method's
     private void addMouseListeners() {
 
@@ -1948,6 +1975,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem eraser;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JMenu filter;
+    private javax.swing.JMenuItem focus;
     private javax.swing.JMenuItem glasses1Mask;
     private javax.swing.JMenu glitchButton;
     private javax.swing.JMenuItem glitchWave;

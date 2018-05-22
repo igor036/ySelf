@@ -27,7 +27,6 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.core.MatOfPoint2f;
 
 public abstract class MatUtil extends JFrame {
 
@@ -286,7 +285,6 @@ public abstract class MatUtil extends JFrame {
         
         Mat process = new Mat();
         Mat hierarchy = new Mat();
-        List<MatOfPoint> contours = new ArrayList<>();
   
         Imgproc.cvtColor(img, img, Imgproc.COLOR_BGRA2BGR);
         Imgproc.pyrMeanShiftFiltering(img.clone(), img, 25, 40);       
@@ -367,6 +365,36 @@ public abstract class MatUtil extends JFrame {
                     pixel[i] = (int)(alpha * (pixel[i] + beta));
                 
                 img.put(x,y,pixel);
+            }
+        }
+    }
+    
+
+    
+    public static void focus(Mat img, Rect region) {
+        
+        Mat old = copy(img).submat(region);
+        Mat focusRegion = copy(img).submat(region);
+        Mat kernel = Imgproc.getStructuringElement(2, new Size(23,23));
+        
+        //pre-process
+        Imgproc.cvtColor(focusRegion, focusRegion, Imgproc.COLOR_RGB2GRAY);
+        Imgproc.Sobel(focusRegion, focusRegion, -1,1,0);
+        Imgproc.threshold(focusRegion, focusRegion,35, 255, Imgproc.THRESH_BINARY);
+        Imgproc.morphologyEx(focusRegion, focusRegion, Imgproc.MORPH_CLOSE,kernel);
+        Imgproc.GaussianBlur(focusRegion, focusRegion, new Size(3,3), 0,0,Core.BORDER_DEFAULT);
+       
+       
+        //focus
+        blur(img, 9);
+        Mat copy = img.submat(region);
+        
+        for (int x = 0; x < copy.rows(); x++) {
+            for (int y = 0; y < copy.cols(); y++) {
+                
+                double[]pixel = focusRegion.get(x, y);
+                if (pixel[0] == 255)
+                    copy.put(x, y, old.get(x, y));
             }
         }
     }
