@@ -1,6 +1,6 @@
 # !! ySelf !!
 
-yself is one project in opencv and java for spnachat effects and filters of image.
+yself is a project in opencv and java for spnachat effects and filters of image.
 
 The project was developed with the intention of studying opencv !
 
