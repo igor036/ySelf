@@ -62,6 +62,7 @@ public class Window extends javax.swing.JFrame {
     private Mat matZoomOut;
     private Mat matZoomOutNexLayerImg;
     private JLabel  selectedWidget;
+    private int lastSaturation;
    
     private JPanel zoomRegion;
     private Text text;
@@ -163,6 +164,8 @@ public class Window extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         contrastSlide = new javax.swing.JSlider();
         brightnessSlider = new javax.swing.JSlider();
+        saturationLabel = new javax.swing.JLabel();
+        saturationSlider = new javax.swing.JSlider();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         goutTypePen = new javax.swing.ButtonGroup();
@@ -293,18 +296,6 @@ public class Window extends javax.swing.JFrame {
 
         vhs.add(vhs_date_2);
         vhs_date_2.setText("VHS_DATE_2");
-
-        vhs_1_icon.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\1.jpg")); // NOI18N
-
-        vhs_2_icon.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\2.jpg")); // NOI18N
-
-        vhs_3_icon.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\3.jpg")); // NOI18N
-
-        vhs_4_icon.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\4.jpg")); // NOI18N
-
-        vhs_1_icon4.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\vhs_date1.png")); // NOI18N
-
-        vhs_1_icon5.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\vhs\\vhs_date2.jpg")); // NOI18N
 
         btnVhs.setText("Aplicar");
         btnVhs.addActionListener(new java.awt.event.ActionListener() {
@@ -465,6 +456,17 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
+        saturationLabel.setText("Saturação:");
+
+        saturationSlider.setMinimum(-100);
+        saturationSlider.setToolTipText("");
+        saturationSlider.setValue(1);
+        saturationSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                saturationSliderStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout PropertysLayout = new javax.swing.GroupLayout(Propertys.getContentPane());
         Propertys.getContentPane().setLayout(PropertysLayout);
         PropertysLayout.setHorizontalGroup(
@@ -474,15 +476,6 @@ public class Window extends javax.swing.JFrame {
                     .addGroup(PropertysLayout.createSequentialGroup()
                         .addGap(167, 167, 167)
                         .addComponent(jLabel3))
-                    .addGroup(PropertysLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(contrastLabel)
-                            .addComponent(brightnessLabel))
-                        .addGap(28, 28, 28)
-                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(brightnessSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(contrastSlide, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(PropertysLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -529,7 +522,18 @@ public class Window extends javax.swing.JFrame {
                         .addComponent(jLabel6))
                     .addGroup(PropertysLayout.createSequentialGroup()
                         .addGap(157, 157, 157)
-                        .addComponent(jLabel7)))
+                        .addComponent(jLabel7))
+                    .addGroup(PropertysLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(contrastLabel)
+                            .addComponent(brightnessLabel)
+                            .addComponent(saturationLabel))
+                        .addGap(28, 28, 28)
+                        .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(saturationSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(brightnessSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(contrastSlide, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(73, Short.MAX_VALUE))
         );
         PropertysLayout.setVerticalGroup(
@@ -548,6 +552,10 @@ public class Window extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(brightnessLabel)))
                 .addGap(18, 18, 18)
+                .addGroup(PropertysLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(saturationSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saturationLabel))
+                .addGap(36, 36, 36)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -581,7 +589,7 @@ public class Window extends javax.swing.JFrame {
                     .addComponent(jLabel5))
                 .addGap(18, 18, 18)
                 .addComponent(btResize)
-                .addGap(94, 94, 94))
+                .addGap(42, 42, 42))
         );
 
         jTextArea1.setColumns(20);
@@ -815,7 +823,6 @@ public class Window extends javax.swing.JFrame {
         btMasks.setText("Mascaras");
 
         dogMask.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, java.awt.event.InputEvent.CTRL_MASK));
-        dogMask.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\dog-icon.png")); // NOI18N
         dogMask.setText("Cachorro");
         dogMask.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -825,7 +832,6 @@ public class Window extends javax.swing.JFrame {
         btMasks.add(dogMask);
 
         glasses1Mask.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, java.awt.event.InputEvent.CTRL_MASK));
-        glasses1Mask.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\glasses_1.png")); // NOI18N
         glasses1Mask.setText("Óculos 1");
         glasses1Mask.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -835,7 +841,6 @@ public class Window extends javax.swing.JFrame {
         btMasks.add(glasses1Mask);
 
         jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem1.setIcon(new javax.swing.ImageIcon("C:\\Users\\igor.lima\\Documents\\NetBeansProjects\\ySelf\\img\\icon\\glasses_2.png")); // NOI18N
         jMenuItem1.setText("Óculos 2");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1622,6 +1627,23 @@ public class Window extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Selecione a área que deseja focar!");
     }//GEN-LAST:event_focusActionPerformed
 
+    private void saturationSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_saturationSliderStateChanged
+        
+        temp = MatUtil.copy(img);
+        
+        int saturation = saturationSlider.getValue();
+        lastSaturation = saturationSlider.getValue();
+        
+        if (selectRegion) {
+            MatUtil.saturation(temp, saturation, MatUtil.getRect(REGION));
+        } else {
+            MatUtil.saturation(temp, saturation);
+        }
+        
+        MatUtil.show(temp, lPhoto);
+        
+    }//GEN-LAST:event_saturationSliderStateChanged
+
     //util's method's
     private void addMouseListeners() {
 
@@ -2022,6 +2044,8 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JCheckBox rbtBlue;
     private javax.swing.JCheckBox rbtGreen;
     private javax.swing.JCheckBox rbtRed;
+    private javax.swing.JLabel saturationLabel;
+    private javax.swing.JSlider saturationSlider;
     private javax.swing.JMenuItem save;
     private javax.swing.JMenuItem select;
     private javax.swing.JMenuItem sepia;

@@ -244,46 +244,16 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="vhs_1_icon">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\igor.lima\Documents\NetBeansProjects\ySelf\img\icon\vhs\1.jpg"/>
-            </Property>
-          </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="vhs_2_icon">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\igor.lima\Documents\NetBeansProjects\ySelf\img\icon\vhs\2.jpg"/>
-            </Property>
-          </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="vhs_3_icon">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\igor.lima\Documents\NetBeansProjects\ySelf\img\icon\vhs\3.jpg"/>
-            </Property>
-          </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="vhs_4_icon">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\igor.lima\Documents\NetBeansProjects\ySelf\img\icon\vhs\4.jpg"/>
-            </Property>
-          </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="vhs_1_icon4">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\igor.lima\Documents\NetBeansProjects\ySelf\img\icon\vhs\vhs_date1.png"/>
-            </Property>
-          </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="vhs_1_icon5">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\igor.lima\Documents\NetBeansProjects\ySelf\img\icon\vhs\vhs_date2.jpg"/>
-            </Property>
-          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btnVhs">
           <Properties>
@@ -310,18 +280,6 @@
                       <Group type="102" attributes="0">
                           <EmptySpace min="-2" pref="167" max="-2" attributes="0"/>
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="contrastLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="brightnessLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="brightnessSlider" min="-2" max="-2" attributes="0"/>
-                              <Component id="contrastSlide" min="-2" max="-2" attributes="0"/>
-                          </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
@@ -386,6 +344,20 @@
                           <EmptySpace min="-2" pref="157" max="-2" attributes="0"/>
                           <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
                       </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="contrastLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="brightnessLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="saturationLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="saturationSlider" min="-2" max="-2" attributes="0"/>
+                              <Component id="brightnessSlider" min="-2" max="-2" attributes="0"/>
+                              <Component id="contrastSlide" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
                   <EmptySpace pref="73" max="32767" attributes="0"/>
               </Group>
@@ -410,6 +382,11 @@
                       </Group>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="saturationSlider" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="saturationLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
                   <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="jSeparator3" min="-2" pref="12" max="-2" attributes="0"/>
@@ -447,7 +424,7 @@
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="btResize" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="94" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -584,6 +561,21 @@
           </Properties>
           <Events>
             <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="brightnessSliderStateChanged"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="saturationLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Satura&#xe7;&#xe3;o:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JSlider" name="saturationSlider">
+          <Properties>
+            <Property name="minimum" type="int" value="-100"/>
+            <Property name="toolTipText" type="java.lang.String" value=""/>
+            <Property name="value" type="int" value="1"/>
+          </Properties>
+          <Events>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="saturationSliderStateChanged"/>
           </Events>
         </Component>
       </SubComponents>
@@ -886,9 +878,6 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+F6"/>
                 </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="2" name="C:\Users\igor.lima\Documents\NetBeansProjects\ySelf\img\icon\dog-icon.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Cachorro"/>
               </Properties>
               <Events>
@@ -900,9 +889,6 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+F1"/>
                 </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="2" name="C:\Users\igor.lima\Documents\NetBeansProjects\ySelf\img\icon\glasses_1.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="&#xd3;culos 1"/>
               </Properties>
               <Events>
@@ -913,9 +899,6 @@
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+F2"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="2" name="C:\Users\igor.lima\Documents\NetBeansProjects\ySelf\img\icon\glasses_2.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="&#xd3;culos 2"/>
               </Properties>

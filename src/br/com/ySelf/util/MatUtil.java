@@ -108,11 +108,7 @@ public abstract class MatUtil extends JFrame {
 
             int x = fr.x;
             int y = Math.abs(fr.y - (int) (fr.width * 0.15));
-
-            double density = Detection.density(img, fr);
             double slopOfFace = Detection.slopOfFace(face);
-            
-            System.out.println("slopOfFace: "+slopOfFace);
             
             Size size = new Size(width, height);
 
@@ -380,7 +376,26 @@ public abstract class MatUtil extends JFrame {
         }
     }
     
-
+    
+    public static void saturation(Mat img, double saturation)  {
+        
+        Mat hsv = new Mat();
+        Imgproc.cvtColor(img, hsv, Imgproc.COLOR_RGB2HSV);
+        
+        for (int x = 0; x < hsv.rows(); x++) {
+            for (int y = 0; y < hsv.cols(); y++) {
+                
+                double[] pixel = hsv.get(x, y);
+                double newSaturation = pixel[1] + saturation;
+                
+                if (newSaturation >= 40) {
+                    pixel[1] += saturation;
+                    hsv.put(x, y, pixel);
+                }
+            }
+        }
+        Imgproc.cvtColor(hsv, img, Imgproc.COLOR_HSV2RGB);
+    }
     
     public static void focus(Mat img, Rect region) {
         
@@ -577,6 +592,11 @@ public abstract class MatUtil extends JFrame {
     public static void contrastAndBrightness(Mat img,double alpha, double beta, Rect region) {
         contrastAndBrightness(img.submat(region), alpha, beta);
     }
+    
+    public static void saturation(Mat img, double saturation, Rect region)  { 
+        saturation(img.submat(region), saturation);
+    }
+    
     public static Rect getRect(JComponent c) {
 
         int x = c.getX();
