@@ -5,11 +5,10 @@ GitHub: https://github.com/igor036
 package br.com.ySelf.util;
 
 import br.com.ySelf.modal.EColor;
+import br.com.ySelf.modal.ESloopFaceDirection;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
@@ -18,9 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
@@ -30,6 +27,8 @@ import org.opencv.core.Size;
 
 public abstract class MatUtil extends JFrame {
 
+    private static final int ADJUSTMENT_X_WIDTH_GLASSES = 30;
+    
     /* URL IMAGES
      *-------------------------------------------------------->
      */
@@ -107,43 +106,49 @@ public abstract class MatUtil extends JFrame {
             int width = (int) (fr.width * 0.35);
             int height = (int) (fr.height * 0.35);
 
-            int x = fr.x + (int) (fr.width * 0.04), xOverlay;
-            int y = Math.abs(fr.y - (int) (fr.width * 0.15)), yOverlay;
+            int x = fr.x;
+            int y = Math.abs(fr.y - (int) (fr.width * 0.15));
 
             double density = Detection.density(img, fr);
-            int slopOfFace = Detection.slopOfFace(face);
-
+            double slopOfFace = Detection.slopOfFace(face);
+            
+            System.out.println("slopOfFace: "+slopOfFace);
+            
             Size size = new Size(width, height);
 
             //resize
             Imgproc.resize(dog_left_ear, dog_left_ear, size);
             Imgproc.resize(dog_right_ear, dog_right_ear, size);
-            Imgproc.resize(dog_snout, dog_snout, new Size(width * 0.85, height * 0.85));
+            Imgproc.resize(dog_snout, dog_snout, size);
 
             //rotation
-            rotate(dog_left_ear, density + slopOfFace);
-            rotate(dog_right_ear, density + slopOfFace);
-            rotate(dog_snout, density + slopOfFace);
-
-            //left ear
-            xOverlay = (int) Math.abs(x + (slopOfFace + density * 2) * -1);
-            yOverlay = (int) Math.abs(y + (slopOfFace + density * 2));
-
-            Mat region_left_ear = img.submat(new Rect(xOverlay, yOverlay, width, height));
-            overlay(region_left_ear, dog_left_ear);
+            ESloopFaceDirection direction = ESloopFaceDirection.get(slopOfFace);
+            
+            if (!direction.isMid()) {
+                rotate(dog_left_ear, slopOfFace);
+                rotate(dog_right_ear, slopOfFace);
+                rotate(dog_snout, slopOfFace);
+            }
 
             //right ear
-            xOverlay = (int) Math.abs(x + fr.width - (fr.width * 0.35) + (slopOfFace + density) * -1);
-            yOverlay = (int) Math.abs((y + (slopOfFace + density * 2) * -1));
+            int xOverlayRightEar = x;
+            int yOverlayRightEar = y;
 
-            Mat region_right_ear = img.submat(new Rect(xOverlay, yOverlay, width, height));
+            Mat region_right_ear = img.submat(new Rect(xOverlayRightEar, yOverlayRightEar, width, height));
             overlay(region_right_ear, dog_right_ear);
 
-            //snout       
-            xOverlay = fr.x + (int) (Detection.anchorPoint(face) - fr.width * 0.05);
-            yOverlay = fr.y + (fr.height / 2) - (int) Math.abs(slopOfFace + density) * (int) (fr.width * 0.01);
+            //left ear
+            int xOverlayLeftEar = (int) (x + (fr.width * 0.7) + slopOfFace * direction.getInvFlag());
+            int yOverlayLeftEar = yOverlayRightEar + (int)(fr.height * 0.1 * direction.getInvFlag());
 
-            Mat region_snout = img.submat(new Rect(xOverlay, yOverlay, width, height));
+            Mat region_left_ear = img.submat(new Rect(xOverlayLeftEar, yOverlayLeftEar, width, height));
+            overlay(region_left_ear, dog_left_ear);
+
+            //snout       
+            int xOverlaySnout = fr.x + Detection.anchorPointX(face, slopOfFace, direction);
+            int yOverlaySnout = fr.y + Detection.anchorPointY(face);
+            
+            Mat region_snout = img.submat(new Rect(xOverlaySnout, yOverlaySnout, width, height));
             overlay(region_snout, dog_snout);
         }
     }
@@ -154,7 +159,7 @@ public abstract class MatUtil extends JFrame {
         Mat rot_mat = Imgproc.getRotationMatrix2D(center, angle, 1);
 
         Imgproc.warpAffine(img, img, rot_mat, img.size(), Imgproc.INTER_CUBIC);
-        //Imgproc.warpAffine(img, rot_mat, rot_mat, rot_mat.size());
+        Imgproc.warpAffine(img, rot_mat, rot_mat, rot_mat.size());
     }
 
     public static void glasses(Mat img, String png) {
@@ -163,18 +168,24 @@ public abstract class MatUtil extends JFrame {
             throw new RuntimeException("Mascara GLASSES não encontrada!");
         
 
-        Rect[] eyes = Detection.rectOfEye(img);
         Mat sub = readImg(png);
-
-        for (Rect rect : eyes) {
-
-            double sloopOfFace = Detection.slopOfFace(img.submat(rect));
-            rotate(sub, sloopOfFace);
-
-            Mat face = img.submat(rect);
+        Rect[] faces = Detection.rectOfFace(img);
+        
+        for (Rect fr: faces) {
+            
+            Rect[] eyes = Detection.rectsOfEyes(img);
+            Rect leftEye = eyes[1];
+            
+            Point a = new Point(fr.x + ADJUSTMENT_X_WIDTH_GLASSES, leftEye.y);
+            Point b = new Point(fr.x + fr.width - ADJUSTMENT_X_WIDTH_GLASSES ,leftEye.y + leftEye.height);
+            Rect eyesRegion = new Rect(a, b);
+            
+            double sloopOfFace = Detection.slopOfFace(img.submat(eyesRegion));
+            Mat face = img.submat(eyesRegion);
+            
             Imgproc.resize(sub, sub, face.size());
+            rotate(sub, sloopOfFace);
             overlay(face, sub);
-
         }
     }
     

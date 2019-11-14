@@ -6,6 +6,7 @@ GitHub: https://github.com/igor036
 
 package br.com.ySelf.util;
 
+import br.com.ySelf.modal.ESloopFaceDirection;
 import org.opencv.core.Core;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.core.Mat;
@@ -20,48 +21,14 @@ public abstract class Detection {
 
     //var's
     private static CascadeClassifier face_cascade;
-    private static CascadeClassifier eye_cascade;
+    private static CascadeClassifier eyes_cascade;
+    private static CascadeClassifier left_eye_cascade;
+    private static CascadeClassifier right_eye_cascade;
     private static CascadeClassifier nose_cascade;
-    private static boolean faceIsStarted     = false;
-    private static boolean eyeIsStarted      = false;
-    private static boolean noseIsStarted     = false;
-    private static boolean showDetection     = false;
-    
-    //const's
-    private static final int ADJUSTMENT_X_WIDTH_GLASSES = 20;
-    
-    private static void nose_start() {
-
-        nose_cascade = new CascadeClassifier("xml\\haarcascade_nose.xml");
-        if (!nose_cascade.load("xml\\haarcascade_nose.xml")) {
-            System.out.println("error loading xml nose cascade!");
-            System.exit(1);
-        }
-
-        noseIsStarted = true;
-    }
-    
-    private static void face_start() {
-
-        face_cascade = new CascadeClassifier("xml\\haarcascade_frontalface_alt.xml");
-        if (!face_cascade.load("xml\\haarcascade_frontalface_alt.xml")) {
-            System.out.println("error loading xml face cascade!");
-            System.exit(1);
-        }
-
-        faceIsStarted = true;
-    }
-    
-    private static void eye_start() {
-    
-        eye_cascade = new CascadeClassifier("xml\\haarcascade_eye.xml");
-        if (!eye_cascade.load("xml\\haarcascade_eye.xml")) {
-            System.out.println("error loading xml eye cascade!");
-            System.exit(1);
-        }
-
-        eyeIsStarted = true;
-    }
+    private static boolean faceIsStarted = false;
+    private static boolean eyeIsStarted = false;
+    private static boolean noseIsStarted = false;
+    private static boolean showDetection = false;
     
     public static Rect[] rectOfFace(Mat img) {
 
@@ -72,65 +39,34 @@ public abstract class Detection {
         MatOfRect matOfFaces = new MatOfRect();
         Mat processImg = preProcess(img);
 
-        face_cascade.detectMultiScale(img, matOfFaces);
+        face_cascade.detectMultiScale(processImg, matOfFaces);
 
         Rect[] faces = matOfFaces.toArray();
-
-        //draw rect in faces
-        if(showDetection) {
-            for (Rect r : faces) {
-
-                Point a = new Point(r.x, r.y);
-                Point b = new Point(r.x + r.width, r.y + r.height);
-
-                Imgproc.rectangle(img, a, b, new Scalar(0, 0, 255));
-            }
-        }
+        drawnRects(faces, img);
         
         return faces;
     }
     
-    public static Rect[] rectOfEye(Mat img){
+    public static Rect[] rectsOfEyes(Mat img){
         
-        Rect[] faces = rectOfFace(img);
-        Rect[] eyes = new Rect[faces.length];
-        
-        for (int i = 0; i < faces.length; i++) {
-            
-            Mat mf = img.submat(faces[i]);
-            Rect[] eyesOfFace = eyesOfFace(img);
-            
-            if (eyesOfFace.length > 1) { 
-                
-                Point a = new Point(faces[i].x + ADJUSTMENT_X_WIDTH_GLASSES, eyesOfFace[1].y);
-                Point b = new Point(faces[i].x + faces[i].width - ADJUSTMENT_X_WIDTH_GLASSES ,eyesOfFace[1].y + eyesOfFace[1].width);
-                
-                if (showDetection)
-                    Imgproc.rectangle(img, a, b, new Scalar(0, 0, 255));
-                
-                eyes[i] = new Rect(a, b);
-            }
-        }
-        
-        return eyes;
-    }
-    
-    public static Rect[] eyesOfFace(Mat img){
-    
         if (!eyeIsStarted) {
             eye_start();
         }
         
-        MatOfRect matOfEyes = new MatOfRect();
         Mat processImg = preProcess(img);
+        MatOfRect matOfRightEye = new MatOfRect();
+        MatOfRect matOfLeftEye = new MatOfRect();
         
-        Imgproc.resize(processImg, processImg, new Size(22, 15));
-
-        eye_cascade.detectMultiScale(img, matOfEyes);
-
-        Rect[] eyes = matOfEyes.toArray();
+        right_eye_cascade.detectMultiScale(processImg, matOfRightEye);
+        left_eye_cascade.detectMultiScale(processImg, matOfLeftEye);
         
-        return eyes;
+        Rect rightEye = matOfRightEye.toArray()[0];
+        Rect leftEye = matOfLeftEye.toArray()[0];
+
+        Rect[] eyesOfFace = new Rect[] {rightEye, leftEye};
+        drawnRects(eyesOfFace, img);
+        
+        return eyesOfFace;
     }
     
     public static Rect rectOfNose(Mat img){
@@ -141,47 +77,30 @@ public abstract class Detection {
         MatOfRect matOfNoses = new MatOfRect();
         Mat processImg = preProcess(img);
 
-        nose_cascade.detectMultiScale(img, matOfNoses);
+        nose_cascade.detectMultiScale(processImg, matOfNoses);
         
         Rect[] noses = matOfNoses.toArray();
-        System.out.println(noses.length);
         if (noses.length > 1 && noses[1].x < noses[0].x)
             return noses[1];
         
         return noses[0];
     }
     
-    public static double anchorPoint(Mat img){
-        
-        Rect[] eyes = eyesOfFace(img);
-        
-        if (eyes[0].x < eyes[1].x)
-            return (eyes[0].x + eyes[1].x) / 2;
-        
-        return (eyes[1].x + eyes[0].x) / 2;
-    }
-
-    private static Mat preProcess(Mat img) {
-
-        Mat processImg = new Mat();
-
-        Imgproc.cvtColor(img, processImg, Imgproc.COLOR_RGB2GRAY);
-        Imgproc.equalizeHist(processImg, processImg);
-
-        return processImg;
+    public static int anchorPointX(Mat img, double sloopOfFace, ESloopFaceDirection direction) {
+        Rect[] eyes = rectsOfEyes(img);
+        int x = (int)((eyes[0].x + eyes[1].x) / 2);
+        return (int)Math.abs(x += img.width() / 400 + sloopOfFace * 2 * direction.getInvFlag());
     }
     
-    public static int slopOfFace(Mat img) {
-        
-        Rect[] eyes = eyesOfFace(img);
-        
-        if (eyes.length <= 1)
-            return 0;
-        
-        if (eyes[0].x < eyes[1].x)
-            return eyes[0].y - eyes[1].y;
-        
-        return eyes[1].y - eyes[0].y;
+    public static int anchorPointY(Mat img){
+        return img.height() / 2;
+    }
+    
+    public static double slopOfFace(Mat img) {
+        Rect[] eyes = rectsOfEyes(img);
+        Rect rightEye = eyes[0];
+        Rect leftEye = eyes[1];
+        return (rightEye.y - leftEye.y);
     }
    
     public static double density(Mat img, Rect rect) {
@@ -201,5 +120,60 @@ public abstract class Detection {
         int count_black = temp.cols() * temp.rows() - count_white;
         return (count_white / (double) count_black);
 
+    }
+    
+    private static void nose_start() {
+
+        nose_cascade = new CascadeClassifier();
+        if (!nose_cascade.load("xml\\haarcascade_nose.xml")) {
+            System.out.println("error loading xml nose cascade!");
+            System.exit(1);
+        }
+
+        noseIsStarted = true;
+    }
+    
+    private static void face_start() {
+
+        face_cascade = new CascadeClassifier();
+        if (!face_cascade.load("xml\\haarcascade_frontalface_alt.xml")) {
+            System.out.println("error loading xml face cascade!");
+            System.exit(1);
+        }
+
+        faceIsStarted = true;
+    }
+    
+    private static void eye_start() {
+    
+        eyes_cascade = new CascadeClassifier();
+        left_eye_cascade = new CascadeClassifier();
+        right_eye_cascade = new CascadeClassifier();
+        
+        if (!eyes_cascade.load("xml\\haarcascade_eye.xml") || 
+                !left_eye_cascade.load("xml\\haarcascade_lefteye_2splits.xml") ||
+                !right_eye_cascade.load("xml\\haarcascade_righteye_2splits.xml")) {
+            System.out.println("error loading xml eye cascade!");
+            System.exit(1);
+        }
+
+        eyeIsStarted = true;
+    }
+    
+    private static Mat preProcess(Mat img) {
+        Mat processImg = new Mat();
+        Imgproc.cvtColor(img, processImg, Imgproc.COLOR_RGB2GRAY);
+        Imgproc.equalizeHist(processImg, processImg);
+        return processImg;
+    }
+    
+    private static void drawnRects(Rect[] rects, Mat img) {
+        if(showDetection) {
+            for (Rect r : rects) {
+                Point a = new Point(r.x, r.y);
+                Point b = new Point(r.x + r.width, r.y + r.height);
+                Imgproc.rectangle(img, a, b, new Scalar(0, 0, 255));
+            }
+        }
     }
 }
