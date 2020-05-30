@@ -1,10 +1,7 @@
 # !! ySelf !!
 
-yself is a project in opencv and java for spnachat effects and filters of image.
-
-The project was developed with the intention of studying opencv !
-
-!! Attention : The project is under development. !!
+Projeto elaborado para estudo de OpenCV. O projeto consiste em um mini editor de fotos
+que possui alguns filtros e manipulação de imagens.
 
 ## Authors
 
